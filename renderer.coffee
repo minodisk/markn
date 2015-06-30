@@ -7,6 +7,14 @@ createMdElement = (md) ->
     breaks: true
     tables: true
 
+    position: true
+    gfm: true
+    yaml: true
+    commonmark: true
+    footnotes: true
+    pedantic: true
+    breaks: true
+
 Markdown = createClass
 
   render: ->

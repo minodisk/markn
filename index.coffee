@@ -1,19 +1,20 @@
 remote = require 'remote'
 app = remote.require 'app'
 Menu = remote.require 'menu'
-MenuItem = remote.require 'menu-item'
 dialog = remote.require 'dialog'
 fs = remote.require 'fs'
 {update} = require './renderer'
 {watch} = require 'chokidar'
 
 class Index
+
   constructor: ->
     new M()
 
 class M
 
   constructor: ->
+    console.log 'set up menu'
     Menu.setApplicationMenu Menu.buildFromTemplate @template()
 
   template: ->
@@ -58,3 +59,5 @@ class M
     fs.readFile filename, 'utf8', (err, data) ->
       return if err?
       update data
+
+new Index

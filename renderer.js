@@ -10,7 +10,14 @@
     return md2react(md, {
       gfm: true,
       breaks: true,
-      tables: true
+      tables: true,
+      position: true,
+      gfm: true,
+      yaml: true,
+      commonmark: true,
+      footnotes: true,
+      pedantic: true,
+      breaks: true
     });
   };
 
