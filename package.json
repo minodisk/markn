@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/minodisk/md2react-viewer#readme",
   "dependencies": {
+    "chokidar": "^1.0.3",
     "github-markdown-css": "^2.0.9",
     "md2react": "^0.8.1",
     "react": "^0.13.3"
