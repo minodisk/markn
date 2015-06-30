@@ -1,0 +1,25 @@
+{
+  "name": "md2react-viewer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/minodisk/md2react-viewer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/minodisk/md2react-viewer/issues"
+  },
+  "homepage": "https://github.com/minodisk/md2react-viewer#readme",
+  "dependencies": {
+    "github-markdown-css": "^2.0.9",
+    "md2react": "^0.8.1",
+    "react": "^0.13.3"
+  }
+}
