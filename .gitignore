@@ -28,3 +28,4 @@ node_modules
 
 # Domain
 *.js
+*.css
