@@ -4,15 +4,16 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/asar/bin/asar pack . ~/MarkdownViewer.asar"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/minodisk/md2react-viewer.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["electron", "md2react"],
+  "author": "Daisuke Mino",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/minodisk/md2react-viewer/issues"
   },
@@ -22,5 +23,9 @@
     "github-markdown-css": "^2.0.9",
     "md2react": "^0.8.1",
     "react": "^0.13.3"
+  },
+  "devDependencies": {
+    "asar": "^0.7.2",
+    "electron-prebuilt": "^0.28.3"
   }
 }
