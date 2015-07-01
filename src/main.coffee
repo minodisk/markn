@@ -14,8 +14,8 @@ class Main
   onReady: (e) =>
     console.log 'onReady'
 
-    win = new BrowserWindow width: 800, height: 600
-    win.loadUrl 'file://' + __dirname + '/index.html'
+    @win = new BrowserWindow width: 800, height: 600
+    @win.loadUrl 'file://' + __dirname + '/index.html'
 
   onWindowAllClosed: (e) =>
     console.log 'onWindowAllClosed'

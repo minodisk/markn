@@ -3,9 +3,25 @@
   <head>
     <meta charset="UTF-8">
     <title>md2react viewer</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .markdown-body {
+        padding: 0 50px;
+        margin: 50px 0;
+      }
+      li>p {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+      }
+    </style>
     <link rel="stylesheet" href="./node_modules/github-markdown-css/github-markdown.css">
+    <!-- <link rel="stylesheet" href="./node_modules/markdown-preview/template/default.css"> -->
   </head>
   <body>
+    <div class="body"></div>
     <script src="./index.js"></script>
   </body>
 </html>

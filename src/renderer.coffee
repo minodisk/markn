@@ -1,5 +1,5 @@
 window.React = {createClass, createElement: $, render} = require 'react'
-md2react = require 'md2react'
+md2react = require '../md2react/lib/index'
 
 createMdElement = (md) ->
   md2react md,
@@ -7,13 +7,13 @@ createMdElement = (md) ->
     breaks: true
     tables: true
 
-    position: true
-    gfm: true
-    yaml: true
-    commonmark: true
+    # position: true
+    # gfm: true
+    # yaml: true
+    # commonmark: true
     footnotes: true
-    pedantic: true
-    breaks: true
+    # pedantic: true
+    # breaks: true
 
 Markdown = createClass
 
@@ -26,4 +26,4 @@ Markdown = createClass
   update: (md) ->
     @setState content: createMdElement md
 
-module.exports = render $(Markdown, {}), document.body
+module.exports = render $(Markdown, {}), document.querySelector '.body'
