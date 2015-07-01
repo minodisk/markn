@@ -1,8 +1,8 @@
 remote = require 'remote'
 app = remote.require 'app'
 Menu = remote.require 'menu'
-dialog = remote.require 'dialog'
-fs = remote.require 'fs'
+{showOpenDialog} = remote.require 'dialog'
+{readFile} = remote.require 'fs'
 {update} = require './renderer'
 {watch} = require 'chokidar'
 
@@ -45,7 +45,7 @@ class M
     app.quit()
 
   onFileOpenClicked: (e) =>
-    dialog.showOpenDialog
+    showOpenDialog
       properties: ['openFile']
     , ([filename]) =>
       if @w?
@@ -56,7 +56,7 @@ class M
       @render filename
 
   render: (filename) ->
-    fs.readFile filename, 'utf8', (err, data) ->
+    readFile filename, 'utf8', (err, data) ->
       return if err?
       update data
 
