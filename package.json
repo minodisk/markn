@@ -6,8 +6,8 @@
   "scripts": {
     "test": "exit 0;",
     "develop": "./node_modules/coffee-script/bin/coffee -cw -o . src/**/*.coffee",
-    "css": "./node_modules/coffee-script/bin/coffee -c make.coffee",
-    "debug": "./node_modules/coffee-script/bin/coffee -c -o . src/**/*.coffee && ./node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron .",
+    "css": "./node_modules/coffee-script/bin/coffee make.coffee",
+    "debug": "ndenv exec npm run css && ./node_modules/coffee-script/bin/coffee -c -o . src/**/*.coffee && ./node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron .",
     "build": "./node_modules/coffee-script/bin/coffee -c -o . src/*.coffee && ./node_modules/asar/bin/asar pack . ./MarkdownViewer.asar"
   },
   "repository": {
@@ -26,6 +26,7 @@
   "homepage": "https://github.com/minodisk/marv#readme",
   "dependencies": {
     "chokidar": "^1.0.3",
+    "font-awesome": "^4.3.0",
     "github-markdown-css": "^2.0.9",
     "md2react": "^0.8.1",
     "react": "^0.13.3"
