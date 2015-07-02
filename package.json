@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/minodisk/md2react-viewer.git"
+    "url": "git+https://github.com/minodisk/marv.git"
   },
   "keywords": [
     "electron",
@@ -21,9 +21,9 @@
   "author": "Daisuke Mino",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/minodisk/md2react-viewer/issues"
+    "url": "https://github.com/minodisk/marv/issues"
   },
-  "homepage": "https://github.com/minodisk/md2react-viewer#readme",
+  "homepage": "https://github.com/minodisk/marv#readme",
   "dependencies": {
     "chokidar": "^1.0.3",
     "github-markdown-css": "^2.0.9",
