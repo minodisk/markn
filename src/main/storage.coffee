@@ -3,6 +3,7 @@ app = require 'app'
 {readFile, writeFile} = require 'fs'
 {stringify, parse} = JSON
 
+
 module.exports =
 class Storage
 
