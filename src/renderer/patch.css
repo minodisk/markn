@@ -27,3 +27,42 @@ li>p {
 .markdown-body li.unchecked:before {
   content: "\f096";
 }
+
+/* heading icon */
+
+.markdown-body .icon {
+  font: normal normal normal 16px/1 octicons-anchor;
+  display: inline-block;
+  text-decoration: none;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.markdown-body .icon-link:before {
+  content: '\f05c';
+}
+
+.markdown-body h1 .icon-link,
+.markdown-body h2 .icon-link,
+.markdown-body h3 .icon-link,
+.markdown-body h4 .icon-link,
+.markdown-body h5 .icon-link,
+.markdown-body h6 .icon-link {
+  display: none;
+  color: #000;
+  vertical-align: middle;
+}
+
+.markdown-body h1:hover .anchor .icon-link,
+.markdown-body h2:hover .anchor .icon-link,
+.markdown-body h3:hover .anchor .icon-link,
+.markdown-body h4:hover .anchor .icon-link,
+.markdown-body h5:hover .anchor .icon-link,
+.markdown-body h6:hover .anchor .icon-link {
+  display: inline-block;
+}
