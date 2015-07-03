@@ -1,5 +1,6 @@
 require('crash-reporter').start()
 app = require 'app'
+
 mediator = require './mediator'
 events = require './events'
 Menu = require './menu'

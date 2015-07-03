@@ -15,40 +15,23 @@
         margin-top: 0 !important;
         margin-bottom: 0 !important;
       }
-      .markdown-body ul li.checked,
-      .markdown-body ul li.unchecked, {
+      .markdown-body li.checked,
+      .markdown-body li.unchecked {
         list-style-type: none;
+        position: relative;
       }
       .markdown-body li.checked:before,
       .markdown-body li.unchecked:before {
-        margin: 0 0.35em 0.25em -1.6em;
-        vertical-align: middle;
+        font-family: FontAwesome;
+        position: absolute;
+        left: -1.3em;
       }
       .markdown-body li.checked:before {
-        font: normal normal normal 14px/1 FontAwesome;
         content: "\f046";
       }
       .markdown-body li.unchecked:before {
-        font: normal normal normal 14px/1 FontAwesome;
         content: "\f096";
       }
-.markdown-body .task-list-item {
-}
-
-.markdown-body .task-list-item+.task-list-item {
-  margin-top: 3px;
-}
-
-.markdown-body .task-list-item input {
-  margin: 0 0.35em 0.25em -1.6em;
-  vertical-align: middle;
-}
-
-.markdown-body :checked+.radio-label {
-  z-index: 1;
-  position: relative;
-  border-color: #4078c0;
-}
     </style>
     <link rel="stylesheet" href="./github-markdown.css">
     <link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.min.css">

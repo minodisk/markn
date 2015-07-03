@@ -27,5 +27,4 @@ build/Release
 node_modules
 
 # Domain
-*.js
-*.css
+dist

@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+.markdown-body {
+  padding: 0 50px;
+  margin: 50px 0;
+}
+li>p {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+.markdown-body li.checked,
+.markdown-body li.unchecked {
+  list-style-type: none;
+  position: relative;
+}
+.markdown-body li.checked:before,
+.markdown-body li.unchecked:before {
+  font-family: FontAwesome;
+  position: absolute;
+  left: -1.3em;
+}
+.markdown-body li.checked:before {
+  content: "\f046";
+}
+.markdown-body li.unchecked:before {
+  content: "\f096";
+}

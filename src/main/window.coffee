@@ -1,9 +1,10 @@
 EventEmitter = require 'events'
 {readFile} = require 'fs'
-{basename} = require 'path'
-{watch} = require 'chokidar'
+{join} = require 'path'
 BrowserWindow = require 'browser-window'
 {showOpenDialog} = require 'dialog'
+{watch} = require 'chokidar'
+
 mediator = require './mediator'
 events = require './events'
 Storage = require './storage'
@@ -24,7 +25,7 @@ class Window extends EventEmitter
       @browserWindow.on 'move', @onMoved
       @browserWindow.on 'resize', @onResized
       @browserWindow.on 'closed', @onClosed
-      @browserWindow.loadUrl "file://#{__dirname}/index.html"
+      @browserWindow.loadUrl ""
       mediator.on events.OPEN_FILE, @onOpenFileRequested
       mediator.on events.TOGGLE_DEVTOOLS, @onToggleDevToolsRequested
       mediator.on events.RELOAD, @onReloadRequested
@@ -35,7 +36,11 @@ class Window extends EventEmitter
     mediator.removeListener events.TOGGLE_DEVTOOLS, @onToggleDevToolsRequested
     mediator.removeListener events.RELOAD, @onReloadRequested
 
-  onContentsDidFinishLoad: => @start 'README.md'
+  onContentsDidFinishLoad: =>
+    readFile 'dist/renderer.js', 'utf8', (err, data) =>
+      throw err if err
+      @browserWindow.webContents.executeJavaScript data
+      @start 'README.md'
 
   onMoved: => @registerBounds()
 

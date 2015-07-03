@@ -1,7 +1,8 @@
-mediator = require './mediator'
-events = require './events'
 Menu = require 'menu'
 Item = require 'menu-item'
+
+mediator = require './mediator'
+events = require './events'
 
 
 module.exports = class

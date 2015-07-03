@@ -1,24 +1,33 @@
-ipc = require 'ipc'
+ipc = window.require 'ipc'
 window.React = {createClass, createElement: $, render} = require 'react'
-md2react = require '../md2react/lib/index'
+md2react = require '../../../md2react/lib/index'
+githubCSS = require '../../node_modules/github-markdown-css/github-markdown.css'
+fontAwesomeCSS = require '../../node_modules/font-awesome/css/font-awesome.css'
+patchCSS = require './patch.css'
 
 
 class App
 
   constructor: ->
-    ipc.on 'call', @onCall
-    document.addEventListener 'DOMContentLoaded', @onDomContentLoaded
+    meta = document.createElement 'meta'
+    meta.setAttribute 'charset', 'UTF-8'
+    document.head.appendChild meta
+    [
+      githubCSS
+      fontAwesomeCSS
+      patchCSS
+    ].forEach (css) ->
+      style = document.createElement 'style'
+      style.textContent = css
+      document.head.appendChild style
 
-  onDomContentLoaded: =>
-    document.removeEventListener 'DOMContentLoaded', @onDomContentLoaded
     @markdown = render $(Markdown, {}), document.body
+    ipc.on 'call', @onCall
 
   onCall: (method, args...) =>
-      fn = @[method]
-      console.log method
-      throw new Error "App.#{method} is undefined" unless fn?
-      console.log fn
-      fn.apply @, args
+    fn = @[method]
+    throw new Error "App.#{method} is undefined" unless fn?
+    fn.apply @, args
 
   render: (data) -> @markdown.update data
 
@@ -42,7 +51,6 @@ createMdElement = (md) ->
     tables: true
     commonmark: true
     footnotes: true
-
 
 Markdown = createClass
 
