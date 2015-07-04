@@ -9,6 +9,7 @@ mediator = require './mediator'
 events = require './events'
 Storage = require './storage'
 {bindTarget} = require './util'
+html = require 'url-loader?mimetype=text/html!./index.html'
 
 
 module.exports =
@@ -25,7 +26,7 @@ class Window extends EventEmitter
       @browserWindow.on 'move', @onMoved
       @browserWindow.on 'resize', @onResized
       @browserWindow.on 'closed', @onClosed
-      @browserWindow.loadUrl ""
+      @browserWindow.loadUrl html
       mediator.on events.OPEN_FILE, @onOpenFileRequested
       mediator.on events.TOGGLE_DEVTOOLS, @onToggleDevToolsRequested
       mediator.on events.RELOAD, @onReloadRequested

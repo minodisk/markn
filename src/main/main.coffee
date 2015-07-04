@@ -1,5 +1,6 @@
 require('crash-reporter').start()
 app = require 'app'
+{writeFileSync, readFileSync} = require 'fs'
 
 mediator = require './mediator'
 events = require './events'
@@ -28,7 +29,6 @@ class Main
 
   onQuit: =>
     console.log 'onQuit'
-    # process.exit()
 
   onOpenNewWindowRequested: => @openNewWindow()
 
