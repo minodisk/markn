@@ -166,7 +166,7 @@ gulp.task 'publish', ->
           github.releases.createRelease
             owner: 'minodisk'
             repo: 'markn'
-            tag_name: 'v0.0.1'
+            tag_name: 'v0.0.1' #TODO bump package.json
           , (err, res) ->
             throw err if err
             console.log JSON.stringify res, null, 2
