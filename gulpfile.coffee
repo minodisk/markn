@@ -2,9 +2,13 @@ gulp = require 'gulp'
 gutil = require 'gulp-util'
 plumber = require 'gulp-plumber'
 webpack = require 'webpack'
-packager = require 'electron-packager'
+{join, basename} = require 'path'
 {readFileSync, writeFileSync, existsSync, mkdirSync} = require 'fs'
 {cloneDeep} = require 'lodash'
+packager = require 'electron-packager'
+GitHub = require 'github'
+{spawn} = require 'child_process'
+Q = require 'q'
 
 
 pkg = JSON.parse readFileSync 'package.json'
@@ -19,10 +23,6 @@ gulp.task 'default', [
 gulp.task 'ready', ->
   if !existsSync 'dist'
     mkdirSync 'dist'
-  p = cloneDeep pkg
-  p.dependencies = chokidar: pkg.dependencies.chokidar
-  delete p.devDependencies
-  writeFileSync 'dist/package.json', JSON.stringify p
 
 gulp.task 'copy', ->
   gulp
@@ -88,14 +88,105 @@ gulp.task 'webpack', ->
       entry: './src/main/main.coffee'
       output: './dist/main.js'
 
-gulp.task 'package', ->
-  packager
-    dir: 'dist'
-    name: pkg.name
-    platform: 'all'
-    arch: 'all'
-    version: '0.29.1'
-    overwrite: true
-  ,  (err, appPath) ->
-    throw new gutil.PluginError 'package', err if err?
-    console.log appPath
+gulp.task 'publish', ->
+  p = cloneDeep pkg
+  p.dependencies = chokidar: pkg.dependencies.chokidar
+  delete p.devDependencies
+  writeFileSync 'dist/package.json', JSON.stringify p
+
+  github = new GitHub
+    version: "3.0.0"
+    debug: true
+  github.authenticate
+    type: 'oauth'
+    token: process.env.TOKEN
+
+  Q
+    .when ''
+    .then ->
+      d = Q.defer()
+      packager
+        dir: 'dist'
+        name: pkg.name
+        platform: 'all'
+        arch: 'all'
+        version: '0.29.1'
+        overwrite: true
+      ,  (err, dirs) ->
+        throw new gutil.PluginError 'package', err if err?
+        d.resolve dirs
+      d.promise
+
+    .then (dirs) ->
+      dirs = dirs.map (dir) ->
+        name = "#{basename dir}.zip"
+        {
+          dir, name
+          zip: "tmp/#{name}"
+        }
+
+      Q
+        .all dirs.map ({dir, name, zip}) ->
+          d = Q.defer()
+          console.log "zip #{name}"
+          zip = spawn 'zip', [zip, '-r', dir]
+          zip.stdout.on 'data', (data) -> console.log data.toString 'utf8'
+          zip.stderr.on 'data', (data) -> console.log data.toString 'utf8'
+          zip.on 'close', (code) -> d.resolve()
+          d.promise
+
+        # .then ->
+        #   d = Q.defer()
+        #   console.log 'list releases'
+        #   github.releases.listReleases
+        #     owner: 'minodisk'
+        #     repo: 'markn'
+        #   , (err, res) ->
+        #     throw err if err
+        #     console.log JSON.stringify res, null, 2
+        #     d.resolve res[0].id
+        #   d.promise
+        #
+        # .then (id) ->
+        #   d = Q.defer()
+        #   console.log "delete release: #{id}"
+        #   github.releases.deleteRelease
+        #     owner: 'minodisk'
+        #     repo: 'markn'
+        #     id: id
+        #   , (err, res) ->
+        #     throw err if err
+        #     console.log JSON.stringify res, null, 2
+        #     d.resolve()
+        #   d.promise
+
+        .then ->
+          d = Q.defer()
+          console.log 'create new release'
+          github.releases.createRelease
+            owner: 'minodisk'
+            repo: 'markn'
+            tag_name: 'v0.0.1'
+          , (err, res) ->
+            throw err if err
+            console.log JSON.stringify res, null, 2
+            d.resolve res.id
+          d.promise
+
+        .then (id) ->
+          Q
+            .all dirs.map ({name, zip}) ->
+              d = Q.defer()
+              github.releases.uploadAsset
+                owner: 'minodisk'
+                repo: 'markn'
+                id: id
+                name: name
+                filePath: zip
+              , (err, res) ->
+                throw err if err?
+                console.log JSON.stringify res, null, 2
+                d.resolve()
+              d
+            .then ->
+              console.log 'complete to upload'

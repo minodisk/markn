@@ -1,18 +1,17 @@
 {
-  "name": "Marv",
+  "name": "Markn",
   "version": "0.0.1",
   "description": "",
   "main": "main.js",
   "scripts": {
     "test": "exit 0;",
-    "prepublish": "./node_modules/gulp/bin/gulp.js",
-    "debug": "npm run prepublish && cd dist && ../node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron .",
-    "package": "./node_modules/gulp/bin/gulp.js package",
-    "build": "npm run prepublish && npm run package"
+    "build": "./node_modules/gulp/bin/gulp.js",
+    "debug": "npm run build && cd dist && ../node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron .",
+    "publish": "./node_modules/gulp/bin/gulp.js publish"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/minodisk/marv.git"
+    "url": "git+https://github.com/minodisk/markn.git"
   },
   "keywords": [
     "electron",
@@ -21,9 +20,9 @@
   "author": "Daisuke Mino",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/minodisk/marv/issues"
+    "url": "https://github.com/minodisk/markn/issues"
   },
-  "homepage": "https://github.com/minodisk/marv#readme",
+  "homepage": "https://github.com/minodisk/markn#readme",
   "dependencies": {
     "chokidar": "^1.0.3",
     "font-awesome": "^4.3.0",
@@ -44,6 +43,7 @@
     "gulp-util": "^3.0.6",
     "lodash": "^3.10.0",
     "node-libs-browser": "^0.5.2",
+    "q": "^1.4.1",
     "raw-loader": "^0.5.1",
     "url-loader": "^0.5.6",
     "webpack": "^1.10.1"

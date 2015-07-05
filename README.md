@@ -1,4 +1,4 @@
-# Marv
+# Markn
 
 Lightweight Markdown Viewer
 
@@ -15,5 +15,5 @@ Consists of awesome modules.
 - [Electron](http://electron.atom.io/) based application
 - Render HTML with [React](http://facebook.github.io/react/)
 - Generate markdown with [md2react](https://github.com/mizchi/md2react)
-- [x] Watch file with [chokidar](https://github.com/paulmillr/chokidar)
-- [ ] Style with [github-markdown-css](https://github.com/sindresorhus/github-markdown-css)
+- Watch file with [chokidar](https://github.com/paulmillr/chokidar)
+- Style with [github-markdown-css](https://github.com/sindresorhus/github-markdown-css)
