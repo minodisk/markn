@@ -10,6 +10,8 @@ events = require './events'
 Storage = require './storage'
 {bindTarget} = require './util'
 html = require 'url-loader?mimetype=text/html!./index.html'
+js = require 'raw-loader!../../tmp/renderer.js'
+readMe = require 'raw-loader!../../README.md'
 
 
 module.exports =
@@ -38,10 +40,9 @@ class Window extends EventEmitter
     mediator.removeListener events.RELOAD, @onReloadRequested
 
   onContentsDidFinishLoad: =>
-    readFile 'dist/renderer.js', 'utf8', (err, data) =>
-      throw err if err
-      @browserWindow.webContents.executeJavaScript data
-      @start 'README.md'
+    @browserWindow.webContents.executeJavaScript js
+    # @start 'README.md'
+    @render readMe
 
   onMoved: => @registerBounds()
 
@@ -77,11 +78,14 @@ class Window extends EventEmitter
     @watcher = watch filename
     @watcher.on 'change', @onFileChanged
     @browserWindow.setTitle filename
-    @render filename
+    @load filename
 
-  onFileChanged: (filename) => @render filename
+  onFileChanged: (filename) => @load filename
 
-  render: (filename) ->
+  load: (filename) ->
     readFile filename, 'utf8', (err, data) =>
       throw err if err?
-      @browserWindow.webContents.send 'call', 'render', data
+      @render md
+
+  render: (md) ->
+    @browserWindow.webContents.send 'call', 'render', md

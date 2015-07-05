@@ -1,13 +1,14 @@
 {
   "name": "Marv",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "",
   "main": "main.js",
   "scripts": {
     "test": "exit 0;",
     "prepublish": "./node_modules/gulp/bin/gulp.js",
-    "debug": "npm run prepublish && ./node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron dist",
-    "build": "npm run prepublish && ./node_modules/asar/bin/asar pack dist ./MarkdownViewer.asar"
+    "debug": "npm run prepublish && cd dist && ../node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron .",
+    "package": "./node_modules/gulp/bin/gulp.js package",
+    "build": "npm run prepublish && npm run package"
   },
   "repository": {
     "type": "git",
@@ -31,24 +32,20 @@
     "react": "^0.13.3"
   },
   "devDependencies": {
-    "asar": "^0.7.2",
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.9.3",
     "css-loader": "^0.15.1",
+    "electron-packager": "^5.0.0",
     "electron-prebuilt": "^0.28.3",
-    "extract-text-webpack-plugin": "^0.8.2",
     "file-loader": "^0.8.4",
-    "font-awesome-webpack": "0.0.3",
+    "github": "^0.2.4",
     "gulp": "^3.9.0",
     "gulp-plumber": "^1.0.1",
-    "gulp-rename": "^1.2.2",
     "gulp-util": "^3.0.6",
-    "less": "^2.5.1",
+    "lodash": "^3.10.0",
     "node-libs-browser": "^0.5.2",
     "raw-loader": "^0.5.1",
-    "style-loader": "^0.12.3",
     "url-loader": "^0.5.6",
-    "vinyl-source-stream": "^1.1.0",
     "webpack": "^1.10.1"
   }
 }

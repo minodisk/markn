@@ -9,9 +9,9 @@ patchCSS = require './patch.css'
 class App
 
   constructor: ->
-    meta = document.createElement 'meta'
-    meta.setAttribute 'charset', 'UTF-8'
-    document.head.appendChild meta
+    # meta = document.createElement 'meta'
+    # meta.setAttribute 'charset', 'UTF-8'
+    # document.head.appendChild meta
     [
       githubCSS
       fontAwesomeCSS

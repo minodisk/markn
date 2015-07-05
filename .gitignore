@@ -27,4 +27,8 @@ build/Release
 node_modules
 
 # Domain
+tmp
 dist
+*.svg
+*.ttf
+*.eot
