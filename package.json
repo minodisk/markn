@@ -1,7 +1,7 @@
 {
   "name": "Markn",
   "version": "0.0.1",
-  "description": "",
+  "description": "Lightweight markdown viewer",
   "main": "main.js",
   "scripts": {
     "test": "exit 0;",
@@ -15,7 +15,9 @@
   },
   "keywords": [
     "electron",
-    "md2react"
+    "md2react",
+    "markdown",
+    "viewer"
   ],
   "author": "Daisuke Mino",
   "license": "MIT",
