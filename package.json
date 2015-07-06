@@ -47,6 +47,7 @@
     "node-libs-browser": "^0.5.2",
     "q": "^1.4.1",
     "raw-loader": "^0.5.1",
+    "semver": "^4.3.6",
     "url-loader": "^0.5.6",
     "webpack": "^1.10.1"
   }

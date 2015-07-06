@@ -2,16 +2,20 @@ gulp = require 'gulp'
 gutil = require 'gulp-util'
 plumber = require 'gulp-plumber'
 webpack = require 'webpack'
-{join, basename, relative} = require 'path'
+{join, dirname, basename, extname, relative} = require 'path'
 {readFileSync, writeFileSync, existsSync, mkdirSync} = require 'fs'
 {cloneDeep} = require 'lodash'
 packager = require 'electron-packager'
 GitHub = require 'github'
 {spawn} = require 'child_process'
 Q = require 'q'
+semver = require 'semver'
 
 
 pkg = JSON.parse readFileSync 'package.json'
+url = pkg.repository.url
+owner = basename dirname url
+repo = basename pkg.repository.url, extname url
 
 
 gulp.task 'default', [
@@ -93,6 +97,9 @@ gulp.task 'webpack', ->
       output: './dist/main.js'
 
 gulp.task 'publish', ->
+  #TODO bump version
+  # semver.inc pkg.version, 'patch'
+
   Q
     .when ''
     .then ->
@@ -136,8 +143,8 @@ gulp.task 'publish', ->
         #   d = Q.defer()
         #   console.log 'list releases'
         #   github.releases.listReleases
-        #     owner: 'minodisk'
-        #     repo: 'markn'
+        #     owner: owner
+        #     repo: repo
         #   , (err, res) ->
         #     throw err if err
         #     console.log JSON.stringify res, null, 2
@@ -148,8 +155,8 @@ gulp.task 'publish', ->
         #   d = Q.defer()
         #   console.log "delete release: #{id}"
         #   github.releases.deleteRelease
-        #     owner: 'minodisk'
-        #     repo: 'markn'
+        #     owner: owner
+        #     repo: repo
         #     id: id
         #   , (err, res) ->
         #     throw err if err
@@ -161,9 +168,9 @@ gulp.task 'publish', ->
           d = Q.defer()
           console.log 'create new release'
           github.releases.createRelease
-            owner: 'minodisk'
-            repo: 'markn'
-            tag_name: 'v0.0.3' #TODO bump package.json
+            owner: owner
+            repo: repo
+            tag_name: 'v0.0.3'
           , (err, res) ->
             throw err if err
             console.log JSON.stringify res, null, 2
@@ -177,8 +184,8 @@ gulp.task 'publish', ->
             .all dirs.map ({zip}) ->
               d = Q.defer()
               github.releases.uploadAsset
-                owner: 'minodisk'
-                repo: 'markn'
+                owner: owner
+                repo: repo
                 id: id
                 name: zip
                 filePath: zip
