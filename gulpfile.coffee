@@ -2,7 +2,7 @@ gulp = require 'gulp'
 gutil = require 'gulp-util'
 plumber = require 'gulp-plumber'
 webpack = require 'webpack'
-{join, basename} = require 'path'
+{join, basename, relative} = require 'path'
 {readFileSync, writeFileSync, existsSync, mkdirSync} = require 'fs'
 {cloneDeep} = require 'lodash'
 packager = require 'electron-packager'
@@ -93,13 +93,6 @@ gulp.task 'webpack', ->
       output: './dist/main.js'
 
 gulp.task 'publish', ->
-  github = new GitHub
-    version: "3.0.0"
-    debug: true
-  github.authenticate
-    type: 'oauth'
-    token: process.env.TOKEN
-
   Q
     .when ''
     .then ->
@@ -118,17 +111,22 @@ gulp.task 'publish', ->
 
     .then (dirs) ->
       dirs = dirs.map (dir) ->
-        name = "#{basename dir}.zip"
-        {
-          dir, name
-          zip: "tmp/#{name}"
-        }
+        name = basename dir
+        zip = "#{name}.zip"
+        {dir, name, zip}
+
+      github = new GitHub
+        version: "3.0.0"
+        debug: true
+      github.authenticate
+        type: 'oauth'
+        token: process.env.TOKEN
 
       Q
         .all dirs.map ({dir, name, zip}) ->
           d = Q.defer()
-          console.log "zip #{name}"
-          zip = spawn 'zip', [zip, '-r', dir]
+          console.log "zip #{name} to #{zip}"
+          zip = spawn 'zip', [zip, '-r', name]
           zip.stdout.on 'data', (data) -> console.log data.toString 'utf8'
           zip.stderr.on 'data', (data) -> console.log data.toString 'utf8'
           zip.on 'close', (code) -> d.resolve()
@@ -165,7 +163,7 @@ gulp.task 'publish', ->
           github.releases.createRelease
             owner: 'minodisk'
             repo: 'markn'
-            tag_name: 'v0.0.1' #TODO bump package.json
+            tag_name: 'v0.0.2' #TODO bump package.json
           , (err, res) ->
             throw err if err
             console.log JSON.stringify res, null, 2
