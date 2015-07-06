@@ -171,7 +171,7 @@ gulp.task 'publish', ->
           d.promise
 
         .then (id) ->
-          console.log 'complete to create new release: #{id}'
+          console.log "complete to create new release: #{id}"
 
           Q
             .all dirs.map ({zip}) ->
