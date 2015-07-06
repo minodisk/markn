@@ -123,7 +123,7 @@ gulp.task 'publish', ->
         token: process.env.TOKEN
 
       Q
-        .all dirs.map ({dir, name, zip}) ->
+        .all dirs.map ({name, zip}) ->
           d = Q.defer()
           console.log "zip #{name} to #{zip}"
           zip = spawn 'zip', [zip, '-r', name]
@@ -163,7 +163,7 @@ gulp.task 'publish', ->
           github.releases.createRelease
             owner: 'minodisk'
             repo: 'markn'
-            tag_name: 'v0.0.2' #TODO bump package.json
+            tag_name: 'v0.0.3' #TODO bump package.json
           , (err, res) ->
             throw err if err
             console.log JSON.stringify res, null, 2
@@ -171,19 +171,21 @@ gulp.task 'publish', ->
           d.promise
 
         .then (id) ->
+          console.log 'complete to create new release: #{id}'
+
           Q
-            .all dirs.map ({name, zip}) ->
+            .all dirs.map ({zip}) ->
               d = Q.defer()
               github.releases.uploadAsset
                 owner: 'minodisk'
                 repo: 'markn'
                 id: id
-                name: name
+                name: zip
                 filePath: zip
               , (err, res) ->
                 throw err if err?
                 console.log JSON.stringify res, null, 2
                 d.resolve()
-              d
+              d.promise
             .then ->
               console.log 'complete to upload'
