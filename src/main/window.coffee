@@ -41,7 +41,7 @@ class Window extends EventEmitter
 
   onContentsDidFinishLoad: =>
     @browserWindow.webContents.executeJavaScript js
-    # @start 'README.md'
+    @browserWindow.setTitle 'README.md'
     @render readMe
 
   onMoved: => @registerBounds()
@@ -85,7 +85,7 @@ class Window extends EventEmitter
   load: (filename) ->
     readFile filename, 'utf8', (err, data) =>
       throw err if err?
-      @render md
+      @render data
 
   render: (md) ->
     @browserWindow.webContents.send 'call', 'render', md
