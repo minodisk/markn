@@ -23,6 +23,10 @@ gulp.task 'default', [
 gulp.task 'ready', ->
   if !existsSync 'dist'
     mkdirSync 'dist'
+  p = cloneDeep pkg
+  p.dependencies = chokidar: pkg.dependencies.chokidar
+  delete p.devDependencies
+  writeFileSync 'dist/package.json', JSON.stringify p
 
 gulp.task 'copy', ->
   gulp
@@ -89,11 +93,6 @@ gulp.task 'webpack', ->
       output: './dist/main.js'
 
 gulp.task 'publish', ->
-  p = cloneDeep pkg
-  p.dependencies = chokidar: pkg.dependencies.chokidar
-  delete p.devDependencies
-  writeFileSync 'dist/package.json', JSON.stringify p
-
   github = new GitHub
     version: "3.0.0"
     debug: true
