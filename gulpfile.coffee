@@ -2,14 +2,16 @@ gulp = require 'gulp'
 gutil = require 'gulp-util'
 plumber = require 'gulp-plumber'
 webpack = require 'webpack'
-{join, dirname, basename, extname, relative} = require 'path'
+{join, dirname, basename, extname, relative, resolve} = require 'path'
 {readFileSync, writeFileSync, existsSync, mkdirSync} = require 'fs'
 {cloneDeep} = require 'lodash'
 packager = require 'electron-packager'
 GitHub = require 'github'
 {spawn} = require 'child_process'
 Q = require 'q'
+{argv} = require 'yargs'
 semver = require 'semver'
+Git = require 'nodegit'
 
 
 pkg = JSON.parse readFileSync 'package.json'
@@ -97,8 +99,27 @@ gulp.task 'webpack', ->
       output: './dist/main.js'
 
 gulp.task 'publish', ->
-  #TODO bump version
-  # semver.inc pkg.version, 'patch'
+  releases = ['major', 'minor', 'patch']
+  release = argv.r
+  unless release in releases
+    release = 'patch'
+  version = semver.inc pkg.version, release
+
+  pkg.version = version
+  writeFileSync 'package.json', JSON.stringify pkg, null,  2
+
+  Git.Repository
+    .open resolve './.git'
+    .then (repo) ->
+      repo
+        .getTree 'master'
+        .then (tree) ->
+          signature = Git.Signature.default repo
+          Git.Commit repo, null, signature, signature, null, "Bump version to v#{version}", tree, 0, null
+          return
+    .catch (err) ->
+      console.error err
+  return
 
   Q
     .when ''
