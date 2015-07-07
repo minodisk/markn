@@ -56,8 +56,9 @@ class Window extends EventEmitter
     return unless @browserWindow.isFocused()
     showOpenDialog
       properties: ['openFile']
-    , ([filename]) =>
-      @start filename
+    , (filenames) =>
+      return unless filenames?[0]?
+      @start filenames[0]
 
   onToggleDevToolsRequested: =>
     return unless @browserWindow.isFocused()
