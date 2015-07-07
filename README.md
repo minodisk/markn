@@ -12,8 +12,9 @@ Lightweight markdown viewer
 
 Consists of awesome modules.
 
-- [Electron](http://electron.atom.io/) based application.
-- Render HTML with [React](http://facebook.github.io/react/).
-- Transform markdown to react element with [md2react](https://github.com/mizchi/md2react).
-- Watch file with [chokidar](https://github.com/paulmillr/chokidar).
-- Style with [github-markdown-css](https://github.com/sindresorhus/github-markdown-css).
+- [atom/electron](https://github.com/atom/electron) based application.
+- Render HTML with [facebook/react](https://github.com/facebook/react).
+- Generate react elements from AST with [mizchi/md2react](https://github.com/mizchi/md2react).
+  - Generate AST from markdown with [wooorm/mdast](https://github.com/wooorm/mdast).
+- Watch file with [paulmillr/chokidar](https://github.com/paulmillr/chokidar).
+- Style with [sindresorhus/github-markdown-css](https://github.com/sindresorhus/github-markdown-css).

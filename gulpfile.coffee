@@ -3,15 +3,13 @@ gutil = require 'gulp-util'
 plumber = require 'gulp-plumber'
 webpack = require 'webpack'
 {join, dirname, basename, extname, relative, resolve} = require 'path'
-{readFileSync, writeFileSync, existsSync, mkdirSync} = require 'fs'
-{cloneDeep} = require 'lodash'
+{readFileSync, writeFileSync, mkdir} = require 'fs'
 packager = require 'electron-packager'
 GitHub = require 'github'
 {spawn} = require 'child_process'
 Q = require 'q'
 {argv} = require 'yargs'
 semver = require 'semver'
-Git = require 'nodegit'
 
 
 pkg = JSON.parse readFileSync 'package.json'
@@ -21,22 +19,13 @@ repo = basename pkg.repository.url, extname url
 
 
 gulp.task 'default', [
-  'ready'
   'copy'
   'webpack'
 ]
 
-gulp.task 'ready', ->
-  if !existsSync 'dist'
-    mkdirSync 'dist'
-  p = cloneDeep pkg
-  p.dependencies = chokidar: pkg.dependencies.chokidar
-  delete p.devDependencies
-  writeFileSync 'dist/package.json', JSON.stringify p
-
 gulp.task 'copy', ->
   gulp
-    .src ['./node_modules/chokidar/**/*'], base: '.'
+    .src ['package.json', 'node_modules/chokidar/**/*'], base: '.'
     .pipe gulp.dest 'dist'
 
 gulp.task 'webpack', ->
@@ -98,31 +87,48 @@ gulp.task 'webpack', ->
       entry: './src/main/main.coffee'
       output: './dist/main.js'
 
-gulp.task 'publish', ->
-  releases = ['major', 'minor', 'patch']
-  release = argv.r
-  unless release in releases
-    release = 'patch'
-  version = semver.inc pkg.version, release
-
-  pkg.version = version
-  writeFileSync 'package.json', JSON.stringify pkg, null,  2
-
-  Git.Repository
-    .open resolve './.git'
-    .then (repo) ->
-      repo
-        .getTree 'master'
-        .then (tree) ->
-          signature = Git.Signature.default repo
-          Git.Commit repo, null, signature, signature, null, "Bump version to v#{version}", tree, 0, null
-          return
-    .catch (err) ->
-      console.error err
-  return
-
+gulp.task 'publish', ['default'], ->
   Q
     .when ''
+
+    .then ->
+      d = Q.defer()
+      mkdir 'dist', d.resolve
+      d.promise
+
+    .then ->
+      releases = ['major', 'minor', 'patch']
+      release = argv.r
+      unless release in releases
+        release = 'patch'
+      version = semver.inc pkg.version, release
+      pkg.version = version
+      json = JSON.stringify pkg, null, 2
+      [
+        'package.json'
+        'dist/package.json'
+      ].forEach (p) -> writeFileSync p, json
+    .then ->
+      console.log 'bump package.json'
+
+    .then ->
+      d = Q.defer()
+      console.log "git commit package.json"
+      git = spawn 'git', ['commit', '-m', "Bump version to v#{pkg.version}", 'package.json']
+      git.stdout.on 'data', (data) -> console.log data.toString 'utf8'
+      git.stderr.on 'data', (data) -> console.log data.toString 'utf8'
+      git.on 'close', (code) -> d.resolve()
+      d.promise
+
+    .then ->
+      d = Q.defer()
+      console.log "git push"
+      git = spawn 'git', ['push']
+      git.stdout.on 'data', (data) -> console.log data.toString 'utf8'
+      git.stderr.on 'data', (data) -> console.log data.toString 'utf8'
+      git.on 'close', (code) -> d.resolve()
+      d.promise
+
     .then ->
       d = Q.defer()
       packager
@@ -133,7 +139,7 @@ gulp.task 'publish', ->
         version: '0.29.1'
         overwrite: true
       ,  (err, dirs) ->
-        throw new gutil.PluginError 'package', err if err?
+        d.reject err if err?
         d.resolve dirs
       d.promise
 
@@ -160,40 +166,15 @@ gulp.task 'publish', ->
           zip.on 'close', (code) -> d.resolve()
           d.promise
 
-        # .then ->
-        #   d = Q.defer()
-        #   console.log 'list releases'
-        #   github.releases.listReleases
-        #     owner: owner
-        #     repo: repo
-        #   , (err, res) ->
-        #     throw err if err
-        #     console.log JSON.stringify res, null, 2
-        #     d.resolve res[0].id
-        #   d.promise
-        #
-        # .then (id) ->
-        #   d = Q.defer()
-        #   console.log "delete release: #{id}"
-        #   github.releases.deleteRelease
-        #     owner: owner
-        #     repo: repo
-        #     id: id
-        #   , (err, res) ->
-        #     throw err if err
-        #     console.log JSON.stringify res, null, 2
-        #     d.resolve()
-        #   d.promise
-
         .then ->
           d = Q.defer()
           console.log 'create new release'
           github.releases.createRelease
             owner: owner
             repo: repo
-            tag_name: 'v0.0.3'
+            tag_name: "v#{pkg.version}"
           , (err, res) ->
-            throw err if err
+            d.reject err if err?
             console.log JSON.stringify res, null, 2
             d.resolve res.id
           d.promise
@@ -211,7 +192,7 @@ gulp.task 'publish', ->
                 name: zip
                 filePath: zip
               , (err, res) ->
-                throw err if err?
+                d.reject err if err?
                 console.log JSON.stringify res, null, 2
                 d.resolve()
               d.promise

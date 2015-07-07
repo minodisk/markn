@@ -1,6 +1,6 @@
 {
   "name": "Markn",
-  "version": "0.0.14",
+  "version": "0.0.3",
   "description": "Lightweight markdown viewer",
   "main": "main.js",
   "scripts": {
@@ -19,7 +19,10 @@
     "markdown",
     "viewer"
   ],
-  "author": "Daisuke Mino",
+  "author": {
+    "name": "minodisk",
+    "email": "daisuke.mino@gmail.com"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/minodisk/markn/issues"
