@@ -58,15 +58,17 @@ class Window extends EventEmitter
       properties: ['openFile']
     , (filenames) =>
       return unless filenames?[0]?
-      @start filenames[0]
+      @filename = filenames[0]
+      @start @filename
 
   onToggleDevToolsRequested: =>
     return unless @browserWindow.isFocused()
     @browserWindow.toggleDevTools()
 
   onReloadRequested: =>
-    return unless @browserWindow.isFocused()
-    @browserWindow.reload()
+    return unless @browserWindow.isFocused() and @filename?
+    @render ''
+    @start @filename
 
   registerBounds: ->
     @storage.set 'bounds', @browserWindow.getBounds(), (err) =>
