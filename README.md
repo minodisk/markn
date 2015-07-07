@@ -14,6 +14,6 @@ Consists of awesome modules.
 
 - [Electron](http://electron.atom.io/) based application.
 - Render HTML with [React](http://facebook.github.io/react/).
-- Transform markdown to HTML with [md2react](https://github.com/mizchi/md2react).
+- Transform markdown to react element with [md2react](https://github.com/mizchi/md2react).
 - Watch file with [chokidar](https://github.com/paulmillr/chokidar).
 - Style with [github-markdown-css](https://github.com/sindresorhus/github-markdown-css).
