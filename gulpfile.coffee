@@ -18,7 +18,14 @@ owner = basename dirname url
 repo = basename pkg.repository.url, extname url
 
 
-gulp.task 'default', [
+gulp.task 'default', ['build'], ->
+  electron = spawn '../node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron', ['.'],
+    cwd: 'dist'
+  electron.stdout.on 'data', (data) -> console.log data.toString 'utf-8'
+  electron.stderr.on 'data', (data) -> console.log data.toString 'utf-8'
+  electron.on 'close', (code) -> console.log 'Electron done'
+
+gulp.task 'build', [
   'copy'
   'webpack'
 ]

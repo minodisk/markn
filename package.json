@@ -5,8 +5,7 @@
   "main": "main.js",
   "scripts": {
     "test": "exit 0;",
-    "build": "./node_modules/gulp/bin/gulp.js",
-    "debug": "npm run build && cd dist && ../node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron .",
+    "build": "./node_modules/gulp/bin/gulp.js build",
     "publish": "./node_modules/gulp/bin/gulp.js publish"
   },
   "repository": {
@@ -32,7 +31,7 @@
     "chokidar": "^1.0.3",
     "font-awesome": "^4.3.0",
     "github-markdown-css": "^2.0.9",
-    "md2react": "^0.8.1",
+    "md2react": "^0.8.5",
     "react": "^0.13.3"
   },
   "devDependencies": {

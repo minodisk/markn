@@ -1,6 +1,7 @@
 ipc = window.require 'ipc'
 window.React = {createClass, createElement: $, render} = require 'react'
-md2react = require '../../../md2react/lib/index'
+# md2react = require '../../../md2react/lib/index'
+md2react = require '../../node_modules/md2react/lib/index'
 githubCSS = require '../../node_modules/github-markdown-css/github-markdown.css'
 fontAwesomeCSS = require '../../node_modules/font-awesome/css/font-awesome.css'
 patchCSS = require './patch.css'
@@ -9,9 +10,6 @@ patchCSS = require './patch.css'
 class App
 
   constructor: ->
-    # meta = document.createElement 'meta'
-    # meta.setAttribute 'charset', 'UTF-8'
-    # document.head.appendChild meta
     [
       githubCSS
       fontAwesomeCSS
@@ -21,7 +19,7 @@ class App
       style.textContent = css
       document.head.appendChild style
 
-    @markdown = render $(Markdown, {}), document.body
+    @markdown = render $(Markdown, {}), document.querySelector '.markdown-body'
     ipc.on 'call', @onCall
 
   onCall: (method, args...) =>
@@ -34,18 +32,6 @@ class App
 
 createMdElement = (md) ->
   md2react md,
-    # gfm:true
-    # breaks: true
-    # tables: true
-
-    # position: true
-    # gfm: true
-    # yaml: true
-    # commonmark: true
-    # footnotes: true
-    # pedantic: true
-    # breaks: true
-
     gfm: true
     breaks: true
     tables: true
@@ -54,14 +40,11 @@ createMdElement = (md) ->
 
 Markdown = createClass
 
-  render: ->
-    $ 'div', {className: 'markdown-body'}, [@state.content]
+  render: -> $ 'div', null, [@state.content]
 
-  getInitialState: ->
-    content: null
+  getInitialState: -> content: null
 
-  update: (md) ->
-    @setState content: createMdElement md
+  update: (md) -> @setState content: createMdElement md
 
 
 new App

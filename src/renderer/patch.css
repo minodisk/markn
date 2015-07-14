@@ -1,7 +1,61 @@
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
 body {
   margin: 0;
   padding: 0;
 }
+
+/* UI */
+.search-box {
+  position: fixed;
+  top: 0;
+  right: 0;
+  border: 1px solid #7A7A7A;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  background-color: #DADBDA;
+  padding: 4px;
+}
+
+.search-box .search {
+  display: inline;
+  border: 1px solid #B7B5B5;
+  border-radius: 3px;
+  background-color: #ffffff;
+  padding: 4px 2px;
+  width: 216px;
+  height: 21px;
+}
+
+.search-box .search .index {
+  color: #B8B8B8;
+  text-align: right;
+}
+
+.search-box .search input {
+  border: none;
+  padding: none;
+  font-size: 14px;
+  background-color: transparent;
+  outline: none;
+}
+.search-box .search input:focus {
+}
+
+.search-box button {
+  width: 22px;
+  height: 22px;
+  font-size: 12px !important;
+  border: 1px solid #B7B5B5;
+  background: none;
+}
+
+/* markdown */
+
 .markdown-body {
   padding: 0 50px;
   margin: 50px 0;
