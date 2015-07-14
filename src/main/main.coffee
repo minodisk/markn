@@ -12,6 +12,8 @@ Window = require './window'
 
 class Main
 
+  VERSION: app.getVersion()
+
   constructor: ->
     @windows = []
 
@@ -58,11 +60,11 @@ class Main
       message: 'Markn' # String - Content of the message box
       detail: """
       Lightweight markdown viewer
-      v0.0.1
+      v#{@VERSION}
       """ # String - Extra information of the message
       # icon NativeImage
 
-  openHelp: -> shell.openExternal "https://github.com/minodisk/markn/blob/v#{app.getVersion()}/README.md#readme"
+  openHelp: -> shell.openExternal "https://github.com/minodisk/markn/blob/v#{@VERSION}/README.md#readme"
 
   onWindowClosed: (e) =>
     window = e.currentTarget
