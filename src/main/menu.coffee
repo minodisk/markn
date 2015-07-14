@@ -9,24 +9,19 @@ module.exports = class
 
   constructor: ->
     Menu.setApplicationMenu Menu.buildFromTemplate [
-      label: 'Electron'
+      label: 'Markn'
       submenu: [
         label: 'About Electron'
         selector: 'orderFrontStandardAboutPanel:'
       ,
         type: 'separator'
       ,
-        label: 'Services'
-        submenu: []
-      ,
-        type: 'separator'
-      ,
         label: 'Hide Electron'
-        accelerator: 'Command+H'
+        accelerator: 'CommandOrControl+H'
         selector: 'hide:'
       ,
         label: 'Hide Others'
-        accelerator: 'Command+Shift+H'
+        accelerator: 'CommandOrControl+Shift+H'
         selector: 'hideOtherApplications:'
       ,
         label: 'Show All'
@@ -35,69 +30,69 @@ module.exports = class
         type: 'separator'
       ,
         label: 'Quit'
-        accelerator: 'Command+Q'
+        accelerator: 'CommandOrControl+Q'
         selector: 'terminate:'
       ]
     ,
       label: 'File'
       submenu: [
         label: 'New Window'
-        accelerator: 'Command+N'
+        accelerator: 'CommandOrControl+N'
         click: -> mediator.emit events.OPEN_NEW_WINDOW
       ,
         label: 'Open File'
-        accelerator: 'Command+O'
+        accelerator: 'CommandOrControl+O'
         click: -> mediator.emit events.OPEN_FILE
       ]
     ,
       label: 'Edit'
       submenu: [
         label: 'Undo'
-        accelerator: 'Command+Z'
+        accelerator: 'CommandOrControl+Z'
         selector: 'undo:'
       ,
         label: 'Redo'
-        accelerator: 'Shift+Command+Z'
+        accelerator: 'Shift+CommandOrControl+Z'
         selector: 'redo:'
       ,
         type: 'separator'
       ,
         label: 'Cut'
-        accelerator: 'Command+X'
+        accelerator: 'CommandOrControl+X'
         selector: 'cut:'
       ,
         label: 'Copy'
-        accelerator: 'Command+C'
+        accelerator: 'CommandOrControl+C'
         selector: 'copy:'
       ,
         label: 'Paste'
-        accelerator: 'Command+V'
+        accelerator: 'CommandOrControl+V'
         selector: 'paste:'
       ,
         label: 'Select All'
-        accelerator: 'Command+A'
+        accelerator: 'CommandOrControl+A'
         selector: 'selectAll:'
       ]
     ,
       label: 'View'
       submenu: [
         label: 'Reload'
-        accelerator: 'Command+R'
+        accelerator: 'CommandOrControl+R'
         click: -> mediator.emit events.RELOAD
       ,
         label: 'Toggle DevTools'
-        accelerator: 'Alt+Command+I'
+        accelerator: 'Alt+CommandOrControl+I'
         click: -> mediator.emit events.TOGGLE_DEVTOOLS
       ]
     ,
       label: 'Window'
       submenu: [
         label: 'Minimize'
-        accelerator: 'Command+M'
+        accelerator: 'CommandOrControl+M'
         selector: 'performMiniaturize:'
       ,
         label: 'Close'
-        accelerator: 'Command+W'
+        accelerator: 'CommandOrControl+W'
         selector: 'performClose:'
       ,
         type: 'separator'
