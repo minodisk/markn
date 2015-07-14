@@ -1,13 +1,21 @@
 # Contributing
 
-## Debug
+## Environment
+
+```bash
+npm install
+```
+
+## Debugging
 
 ```bash
 gulp
 ```
 
-## Publish
+## Publication (Only Owner or Collaborator)
 
-- Major release: `gulp publish -r major`
-- Minor release: `gulp publish -r minor`
-- Patch release: `gulp publish -r patch` or just `gulp publish`
+Requires github OAuth `TOKEN`.
+
+- Major release: `TOKEN=XXXXXXXXXXXX gulp publish -r major`
+- Minor release: `TOKEN=XXXXXXXXXXXX gulp publish -r minor`
+- Patch release: `TOKEN=XXXXXXXXXXXX gulp publish -r patch` or just `gulp publish`
