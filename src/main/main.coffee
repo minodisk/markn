@@ -1,5 +1,7 @@
 require('crash-reporter').start()
 app = require 'app'
+dialog = require 'dialog'
+shell = require 'shell'
 {writeFileSync, readFileSync} = require 'fs'
 
 mediator = require './mediator'
@@ -18,6 +20,9 @@ class Main
     app.on 'quit', @onQuit
 
     mediator.on events.OPEN_NEW_WINDOW, @onOpenNewWindowRequested
+    mediator.on events.QUIT, @onQuitRequested
+    mediator.on events.OPEN_ABOUT_DIALOG, @onOpenAboutDialogRequested
+    mediator.on events.OPEN_HELP, @onOpenHelpRequested
 
   onReady: =>
     @menu = new Menu
@@ -32,12 +37,32 @@ class Main
 
   onOpenNewWindowRequested: => @openNewWindow()
 
-  onQuitRequested: => app.quit()
+  onQuitRequested: => @quit()
+
+  onOpenAboutDialogRequested: => @openAboutDialog()
+
+  onOpenHelpRequested: => @openHelp()
 
   openNewWindow: ->
     window = new Window
     window.on 'closed', @onWindowClosed
     @windows.push window
+
+  quit: -> app.quit()
+
+  openAboutDialog: ->
+    dialog.showMessageBox
+      type: 'info' # String - Can be "none", "info" or "warning"
+      buttons: ['ok'] # Array - Array of texts for buttons
+      title: 'About Markn' # String - Title of the message box, some platforms will not show it
+      message: 'Markn' # String - Content of the message box
+      detail: """
+      Lightweight markdown viewer
+      v0.0.1
+      """ # String - Extra information of the message
+      # icon NativeImage
+
+  openHelp: -> shell.openExternal "https://github.com/minodisk/markn/blob/v#{app.getVersion()}/README.md#readme"
 
   onWindowClosed: (e) =>
     window = e.currentTarget

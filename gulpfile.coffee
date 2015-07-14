@@ -66,6 +66,7 @@ gulp.task 'webpack', ->
             'menu-item'
             'browser-window'
             'dialog'
+            'shell'
             # Module
             'chokidar'
           ]
