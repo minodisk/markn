@@ -1,9 +1,11 @@
 EventEmitter = require 'events'
 {readFile} = require 'fs'
 {join} = require 'path'
+{watch} = require 'chokidar'
+
 BrowserWindow = require 'browser-window'
 {showOpenDialog} = require 'dialog'
-{watch} = require 'chokidar'
+shell = require 'shell'
 
 mediator = require './mediator'
 events = require './events'
@@ -25,6 +27,7 @@ class Window extends EventEmitter
         bounds = width: 800, height: 600
       @browserWindow = new BrowserWindow bounds
       @browserWindow.webContents.on 'did-finish-load', @onContentsDidFinishLoad
+      @browserWindow.webContents.on 'will-navigate', @onContentsWillNavigate
       @browserWindow.on 'move', @onMoved
       @browserWindow.on 'resize', @onResized
       @browserWindow.on 'closed', @onClosed
@@ -43,6 +46,10 @@ class Window extends EventEmitter
     @browserWindow.webContents.executeJavaScript js
     @browserWindow.setTitle 'README.md'
     @render readMe
+
+  onContentsWillNavigate: (e, url) =>
+    e.preventDefault()
+    shell.openExternal url
 
   onMoved: => @registerBounds()
 
