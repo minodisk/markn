@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    meta(charset='UTF-8')
+    if styles
+      each s in styles
+        style !{s}
+  body
+    .body
+      .markdown-body
+    .search-box
+      .search
+        input.js-search(type='text')
+        span.index.js-index 1/11
+      .controller.is-applicable
+        button.fa.fa-chevron-up.button-up
+        button.fa.fa-chevron-down.button-down
+        button.fa.fa-times.button-close
+    if scripts
+      each s in scripts
+        script !{s}

@@ -11,9 +11,12 @@ mediator = require './mediator'
 events = require './events'
 Storage = require './storage'
 {bindTarget} = require './util'
-html = require 'url-loader?mimetype=text/html!./index.html'
+jade = require 'jade!./index.jade'
 js = require 'raw-loader!../../tmp/renderer.js'
 readMe = require 'raw-loader!../../README.md'
+githubCSS = require '../../node_modules/github-markdown-css/github-markdown.css'
+fontAwesomeCSS = require '../../node_modules/font-awesome/css/font-awesome.css'
+patchCSS = require 'css!stylus!./patch.styl'
 
 
 module.exports =
@@ -31,7 +34,11 @@ class Window extends EventEmitter
       @browserWindow.on 'move', @onMoved
       @browserWindow.on 'resize', @onResized
       @browserWindow.on 'closed', @onClosed
-      @browserWindow.loadUrl html
+      html = jade
+        styles: [githubCSS, fontAwesomeCSS, patchCSS]
+        scripts: [js]
+      base64 = new Buffer(html).toString 'base64'
+      @browserWindow.loadUrl "data:text/html;base64,#{base64}"
       mediator.on events.OPEN_FILE, @onOpenFileRequested
       mediator.on events.TOGGLE_DEVTOOLS, @onToggleDevToolsRequested
       mediator.on events.RELOAD, @onReloadRequested
@@ -43,7 +50,6 @@ class Window extends EventEmitter
     mediator.removeListener events.RELOAD, @onReloadRequested
 
   onContentsDidFinishLoad: =>
-    @browserWindow.webContents.executeJavaScript js
     @browserWindow.setTitle 'README.md'
     @render readMe
 

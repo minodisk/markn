@@ -2,23 +2,11 @@ ipc = window.require 'ipc'
 window.React = {createClass, createElement: $, render} = require 'react'
 # md2react = require '../../../md2react/lib/index'
 md2react = require '../../node_modules/md2react/lib/index'
-githubCSS = require '../../node_modules/github-markdown-css/github-markdown.css'
-fontAwesomeCSS = require '../../node_modules/font-awesome/css/font-awesome.css'
-patchCSS = require './patch.css'
 
 
 class App
 
   constructor: ->
-    [
-      githubCSS
-      fontAwesomeCSS
-      patchCSS
-    ].forEach (css) ->
-      style = document.createElement 'style'
-      style.textContent = css
-      document.head.appendChild style
-
     @markdown = render $(Markdown, {}), document.querySelector '.markdown-body'
     ipc.on 'call', @onCall
 

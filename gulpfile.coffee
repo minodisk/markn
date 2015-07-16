@@ -44,16 +44,16 @@ gulp.task 'webpack', ->
       module:
         loaders: [
           test: /\.coffee$/
-          loader: 'coffee-loader'
+          loader: 'coffee'
         ,
           test: /\.(css)$/,
-          loader: 'css-loader'
+          loader: 'css'
         ,
           test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-          loader: "url-loader?minetype=application/font-woff"
+          loader: "url?minetype=application/font-woff"
         ,
           test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-          loader: "file-loader"
+          loader: "file"
         ]
       resolve:
         extensions: [
