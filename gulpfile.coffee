@@ -10,15 +10,28 @@ GitHub = require 'github'
 Q = require 'q'
 {argv} = require 'yargs'
 semver = require 'semver'
+# electron = require('electron-connect').server.create path: 'dist'
 
 
 pkg = JSON.parse readFileSync 'package.json'
 url = pkg.repository.url
 owner = basename dirname url
 repo = basename pkg.repository.url, extname url
+[electron] = []
+isWatch = false
 
 
-gulp.task 'default', ['build'], ->
+gulp.task 'default', ->
+  isWatch = true
+  gulp.start 'debug'
+
+gulp.task 'debug', ['build'], ->
+  gulp.start 'electron'
+  # gulp.watch ['dist/**/*'], ->
+  #   electron.kill 0
+  #   gulp.start 'electron'
+
+gulp.task 'electron', ->
   electron = spawn '../node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron', ['.'],
     cwd: 'dist'
   electron.stdout.on 'data', (data) -> console.log data.toString 'utf-8'
@@ -38,6 +51,7 @@ gulp.task 'copy', ->
 gulp.task 'webpack', ->
   w = ({entry, output}, cb) ->
     webpack
+      watch: isWatch
       entry: entry
       output:
         filename: output

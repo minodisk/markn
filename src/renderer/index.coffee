@@ -7,6 +7,9 @@ md2react = require '../../node_modules/md2react/lib/index'
 class App
 
   constructor: ->
+    @$search = document.querySelector '.search-box'
+    document.querySelector '.search-box .button-close'
+      .addEventListener 'click', @closeSearchBox
     @markdown = render $(Markdown, {}), document.querySelector '.markdown-body'
     ipc.on 'call', @onCall
 
@@ -16,6 +19,10 @@ class App
     fn.apply @, args
 
   render: (data) -> @markdown.update data
+
+  find: => @$search.style.transform = 'translateY(31px)'
+
+  closeSearchBox: => @$search.style.transform = ''
 
 
 createMdElement = (md) ->

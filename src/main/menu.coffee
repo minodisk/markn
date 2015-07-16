@@ -48,16 +48,6 @@ module.exports = class
       ,
         label: 'Edit'
         submenu: [
-        #   label: 'Undo'
-        #   accelerator: 'CommandOrControl+Z'
-        #   selector: 'undo:'
-        # ,
-        #   label: 'Redo'
-        #   accelerator: 'Shift+CommandOrControl+Z'
-        #   selector: 'redo:'
-        # ,
-        #   type: 'separator'
-        # ,
           label: 'Cut'
           accelerator: 'CommandOrControl+X'
           selector: 'cut:'
@@ -73,6 +63,12 @@ module.exports = class
           label: 'Select All'
           accelerator: 'CommandOrControl+A'
           selector: 'selectAll:'
+        ,
+          type: 'separator'
+        ,
+          label: 'Find'
+          accelerator: 'CommandOrControl+F'
+          click: -> mediator.emit events.FIND
         ]
       ,
         label: 'View'
@@ -125,6 +121,24 @@ module.exports = class
           label: 'Exit'
           accelerator: 'CommandOrControl+Q'
           click: -> mediator.emit events.QUIT
+        ]
+      ,
+        label: 'Edit'
+        submenu: [
+          label: 'Find'
+          accelerator: 'CommandOrControl+F'
+          click: -> mediator.emit events.FIND
+        ]
+      ,
+        label: 'View'
+        submenu: [
+          label: 'Reload'
+          accelerator: 'CommandOrControl+R'
+          click: -> mediator.emit events.RELOAD
+        ,
+          label: 'Toggle DevTools'
+          accelerator: 'Alt+CommandOrControl+I'
+          click: -> mediator.emit events.TOGGLE_DEVTOOLS
         ]
       ,
         label: 'Help'

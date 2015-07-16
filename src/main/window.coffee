@@ -41,6 +41,7 @@ class Window extends EventEmitter
       @browserWindow.loadUrl "data:text/html;base64,#{base64}"
       mediator.on events.OPEN_FILE, @onOpenFileRequested
       mediator.on events.TOGGLE_DEVTOOLS, @onToggleDevToolsRequested
+      mediator.on events.FIND, @onFindRequested
       mediator.on events.RELOAD, @onReloadRequested
 
   destruct: ->
@@ -77,6 +78,8 @@ class Window extends EventEmitter
   onToggleDevToolsRequested: =>
     return unless @browserWindow.isFocused()
     @browserWindow.toggleDevTools()
+
+  onFindRequested: => @browserWindow.webContents.send 'call', 'find'
 
   onReloadRequested: =>
     return unless @browserWindow.isFocused() and @filename?
