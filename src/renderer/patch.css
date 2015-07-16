@@ -26,58 +26,90 @@ body {
   display: inline-block;
   float: left;
   position: relative;
-  width: 214px;
-  height: 20px;
+  width: 216px;
+  height: 22px;
   font-size: 14px;
-  border: 1px solid #bdbdbd;
-  border-radius: 4px 0 0 4px;
-  background-color: #ffffff;
 }
 .search-box .search input {
   display: inline-block;
-  width: 165px;
-  padding: 0 45px 0 4px;
+  width: 167px;
+  padding: 0 43px 0 4px;
   line-height: 20px;
-  background-color: transparent;
-  border: none;
+  background-color: #ffffff;
+  border: 1px solid #bbbbbd;
+  border-radius: 4px 0 0 4px;
   outline: none;
 }
+.search-box .search input:focus {
+  padding: 0 42px 0 3px;
+  line-height: 18px;
+  border: 2px solid #a8cbf7;
+}
+
 .search-box .search .index {
   position: absolute;
   right: 7px;
-  top: 3px;
+  top: 4px;
   color: #c9c9c9;
 }
-
-.search-box .search input:focus {
+.search-box .controller{
+  float: left;
 }
 
 .search-box button {
   float: left;
-  width: 23px;
+  width: 22px;
   height: 22px;
   padding: 0;
-  font-size: 12px !important;
+  font-size: 10px !important;
   color: #747474;
   background: none;
   border: none;
+  outline: none;
 }
 .search-box button.button-up {
   border-top: 1px solid #c8c9c9;
+  border-right: 1px solid #DADBDA;
   border-bottom: 1px solid #c8c9c9;
 }
+
 .search-box button.button-down {
+  width: 23px;
   border-top: 1px solid #c8c9c9;
   border-right: 1px solid #c8c9c9;
   border-bottom: 1px solid #c8c9c9;
   border-radius: 0 4px 4px 0;
 }
 .search-box button.button-close {
-  width: 22px;
-  height: 22px;
   color: #868686;
   border: none;
   background: none;
+  width: 14px;
+  height: 14px;
+  margin-left: 5px;
+  margin-top: 4px;
+  margin-right: 5px;
+}
+.search-box button.button-close:before {
+  display: inline-block;
+}
+.search-box button.button-close:hover:before {
+  width: 12px;
+  height: 12px;
+  color: #fff;
+  border: 1px solid #c35354;
+  border-radius: 50%;
+  background: #db8282;
+}
+
+.search-box .is-applicable button.button-up {
+  border-right: 1px solid #f3f4f2;
+}
+.search-box .is-applicable button.button-up,
+.search-box .is-applicable button.button-down {
+  color: #000;
+  background: -moz-linear-gradient(top, #f2f2f2, #dad8d8);
+  background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#dad8d8));
 }
 
 
