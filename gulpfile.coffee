@@ -46,14 +46,23 @@ gulp.task 'webpack', ->
           test: /\.coffee$/
           loader: 'coffee'
         ,
-          test: /\.(css)$/,
+          test: /\.jade$/
+          loader: 'jade'
+        ,
+          test: /\.css$/
           loader: 'css'
         ,
-          test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-          loader: "url?minetype=application/font-woff"
+          test: /\.styl$/
+          loader: 'css!stylus'
         ,
-          test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-          loader: "file"
+          test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/
+          loader: 'url?minetype=application/font-woff'
+        ,
+          test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/
+          loader: 'file'
+        ,
+          test: /\.md$/
+          loader: 'raw-loader'
         ]
       resolve:
         extensions: [

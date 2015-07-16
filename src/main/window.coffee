@@ -11,12 +11,12 @@ mediator = require './mediator'
 events = require './events'
 Storage = require './storage'
 {bindTarget} = require './util'
-jade = require 'jade!./index.jade'
-js = require 'raw-loader!../../tmp/renderer.js'
-readMe = require 'raw-loader!../../README.md'
+jade = require './index.jade'
+js = require 'raw!../../tmp/renderer.js'
+readMe = require '../../README.md'
 githubCSS = require '../../node_modules/github-markdown-css/github-markdown.css'
 fontAwesomeCSS = require '../../node_modules/font-awesome/css/font-awesome.css'
-patchCSS = require 'css!stylus!./patch.styl'
+patchCSS = require './patch.styl'
 
 
 module.exports =
