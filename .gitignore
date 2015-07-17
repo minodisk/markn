@@ -27,6 +27,7 @@ build/Release
 node_modules
 
 # Domain
+.idea
 tmp
 dist
 *.svg
