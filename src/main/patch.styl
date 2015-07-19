@@ -14,14 +14,18 @@ body
 
 .search-box
   position fixed
-  top -31px
+  top 0
   right 32px
+  transform translateY(-31px)
   padding 4px 2px 4px 4px
   overflow hidden
   border 1px solid #878787
   border-top none
   border-radius 0 0 4px 4px
   background-color #DADBDA
+  transition transform 0.3s ease-in-out-quad
+  &.is-shown
+    transform translateY(0)
   .search
     display inline-block
     float left

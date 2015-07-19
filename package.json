@@ -31,6 +31,7 @@
     "chokidar": "^1.0.3",
     "font-awesome": "^4.3.0",
     "github-markdown-css": "^2.0.9",
+    "lodash": "^3.10.0",
     "md2react": "^0.8.5",
     "react": "^0.13.3"
   },
@@ -45,9 +46,9 @@
     "gulp": "^3.9.0",
     "gulp-plumber": "^1.0.1",
     "gulp-util": "^3.0.6",
+    "imports-loader": "^0.6.4",
     "jade": "^1.11.0",
     "jade-loader": "^0.7.1",
-    "lodash": "^3.10.0",
     "node-libs-browser": "^0.5.2",
     "nodegit": "^0.4.1",
     "q": "^1.4.1",

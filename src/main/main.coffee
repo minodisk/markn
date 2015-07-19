@@ -3,6 +3,7 @@ app = require 'app'
 dialog = require 'dialog'
 shell = require 'shell'
 {writeFileSync, readFileSync} = require 'fs'
+_ = require 'lodash'
 
 mediator = require './mediator'
 events = require './events'
@@ -15,7 +16,7 @@ class Main
   VERSION: app.getVersion()
 
   constructor: ->
-    @windows = []
+    @windows = _ []
 
     app.on 'ready', @onReady
     app.on 'window-all-closed', @onWindowAllClosed
@@ -36,6 +37,7 @@ class Main
 
   onQuit: =>
     console.log 'onQuit'
+    @closeAllWindows()
 
   onOpenNewWindowRequested: => @openNewWindow()
 
@@ -48,7 +50,16 @@ class Main
   openNewWindow: ->
     window = new Window
     window.on 'closed', @onWindowClosed
-    @windows.push window
+    @windows = @windows.push window
+
+  closeAllWindows: ->
+    console.log "close all windows: #{@windows.size()} windows"
+    @windows.each (window) -> window.close()
+
+  onWindowClosed: (e) =>
+    window = e.currentTarget
+    window.removeAllListeners()
+    @windows = @windows.splice @windows.indexOf(window), 1
 
   quit: -> app.quit()
 
@@ -65,11 +76,6 @@ class Main
       # icon NativeImage
 
   openHelp: -> shell.openExternal "https://github.com/minodisk/markn/blob/v#{@VERSION}/README.md#readme"
-
-  onWindowClosed: (e) =>
-    window = e.currentTarget
-    window.removeAllListeners()
-    @windows.splice @windows.indexOf(window), 1
 
 
 new Main

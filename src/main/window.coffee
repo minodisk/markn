@@ -33,7 +33,7 @@ class Window extends EventEmitter
       @browserWindow.webContents.on 'will-navigate', @onContentsWillNavigate
       @browserWindow.on 'move', @onMoved
       @browserWindow.on 'resize', @onResized
-      @browserWindow.on 'closed', @onClosed
+      @browserWindow.on 'close', @onClose
       html = jade
         styles: [githubCSS, fontAwesomeCSS, patchCSS]
         scripts: [js]
@@ -50,6 +50,8 @@ class Window extends EventEmitter
     mediator.removeListener events.TOGGLE_DEVTOOLS, @onToggleDevToolsRequested
     mediator.removeListener events.RELOAD, @onReloadRequested
 
+  close: -> @browserWindow.close()
+
   onContentsDidFinishLoad: =>
     @browserWindow.setTitle 'README.md'
     @render readMe
@@ -62,9 +64,9 @@ class Window extends EventEmitter
 
   onResized: => @registerBounds()
 
-  onClosed: =>
+  onClose: =>
     @destruct()
-    @emit 'closed', {currentTarget: @}
+    @emit 'close', {currentTarget: @}
 
   onOpenFileRequested: =>
     return unless @browserWindow.isFocused()

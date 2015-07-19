@@ -1,7 +1,7 @@
 ipc = window.require 'ipc'
-window.React = {createClass, createElement: $, render} = require 'react'
-# md2react = require '../../../md2react/lib/index'
-md2react = require '../../node_modules/md2react/lib/index'
+{createElement: $, render} = require 'react'
+
+Markdown = require './markdown'
 
 
 class App
@@ -20,26 +20,9 @@ class App
 
   render: (data) -> @markdown.update data
 
-  find: => @$search.style.transform = 'translateY(31px)'
+  find: => @$search.classList.add 'is-shown'
 
-  closeSearchBox: => @$search.style.transform = ''
-
-
-createMdElement = (md) ->
-  md2react md,
-    gfm: true
-    breaks: true
-    tables: true
-    commonmark: true
-    footnotes: true
-
-Markdown = createClass
-
-  render: -> $ 'div', null, [@state.content]
-
-  getInitialState: -> content: null
-
-  update: (md) -> @setState content: createMdElement md
+  closeSearchBox: => @$search.classList.remove 'is-shown'
 
 
 new App
