@@ -1,16 +1,17 @@
 ipc = window.require 'ipc'
 {createElement: $, render} = require 'react'
 
-Markdown = require './markdown'
+EventEmitter = require 'events'
+ActionCreator = require './ActionCreator'
+Root = require './root'
 
 
 class App
 
   constructor: ->
-    @$search = document.querySelector '.search-box'
-    document.querySelector '.search-box .button-close'
-      .addEventListener 'click', @closeSearchBox
-    @markdown = render $(Markdown, {}), document.querySelector '.markdown-body'
+    @dispatcher = new EventEmitter
+    @action = new ActionCreator @dispatcher
+    render $(Root, {}), document.body
     ipc.on 'call', @onCall
 
   onCall: (method, args...) =>
@@ -18,11 +19,11 @@ class App
     throw new Error "App.#{method} is undefined" unless fn?
     fn.apply @, args
 
-  render: (data) -> @markdown.update data
+  render: (data) -> # @markdown.update data
 
-  find: => @$search.classList.add 'is-shown'
+  find: => # @search.show() # @$search.classList.add 'is-shown'
 
-  closeSearchBox: => @$search.classList.remove 'is-shown'
+  closeSearchBox: => # @search.hide() # @$search.classList.remove 'is-shown'
 
 
 new App

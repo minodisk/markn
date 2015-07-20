@@ -4,8 +4,6 @@ md2react = require 'imports?React=react!../../node_modules/md2react/lib/index'
 
 module.exports = createClass
 
-  render: -> $ 'div', null, [@state.content]
-
   getInitialState: -> content: null
 
   update: (md) ->
@@ -16,3 +14,5 @@ module.exports = createClass
       commonmark: true
       footnotes: true
     @setState content: el
+
+  render: -> $ 'div', null, [@state.content]

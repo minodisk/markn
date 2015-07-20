@@ -22,14 +22,14 @@ isWatch = false
 
 
 gulp.task 'default', ->
-  isWatch = true
+  # isWatch = true
   gulp.start 'debug'
 
 gulp.task 'debug', ['build'], ->
   gulp.start 'electron'
-  gulp.watch ['dist/**/*'], ->
-    electron.kill 0
-    gulp.start 'electron'
+  # gulp.watch ['dist/**/*'], ->
+  #   electron.kill 0
+  #   gulp.start 'electron'
 
 gulp.task 'electron', ->
   electron = spawn '../node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron', ['.'],
