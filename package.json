@@ -36,6 +36,8 @@
     "react": "^0.13.3"
   },
   "devDependencies": {
+    "babel-core": "^5.8.3",
+    "babel-loader": "^5.3.2",
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.9.3",
     "css-loader": "^0.15.1",
@@ -49,6 +51,7 @@
     "imports-loader": "^0.6.4",
     "jade": "^1.11.0",
     "jade-loader": "^0.7.1",
+    "jsx-loader": "^0.13.2",
     "node-libs-browser": "^0.5.2",
     "nodegit": "^0.4.1",
     "q": "^1.4.1",

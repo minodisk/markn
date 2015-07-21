@@ -57,6 +57,12 @@ gulp.task 'webpack', ->
         filename: output
       module:
         loaders: [
+          test: /\.js$/
+          loader: 'babel'
+        ,
+          test: /\.jsx$/
+          loader: 'jsx'
+        ,
           test: /\.coffee$/
           loader: 'coffee'
         ,
@@ -82,6 +88,7 @@ gulp.task 'webpack', ->
         extensions: [
           ''
           '.js'
+          '.jsx'
           '.coffee'
         ]
       externals: [
@@ -97,6 +104,7 @@ gulp.task 'webpack', ->
             'browser-window'
             'dialog'
             'shell'
+            'ipc'
             # Module
             'chokidar'
           ]
@@ -111,7 +119,7 @@ gulp.task 'webpack', ->
       gutil.log '[webpack]', stats.toString()
       cb?()
   w
-    entry: './src/renderer/index.coffee'
+    entry: './src/renderer/index.js'
     output: './tmp/renderer.js'
   , (err) ->
     w
