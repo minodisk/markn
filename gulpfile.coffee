@@ -61,7 +61,7 @@ gulp.task 'webpack', ->
           loader: 'babel'
         ,
           test: /\.jsx$/
-          loader: 'jsx'
+          loader: 'jsx?harmony'
         ,
           test: /\.coffee$/
           loader: 'coffee'
