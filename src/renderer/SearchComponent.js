@@ -32,17 +32,17 @@ export default class SearchComponent extends React.Component {
 
   render() {
     var classNames = ['search-box'];
-    if (this.state.isShow) {
+    if (this.state.isShown) {
       classNames.push('is-shown');
     }
-    return $('div', {className: classNames}, [
+    return $('div', {className: classNames.join(' ')}, [
       $('div', {className: 'search'}, [
         $('input', {type: 'text'}),
         $('span', {className: 'index'}, [this.state.index])
       ]),
-      $('button', {className: ['fa', 'fa-chevron-up', 'button-up']}),
-      $('button', {className: ['fa', 'fa-chevron-down', 'button-up']}),
-      $('button', {className: ['fa', 'fa-times', 'button-close']})
+      $('button', {className: ['fa', 'fa-chevron-up', 'button-up'].join(' ')}),
+      $('button', {className: ['fa', 'fa-chevron-down', 'button-up'].join(' ')}),
+      $('button', {className: ['fa', 'fa-times', 'button-close'].join(' ')})
     ]);
   }
 }

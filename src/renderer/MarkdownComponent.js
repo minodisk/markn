@@ -15,7 +15,6 @@ export default class MarkdownComponent extends React.Component {
 
     this.action = new ActionCreator();
     this.store = new MarkdownStore();
-
     this.store.on('change', this.update.bind(this));
   }
 

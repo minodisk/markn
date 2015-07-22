@@ -81,7 +81,9 @@ class Window extends EventEmitter
     return unless @browserWindow.isFocused()
     @browserWindow.toggleDevTools()
 
-  onFindRequested: => @browserWindow.webContents.send 'call', 'find'
+  onFindRequested: =>
+    return unless @browserWindow.isFocused()
+    @browserWindow.webContents.send 'openFind'
 
   onReloadRequested: =>
     return unless @browserWindow.isFocused() and @filename?
@@ -109,4 +111,4 @@ class Window extends EventEmitter
       @render data
 
   render: (md) ->
-    @browserWindow.webContents.send 'call', 'render', md
+    @browserWindow.webContents.send 'render', md
