@@ -9,7 +9,10 @@ var $ = React.createElement;
 export default class MarkdownComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {content: null};
+    this.state = {
+      content: null,
+      search: null
+    };
 
     this.action = new ActionCreator();
     this.store = new MarkdownStore();
@@ -29,11 +32,14 @@ export default class MarkdownComponent extends React.Component {
   }
 
   mark(text) {
-    console.log('mark', text);
+    this.setState({search: text});
   }
 
   render() {
-    console.log(this.state.content);
+    console.log(this.state.content, this.props.children, this.state.search);
+    React.Children.map(this.props.children, (el, i) => {
+      console.log(el, i)
+    });
     return (
       <div className='markdown-body'>{this.state.content}</div>
     )
