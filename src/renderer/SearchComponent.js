@@ -1,12 +1,12 @@
 'use strict';
 
-var React = require('react');
-var SearchStore = require('./SearchStore');
-var dispatcher = require('./Dispatcher');
+import React from 'react'
+import SearchStore from './SearchStore'
+import dispatcher from './Dispatcher'
 
 var $ = React.createElement;
 
-module.exports = class SearchComponent extends React.Component {
+export default class SearchComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

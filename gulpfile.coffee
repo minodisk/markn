@@ -10,7 +10,6 @@ GitHub = require 'github'
 Q = require 'q'
 {argv} = require 'yargs'
 semver = require 'semver'
-# electron = require('electron-connect').server.create path: 'dist'
 
 
 pkg = JSON.parse readFileSync 'package.json'
@@ -60,9 +59,6 @@ gulp.task 'webpack', ->
           test: /\.js$/
           loader: 'babel'
         ,
-          test: /\.jsx$/
-          loader: 'jsx?harmony'
-        ,
           test: /\.coffee$/
           loader: 'coffee'
         ,
@@ -88,7 +84,6 @@ gulp.task 'webpack', ->
         extensions: [
           ''
           '.js'
-          '.jsx'
           '.coffee'
         ]
       externals: [
