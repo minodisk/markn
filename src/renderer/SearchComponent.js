@@ -35,6 +35,7 @@ export default class SearchComponent extends React.Component {
 
   onInput() {
     var text = React.findDOMNode(this.refs.search).value;
+    this.action.search(text);
   }
 
   render() {
@@ -63,5 +64,9 @@ export default class SearchComponent extends React.Component {
 class ActionCreator {
   close() {
     dispatcher.emit('closeFind');
+  }
+
+  search(text) {
+    dispatcher.emit('search', text);
   }
 }

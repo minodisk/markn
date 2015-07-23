@@ -2,8 +2,6 @@
 
 import React from 'react'
 import md2react from 'imports?React=react!../../node_modules/md2react/lib/index'
-import EventEmitter from 'events'
-import dispatcher from './Dispatcher'
 import MarkdownStore from './MarkdownStore'
 
 var $ = React.createElement;
@@ -16,6 +14,7 @@ export default class MarkdownComponent extends React.Component {
     this.action = new ActionCreator();
     this.store = new MarkdownStore();
     this.store.on('change', this.update.bind(this));
+    this.store.on('search', this.mark.bind(this));
   }
 
   update(md) {
@@ -27,6 +26,10 @@ export default class MarkdownComponent extends React.Component {
       footnotes: true
     });
     this.setState({content: el});
+  }
+
+  mark(text) {
+    console.log('mark', text);
   }
 
   render() {
