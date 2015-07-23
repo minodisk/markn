@@ -26,10 +26,15 @@ export default class SearchComponent extends React.Component {
 
   show() {
     this.setState({isShown: true});
+    React.findDOMNode(this.refs.search).focus();
   }
 
   hide() {
     this.setState({isShown: false});
+  }
+
+  onInput() {
+    var text = React.findDOMNode(this.refs.search).value;
   }
 
   render() {
@@ -40,7 +45,7 @@ export default class SearchComponent extends React.Component {
     return (
       <div className={classNames.join(' ')}>
         <div className='search'>
-          <input type='text'/>
+          <input type='text' ref='search' onInput={this.onInput.bind(this)}/>
           <span className='index'>{this.state.index}</span>
         </div>
         <button className='fa fa-chevron-up button-up'/>

@@ -30,7 +30,10 @@ export default class MarkdownComponent extends React.Component {
   }
 
   render() {
-    return $('div',  {className: 'markdown-body'},  [this.state.content]);
+    console.log(this.state.content);
+    return (
+      <div className='markdown-body'>{this.state.content}</div>
+    )
   }
 }
 
