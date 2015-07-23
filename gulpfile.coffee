@@ -118,7 +118,7 @@ gulp.task 'webpack', ->
     output: './tmp/renderer.js'
   , (err) ->
     w
-      entry: './src/main/main.coffee'
+      entry: './src/main/main.js'
       output: './dist/main.js'
 
 gulp.task 'publish', ['default'], ->
