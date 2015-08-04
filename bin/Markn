@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Borrow from https://github.com/atom/atom/blob/1fa1ae8021c469b3754fe2d783be46686381a220/atom.sh
+
+if [ "$(uname)" == 'Darwin' ]; then
+  OS='Mac'
+elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+  OS='Linux'
+elif [ "$(expr substr $(uname -s) 1 10)" == 'MINGW32_NT' ]; then
+  OS='Cygwin'
+else
+  echo "Your platform ($(uname -a)) is not supported."
+  exit 1
+fi
+
+if [ $OS == 'Mac' ]; then
+  MARKN_APP_NAME=Markn.app
+
+  # Check /Applications and then ~/Applications for Markn.app
+  if [ -x "/Applications/$MARKN_APP_NAME" ]; then
+    MARKN_PATH="/Applications"
+  elif [ -x "$HOME/Applications/$MARKN_APP_NAME" ]; then
+    MARKN_PATH="$HOME/Applications"
+  else
+    # Exit if Markn can't be found
+    echo "Cannot locate Markn.app, it is usually located in /Applications."
+    exit 1
+  fi
+
+  open -a "$MARKN_PATH/$MARKN_APP_NAME" -n --args --executed-from="$(pwd)" --pid=$$ --path-environment="$PATH" "$@"
+elif [ $OS == 'Linux' ]; then
+  SCRIPT=$(readlink -f "$0")
+  USR_DIRECTORY=$(readlink -f $(dirname $SCRIPT)/..)
+  MARKN_PATH="$USR_DIRECTORY/share/markn/markn"
+  MARKN_HOME="${MARKN_HOME:-$HOME/.markn}"
+
+  mkdir -p "$MARKN_HOME"
+
+  : ${TMPDIR:=/tmp}
+
+  [ -x "$MARKN_PATH" ] || MARKN_PATH="$TMPDIR/markn-build/Markn/markn"
+
+  (
+  nohup "$MARKN_PATH" --executed-from="$(pwd)" --pid=$$ "$@" > "$MARKN_HOME/nohup.out" 2>&1
+  if [ $? -ne 0 ]; then
+    cat "$MARKN_HOME/nohup.out"
+    exit $?
+  fi
+  ) &
+fi
+
+# Exits this process when Markn is used as $EDITOR
+on_die() {
+  exit 0
+}
+trap 'on_die' SIGQUIT SIGTERM
