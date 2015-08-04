@@ -31,7 +31,7 @@
     "chokidar": "^1.0.3",
     "font-awesome": "^4.3.0",
     "github-markdown-css": "^2.0.9",
-    "lodash": "^3.10.0",
+    "lodash": "^3.10.1",
     "md2react": "^0.8.5",
     "react": "^0.13.3",
     "yargs": "^3.17.1"

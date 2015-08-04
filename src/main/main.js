@@ -1,6 +1,7 @@
 import reporter from 'crash-reporter'
 reporter.start();
 import {join} from 'path'
+import {statSync} from 'fs'
 import app from 'app'
 import dialog from 'dialog'
 import shell from 'shell'
@@ -37,7 +38,16 @@ export default class Main {
     let filename = process.argv[1];
     if (filename) {
       filename = join(process.cwd(), filename);
-    } else {
+      try {
+        let stats = statSync(filename, 'r');
+        if (!stats.isFile()) {
+          filename = null;
+        }
+      } catch (err) {
+        filename = null;
+      }
+    }
+    if (!filename) {
       filename = join(__dirname, 'README.md');
     }
 
@@ -86,8 +96,7 @@ export default class Main {
   }
 
   onWindowClosed(e) {
-    var window;
-    window = e.currentTarget;
+    let window = e.currentTarget;
     window.removeAllListeners();
     this.windows = this.windows.splice(this.windows.indexOf(window), 1);
   }

@@ -28,9 +28,7 @@ gulp.task('debug', ['build'], function() {
 });
 
 gulp.task('electron', function() {
-  electron = spawn('../node_modules/electron-prebuilt/cli.js', ['.'], {
-    cwd: 'dist'
-  });
+  electron = spawn('./node_modules/electron-prebuilt/cli.js', ['dist']);
   electron.stdout.on('data', function(data) {
     return console.log(data.toString('utf-8'));
   });
@@ -44,7 +42,9 @@ gulp.task('electron', function() {
 
 gulp.task('package', ['build'], function (cb) {
   pack()
-  .then(cb);
+  .then(function (dirs) {
+    cb(null, dirs);
+  });
 });
 
 function pack() {
@@ -60,8 +60,10 @@ function pack() {
   }, function(err, dirs) {
     if (err != null) {
       d.reject(err);
+      return;
     }
-    return d.resolve(dirs);
+    d.resolve(dirs);
+    return;
   });
   return d.promise;
 }
@@ -72,6 +74,7 @@ gulp.task('copy', function() {
   return gulp.src([
     'package.json',
     'README.md',
+    'bin/**/*',
     'node_modules/font-awesome/**/*',
     'node_modules/chokidar/**/*'
   ], {
