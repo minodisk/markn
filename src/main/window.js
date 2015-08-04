@@ -10,7 +10,7 @@ import events from './events'
 import Storage from './storage'
 import {bindTarget} from './util'
 import jade from './index.jade'
-import js from 'raw!../../tmp/renderer.js'
+// import js from 'raw!../../tmp/renderer.js'
 import readMe from '../../README.md'
 import githubCSS from '../../node_modules/github-markdown-css/github-markdown.css'
 import fontAwesomeCSS from '../../node_modules/font-awesome/css/font-awesome.css'
@@ -47,7 +47,8 @@ export default class Window extends EventEmitter {
         this.browserWindow.on('close', this.onClose);
         html = jade({
           styles: [githubCSS, fontAwesomeCSS, patchCSS],
-          scripts: [js]
+          scripts: []
+          // scripts: [js]
         });
         base64 = new Buffer(html).toString('base64');
         this.browserWindow.loadUrl("data:text/html;base64," + base64);

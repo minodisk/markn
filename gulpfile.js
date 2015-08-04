@@ -41,6 +41,30 @@ gulp.task('electron', function() {
   });
 });
 
+gulp.task('package', ['build'], function (cb) {
+  pack()
+  .then(cb);
+});
+
+function pack() {
+  var d;
+  d = Q.defer();
+  packager({
+    dir: 'dist',
+    name: pkg.name,
+    platform: 'all',
+    arch: 'all',
+    version: '0.29.1',
+    overwrite: true
+  }, function(err, dirs) {
+    if (err != null) {
+      d.reject(err);
+    }
+    return d.resolve(dirs);
+  });
+  return d.promise;
+}
+
 gulp.task('build', ['copy', 'webpack']);
 
 gulp.task('copy', function() {
@@ -49,87 +73,80 @@ gulp.task('copy', function() {
   }).pipe(gulp.dest('dist'));
 });
 
-gulp.task('webpack', function() {
-  var w;
-  w = function(arg, cb) {
-    var entry, output;
-    entry = arg.entry, output = arg.output;
-    return webpack({
-      watch: isWatch,
-      entry: entry,
-      output: {
-        filename: output
-      },
-      module: {
-        loaders: [
-          {
-            test: /\.js$/,
-            loader: 'babel'
-          }, {
-            test: /\.jade$/,
-            loader: 'jade'
-          }, {
-            test: /\.css$/,
-            loader: 'css'
-          }, {
-            test: /\.styl$/,
-            loader: 'css!stylus'
-          }, {
-            test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-            loader: 'url?minetype=application/font-woff'
-          }, {
-            test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-            loader: 'file'
-          }, {
-            test: /\.md$/,
-            loader: 'raw-loader'
+gulp.task('webpack', function(cb) {
+  webpack({
+    watch: isWatch,
+    entry: {
+      main: './src/main/main.js',
+      renderer: './src/renderer/index.js'
+    },
+    output: {
+      path: './dist/',
+      filename: '[name].js'
+    },
+    module: {
+      loaders: [
+        {
+          test: /\.js$/,
+          loader: 'babel'
+        }, {
+          test: /\.jade$/,
+          loader: 'jade'
+        }, {
+          test: /\.css$/,
+          loader: 'css'
+        }, {
+          test: /\.styl$/,
+          loader: 'css!stylus'
+        }, {
+          test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          loader: 'url?minetype=application/font-woff'
+        }, {
+          test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+          loader: 'file'
+        }, {
+          test: /\.md$/,
+          loader: 'raw-loader'
+        }
+      ]
+    },
+    resolve: {
+      extensions: ['', '.js']
+    },
+    externals: [
+      (function() {
+        var IGNORE;
+        IGNORE = ['fs', 'crash-reporter', 'app', 'menu', 'menu-item', 'browser-window', 'dialog', 'shell', 'ipc', 'chokidar'];
+        return function(context, request, callback) {
+          if (IGNORE.indexOf(request) >= 0) {
+            return callback(null, "require('" + request + "')");
           }
-        ]
-      },
-      resolve: {
-        extensions: ['', '.js']
-      },
-      externals: [
-        (function() {
-          var IGNORE;
-          IGNORE = ['fs', 'crash-reporter', 'app', 'menu', 'menu-item', 'browser-window', 'dialog', 'shell', 'ipc', 'chokidar'];
-          return function(context, request, callback) {
-            if (IGNORE.indexOf(request) >= 0) {
-              return callback(null, "require('" + request + "')");
-            }
-            return callback();
-          };
-        })()
-      ],
-      stats: {
-        colors: true
-      }
-    }, function(err, stats) {
-      if (err != null) {
-        throw new gutil.PluginError('webpack', err);
-      }
-      gutil.log('[webpack]', stats.toString());
-      return typeof cb === "function" ? cb() : void 0;
-    });
-  };
-  return w({
-    entry: './src/renderer/index.js',
-    output: './tmp/renderer.js'
-  }, function(err) {
-    return w({
-      entry: './src/main/main.js',
-      output: './dist/main.js'
-    });
+          return callback();
+        };
+      })()
+    ],
+    stats: {
+      colors: true
+    }
+  }, function(err, stats) {
+    if (err != null) {
+      throw new gutil.PluginError('webpack', err);
+    }
+    gutil.log('[webpack]', stats.toString());
+    cb()
+    // return typeof cb === "function" ? cb() : void 0;
   });
 });
 
-gulp.task('publish', ['default'], function() {
-  return Q.when('').then(function() {
+gulp.task('publish', ['build'], function() {
+  Q.when('')
+  .then(function() {
     var d;
     d = Q.defer();
     mkdir('dist', d.resolve);
     return d.promise;
-  }).then(function() {
+  })
+  .then(function() {
     var json, release, releases, version;
     releases = ['major', 'minor', 'patch'];
     release = argv.r;
@@ -142,9 +159,11 @@ gulp.task('publish', ['default'], function() {
     return ['package.json', 'dist/package.json'].forEach(function(p) {
       return writeFileSync(p, json);
     });
-  }).then(function() {
+  })
+  .then(function() {
     return console.log('bump package.json');
-  }).then(function() {
+  })
+  .then(function() {
     var d, git;
     d = Q.defer();
     console.log("git commit package.json");
@@ -159,7 +178,8 @@ gulp.task('publish', ['default'], function() {
       return d.resolve();
     });
     return d.promise;
-  }).then(function() {
+  })
+  .then(function() {
     var d, git;
     d = Q.defer();
     console.log("git push");
@@ -174,24 +194,9 @@ gulp.task('publish', ['default'], function() {
       return d.resolve();
     });
     return d.promise;
-  }).then(function() {
-    var d;
-    d = Q.defer();
-    packager({
-      dir: 'dist',
-      name: pkg.name,
-      platform: 'all',
-      arch: 'all',
-      version: '0.29.1',
-      overwrite: true
-    }, function(err, dirs) {
-      if (err != null) {
-        d.reject(err);
-      }
-      return d.resolve(dirs);
-    });
-    return d.promise;
-  }).then(function(dirs) {
+  })
+  .then(pack)
+  .then(function(dirs) {
     var github;
     dirs = dirs.map(function(dir) {
       var name, zip;
@@ -227,7 +232,8 @@ gulp.task('publish', ['default'], function() {
         return d.resolve();
       });
       return d.promise;
-    })).then(function() {
+    }))
+    .then(function() {
       var d;
       d = Q.defer();
       console.log('create new release');
@@ -243,7 +249,8 @@ gulp.task('publish', ['default'], function() {
         return d.resolve(res.id);
       });
       return d.promise;
-    }).then(function(id) {
+    })
+    .then(function(id) {
       console.log("complete to create new release: " + id);
       return Q.all(dirs.map(function(arg) {
         var d, zip;
@@ -263,7 +270,8 @@ gulp.task('publish', ['default'], function() {
           return d.resolve();
         });
         return d.promise;
-      })).then(function() {
+      }))
+      .then(function() {
         return console.log('complete to upload');
       });
     });

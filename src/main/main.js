@@ -34,6 +34,8 @@ export default class Main {
   onReady() {
     this.menu = new Menu;
     this.openNewWindow();
+console.log(process.argv)
+
   }
 
   onWindowAllClosed() {
