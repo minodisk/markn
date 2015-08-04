@@ -72,13 +72,13 @@ export default class {
             selector: 'selectAll:'
           }, {
             type: 'separator'
-          }, {
+          }/*, {
             label: 'Find',
             accelerator: 'CommandOrControl+F',
             click: function() {
               mediator.emit(events.FIND);
             }
-          }
+          }*/
         ]
       }, {
         label: 'View',
@@ -152,7 +152,7 @@ export default class {
             }
           }
         ]
-      }, {
+      }, /*{
         label: 'Edit',
         submenu: [
           {
@@ -163,7 +163,7 @@ export default class {
             }
           }
         ]
-      }, {
+      },*/ {
         label: 'View',
         submenu: [
           {

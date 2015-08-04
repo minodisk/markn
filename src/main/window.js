@@ -3,22 +3,18 @@ import {readFile} from 'fs'
 import {join} from 'path'
 import {watch} from 'chokidar'
 import BrowserWindow from 'browser-window'
-import showOpenDialog from 'dialog'
+import {showOpenDialog} from 'dialog'
 import shell from 'shell'
 import mediator from './mediator'
 import events from './events'
 import Storage from './storage'
 import {bindTarget} from './util'
-import jade from './index.jade'
-// import js from 'raw!../../tmp/renderer.js'
-import readMe from '../../README.md'
-import githubCSS from '../../node_modules/github-markdown-css/github-markdown.css'
-import fontAwesomeCSS from '../../node_modules/font-awesome/css/font-awesome.css'
-import patchCSS from './patch.styl'
 
 export default class Window extends EventEmitter {
-  constructor() {
-    super()
+  constructor(filename) {
+    super();
+
+    this.filename = filename;
     this.onFileChanged = this.onFileChanged.bind(this);
     this.onReloadRequested = this.onReloadRequested.bind(this);
     this.onFindRequested = this.onFindRequested.bind(this);
@@ -32,30 +28,23 @@ export default class Window extends EventEmitter {
 
     this.storage = new Storage;
     this.storage.get('bounds', (err, bounds) => {
-        var base64, html;
-        if (err != null) {
-          bounds = {
-            width: 800,
-            height: 600
-          }
+      if (err != null) {
+        bounds = {
+          width: 800,
+          height: 600
         }
-        this.browserWindow = new BrowserWindow(bounds);
-        this.browserWindow.webContents.on('did-finish-load', this.onContentsDidFinishLoad);
-        this.browserWindow.webContents.on('will-navigate', this.onContentsWillNavigate);
-        this.browserWindow.on('move', this.onMoved);
-        this.browserWindow.on('resize', this.onResized);
-        this.browserWindow.on('close', this.onClose);
-        html = jade({
-          styles: [githubCSS, fontAwesomeCSS, patchCSS],
-          scripts: []
-          // scripts: [js]
-        });
-        base64 = new Buffer(html).toString('base64');
-        this.browserWindow.loadUrl("data:text/html;base64," + base64);
-        mediator.on(events.OPEN_FILE, this.onOpenFileRequested);
-        mediator.on(events.TOGGLE_DEVTOOLS, this.onToggleDevToolsRequested);
-        mediator.on(events.FIND, this.onFindRequested);
-        mediator.on(events.RELOAD, this.onReloadRequested);
+      }
+      this.browserWindow = new BrowserWindow(bounds);
+      this.browserWindow.webContents.on('did-finish-load', this.onContentsDidFinishLoad);
+      this.browserWindow.webContents.on('will-navigate', this.onContentsWillNavigate);
+      this.browserWindow.on('move', this.onMoved);
+      this.browserWindow.on('resize', this.onResized);
+      this.browserWindow.on('close', this.onClose);
+      this.browserWindow.loadUrl(`file://${__dirname}/index.html`);
+      mediator.on(events.OPEN_FILE, this.onOpenFileRequested);
+      mediator.on(events.TOGGLE_DEVTOOLS, this.onToggleDevToolsRequested);
+      mediator.on(events.FIND, this.onFindRequested);
+      mediator.on(events.RELOAD, this.onReloadRequested);
     });
   }
 
@@ -71,8 +60,7 @@ export default class Window extends EventEmitter {
   }
 
   onContentsDidFinishLoad() {
-    this.browserWindow.setTitle('README.md');
-    this.render(readMe);
+    this.start();
   }
 
   onContentsWillNavigate(e, url) {
@@ -105,8 +93,7 @@ export default class Window extends EventEmitter {
         if ((filenames != null ? filenames[0] : void 0) == null) {
           return;
         }
-        this.filename = filenames[0];
-        this.start(this.filename);
+        this.start(filenames[0]);
     });
   }
 
@@ -129,7 +116,7 @@ export default class Window extends EventEmitter {
       return;
     }
     this.render('');
-    this.start(this.filename);
+    this.start();
   }
 
   registerBounds() {
@@ -141,14 +128,18 @@ export default class Window extends EventEmitter {
   }
 
   start(filename) {
+    if (filename) {
+      this.filename = filename;
+    }
+
     if (this.watcher != null) {
       this.watcher.removeAllListeners();
       this.watcher.close();
     }
-    this.watcher = watch(filename);
+    this.watcher = watch(this.filename);
     this.watcher.on('change', this.onFileChanged);
-    this.browserWindow.setTitle(filename);
-    this.load(filename);
+    this.browserWindow.setTitle(this.filename);
+    this.load(this.filename);
   }
 
   onFileChanged(filename) {
@@ -157,10 +148,10 @@ export default class Window extends EventEmitter {
 
   load(filename) {
     readFile(filename, 'utf8', (err, data) => {
-        if (err != null) {
-          throw err;
-        }
-        this.render(data);
+      if (err != null) {
+        throw err;
+      }
+      this.render(data);
     });
   }
 

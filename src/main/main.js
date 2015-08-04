@@ -1,5 +1,6 @@
 import reporter from 'crash-reporter'
 reporter.start();
+import {join} from 'path'
 import app from 'app'
 import dialog from 'dialog'
 import shell from 'shell'
@@ -21,6 +22,7 @@ export default class Main {
     this.onQuit = this.onQuit.bind(this);
     this.onWindowAllClosed = this.onWindowAllClosed.bind(this);
     this.onReady = this.onReady.bind(this);
+
     this.windows = _([]);
     app.on('ready', this.onReady);
     app.on('window-all-closed', this.onWindowAllClosed);
@@ -32,10 +34,15 @@ export default class Main {
   }
 
   onReady() {
-    this.menu = new Menu;
-    this.openNewWindow();
-console.log(process.argv)
+    let filename = process.argv[1];
+    if (filename) {
+      filename = join(process.cwd(), filename);
+    } else {
+      filename = join(__dirname, 'README.md');
+    }
 
+    this.menu = new Menu;
+    this.openNewWindow(filename);
   }
 
   onWindowAllClosed() {
@@ -65,9 +72,8 @@ console.log(process.argv)
     this.openHelp();
   }
 
-  openNewWindow() {
-    var window;
-    window = new Window;
+  openNewWindow(filename) {
+    let window = new Window(filename);
     window.on('closed', this.onWindowClosed);
     this.windows = this.windows.push(window);
   }

@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var plumber = require('gulp-plumber');
+var jade = require('gulp-jade');
 var webpack = require('webpack');
 ref = require('path'), join = ref.join, dirname = ref.dirname, basename = ref.basename, extname = ref.extname, relative = ref.relative, resolve = ref.resolve;
 ref1 = require('fs'), readFileSync = ref1.readFileSync, writeFileSync = ref1.writeFileSync, mkdir = ref1.mkdir;
@@ -27,7 +28,7 @@ gulp.task('debug', ['build'], function() {
 });
 
 gulp.task('electron', function() {
-  electron = spawn('../node_modules/electron-prebuilt/dist/Electron.app/Contents/MacOS/Electron', ['.'], {
+  electron = spawn('../node_modules/electron-prebuilt/cli.js', ['.'], {
     cwd: 'dist'
   });
   electron.stdout.on('data', function(data) {
@@ -54,7 +55,7 @@ function pack() {
     name: pkg.name,
     platform: 'all',
     arch: 'all',
-    version: '0.29.1',
+    version: '0.30.2',
     overwrite: true
   }, function(err, dirs) {
     if (err != null) {
@@ -65,12 +66,24 @@ function pack() {
   return d.promise;
 }
 
-gulp.task('build', ['copy', 'webpack']);
+gulp.task('build', ['copy', 'jade', 'webpack']);
 
 gulp.task('copy', function() {
-  return gulp.src(['package.json', 'node_modules/chokidar/**/*'], {
+  return gulp.src([
+    'package.json',
+    'README.md',
+    'node_modules/font-awesome/**/*',
+    'node_modules/chokidar/**/*'
+  ], {
     base: '.'
   }).pipe(gulp.dest('dist'));
+});
+
+gulp.task('jade', function() {
+  gulp
+  .src('src/renderer/index.jade')
+  .pipe(jade())
+  .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('webpack', function(cb) {
@@ -94,20 +107,20 @@ gulp.task('webpack', function(cb) {
           loader: 'jade'
         }, {
           test: /\.css$/,
-          loader: 'css'
+          loaders: ['style', 'raw']
         }, {
           test: /\.styl$/,
-          loader: 'css!stylus'
-        }, {
-          test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-          loader: 'url?minetype=application/font-woff'
-        }, {
-          test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-          loader: 'file'
-        }, {
-          test: /\.md$/,
-          loader: 'raw-loader'
-        }
+          loaders: ['style', 'raw', 'stylus']
+        }//, {
+        //   test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        //   loader: 'url?minetype=application/font-woff'
+        // }, {
+        //   test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        //   loader: 'file'
+        // }, {
+        //   test: /\.md$/,
+        //   loader: 'raw-loader'
+        // }
       ]
     },
     resolve: {
@@ -116,7 +129,12 @@ gulp.task('webpack', function(cb) {
     externals: [
       (function() {
         var IGNORE;
-        IGNORE = ['fs', 'crash-reporter', 'app', 'menu', 'menu-item', 'browser-window', 'dialog', 'shell', 'ipc', 'chokidar'];
+        IGNORE = [
+          // Node
+          'fs',
+          'path',
+          // Electron
+          'crash-reporter', 'app', 'menu', 'menu-item', 'browser-window', 'dialog', 'shell', 'ipc', 'chokidar'];
         return function(context, request, callback) {
           if (IGNORE.indexOf(request) >= 0) {
             return callback(null, "require('" + request + "')");
@@ -127,6 +145,15 @@ gulp.task('webpack', function(cb) {
     ],
     stats: {
       colors: true
+    },
+    node: {
+      console: false,
+      global: false,
+      process: false,
+      Buffer: false,
+      __filename: false,
+      __dirname: false,
+      setImmediate: false
     }
   }, function(err, stats) {
     if (err != null) {

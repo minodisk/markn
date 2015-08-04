@@ -36,10 +36,6 @@ export default class MarkdownComponent extends React.Component {
   }
 
   render() {
-    console.log(this.state.content, this.props.children, this.state.search);
-    React.Children.map(this.props.children, (el, i) => {
-      console.log(el, i)
-    });
     return (
       <div className='markdown-body'>{this.state.content}</div>
     )
