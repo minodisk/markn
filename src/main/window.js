@@ -90,10 +90,10 @@ export default class Window extends EventEmitter {
     showOpenDialog({
       properties: ['openFile']
     }, (filenames) => {
-        if ((filenames != null ? filenames[0] : void 0) == null) {
-          return;
-        }
-        this.start(filenames[0]);
+      if (!filenames || !filenames[0]) {
+        return;
+      }
+      this.start(filenames[0]);
     });
   }
 
