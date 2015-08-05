@@ -40,7 +40,6 @@ export default class Main {
     if (filename) {
       filename = resolve(filename);
       console.log(`try to open ${filename}`);
-      // filename = join(process.cwd(), filename);
       try {
         let stats = statSync(filename, 'r');
         if (!stats.isFile()) {
