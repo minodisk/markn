@@ -8,6 +8,7 @@ ref1 = require('fs'), readFileSync = ref1.readFileSync, writeFileSync = ref1.wri
 var packager = require('electron-packager');
 var GitHub = require('github');
 var spawn = require('child_process').spawn;
+var exec = require('child_process').exec;
 var Q = require('q');
 var argv = require('yargs').argv;
 var semver = require('semver');
@@ -41,11 +42,46 @@ gulp.task('electron', function() {
 });
 
 gulp.task('package', ['build'], function (cb) {
-  pack()
+  icon()
+  .then(pack)
   .then(function (dirs) {
     cb(null, dirs);
+  })
+  .fail(function (err) {
+    console.error(err);
   });
 });
+
+function icon() {
+  return Q
+  .when('')
+  .then(function () {
+    var d = Q.defer();
+    exec('iconutil -c icns Markn.iconset', {cwd: 'assets'}, function (err, stdout, stderr) {
+      if (err) {
+        d.reject(err);
+        return;
+      }
+      if (stdout) console.log(stdout);
+      if (stderr) console.error(stderr);
+      d.resolve();
+    });
+    return d.promise;
+  })
+  .then(function () {
+    var d = Q.defer();
+    exec('convert Markn.iconset/icon_16x16.png Markn.iconset/icon_32x32.png Markn.iconset/icon_128x128.png Markn.iconset/icon_256x256.png Markn.iconset/icon_512x512.png Markn.ico', {cwd: 'assets'}, function (err, stdout, stderr) {
+      if (err) {
+        d.reject(err);
+        return;
+      }
+      if (stdout) console.log(stdout);
+      if (stderr) console.error(stderr);
+      d.resolve();
+    });
+    return d.promise;
+  });
+}
 
 function pack() {
   var d;
@@ -239,6 +275,7 @@ gulp.task('publish', ['build'], function() {
     });
     return d.promise;
   })
+  .then(icon)
   .then(pack)
   .then(function(dirs) {
     dirs = dirs.map(function(dir) {
