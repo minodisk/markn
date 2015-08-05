@@ -56,7 +56,7 @@ function pack() {
     platform: 'all',
     arch: 'all',
     version: '0.30.2',
-    icon: 'assets/Markn.icns',
+    icon: 'assets/Markn',
     overwrite: true
   }, function(err, dirs) {
     if (err != null) {
@@ -107,6 +107,9 @@ gulp.task('webpack', function(cb) {
           test: /\.js$/,
           loader: 'babel'
         }, {
+          test: /\.coffee$/,
+          loader: 'coffee'
+        }, {
           test: /\.jade$/,
           loader: 'jade'
         }, {
@@ -128,7 +131,7 @@ gulp.task('webpack', function(cb) {
       ]
     },
     resolve: {
-      extensions: ['', '.js']
+      extensions: ['', '.js', '.coffee']
     },
     externals: [
       (function() {
