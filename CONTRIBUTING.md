@@ -12,6 +12,16 @@ npm install
 gulp
 ```
 
+## Update icons
+
+### Ready in MacOSX
+
+1. Install wine with `brew install wine`.
+
+### Make iconset
+
+Write icons into `assets/Markn.iconset`
+
 ## Publication (Only Owner or Collaborator)
 
 Requires github OAuth `TOKEN`.

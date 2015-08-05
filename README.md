@@ -24,4 +24,4 @@ Consists of awesome modules.
 
 ## Releases
 
-See [Releases](releases).
+See [Releases](https://github.com/minodisk/markn/releases).
