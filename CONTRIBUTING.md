@@ -18,4 +18,4 @@ Requires github OAuth `TOKEN`.
 
 - Major release: `TOKEN=XXXXXXXXXXXX gulp publish -r major`
 - Minor release: `TOKEN=XXXXXXXXXXXX gulp publish -r minor`
-- Patch release: `TOKEN=XXXXXXXXXXXX gulp publish -r patch` or just `gulp publish`
+- Patch release: `TOKEN=XXXXXXXXXXXX gulp publish -r patch` or just `TOKEN=XXXXXXXXXXXX gulp publish`
