@@ -56,6 +56,7 @@ function pack() {
     platform: 'all',
     arch: 'all',
     version: '0.30.2',
+    icon: 'assets/Markn.icns',
     overwrite: true
   }, function(err, dirs) {
     if (err != null) {
@@ -169,6 +170,16 @@ gulp.task('webpack', function(cb) {
 });
 
 gulp.task('publish', ['build'], function() {
+  var github;
+  github = new GitHub({
+    version: "3.0.0",
+    debug: true
+  });
+  github.authenticate({
+    type: 'oauth',
+    token: process.env.TOKEN
+  });
+
   Q.when('')
   .then(function() {
     var d;
@@ -227,7 +238,6 @@ gulp.task('publish', ['build'], function() {
   })
   .then(pack)
   .then(function(dirs) {
-    var github;
     dirs = dirs.map(function(dir) {
       var name, zip;
       name = basename(dir);
@@ -237,14 +247,6 @@ gulp.task('publish', ['build'], function() {
         name: name,
         zip: zip
       };
-    });
-    github = new GitHub({
-      version: "3.0.0",
-      debug: true
-    });
-    github.authenticate({
-      type: 'oauth',
-      token: process.env.TOKEN
     });
     return Q.all(dirs.map(function(arg) {
       var d, name, zip;
