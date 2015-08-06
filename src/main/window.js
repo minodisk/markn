@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import {readFile} from 'fs'
-import {join} from 'path'
+import {join, extname} from 'path'
 import {watch} from 'chokidar'
 import BrowserWindow from 'browser-window'
 import {showOpenDialog} from 'dialog'
@@ -9,6 +9,19 @@ import mediator from './mediator'
 import events from './events'
 import Storage from './storage'
 import {bindTarget} from './util'
+
+const URL = `file://${__dirname}/index.html`;
+const EXTENSIONS = [
+  '.markdown',
+  '.mdown',
+  '.mkdn',
+  '.md',
+  '.mkd',
+  '.mdwn',
+  '.mdtxt',
+  '.mdtext',
+  '.text'
+];
 
 export default class Window extends EventEmitter {
   constructor(filename) {
@@ -40,7 +53,7 @@ export default class Window extends EventEmitter {
       this.browserWindow.on('move', this.onMoved);
       this.browserWindow.on('resize', this.onResized);
       this.browserWindow.on('close', this.onClose);
-      this.browserWindow.loadUrl(`file://${__dirname}/index.html`);
+      this.browserWindow.loadUrl(URL);
       mediator.on(events.OPEN_FILE, this.onOpenFileRequested);
       mediator.on(events.TOGGLE_DEVTOOLS, this.onToggleDevToolsRequested);
       mediator.on(events.FIND, this.onFindRequested);
@@ -65,8 +78,11 @@ export default class Window extends EventEmitter {
 
   onContentsWillNavigate(e, url) {
     console.log(url);
-    // e.preventDefault();
-    // shell.openExternal(url);
+    if (url === URL || EXTENSIONS.indexOf(extname(url).toLowerCase()) !== -1) {
+      return;
+    }
+    e.preventDefault();
+    shell.openExternal(url);
   }
 
   onMoved() {
