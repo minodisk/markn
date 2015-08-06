@@ -94,7 +94,8 @@ function pack() {
   d = Q.defer();
   packager({
     dir: 'dist',
-    name: pkg.name,
+    out: 'tmp',
+    name: 'Markn',
     platform: 'all',
     arch: 'all',
     version: '0.30.2',
@@ -122,14 +123,16 @@ gulp.task('copy', function() {
     'node_modules/chokidar/**/*'
   ], {
     base: '.'
-  }).pipe(gulp.dest('dist'));
+  })
+  .pipe(gulp.dest('dist'));
 });
 
 gulp.task('jade', function() {
   gulp
   .src('src/renderer/index.jade')
   .pipe(jade())
-  .pipe(gulp.dest('./dist'));
+  .pipe(gulp.dest('./dist'))
+  .pipe(livereload());
 });
 
 gulp.task('webpack', function(cb) {
@@ -219,9 +222,8 @@ gulp.task('webpack', function(cb) {
   });
 });
 
-gulp.task('publish', ['build'], function() {
-  var github;
-  github = new GitHub({
+gulp.task('release', ['build'], function() {
+  var github = new GitHub({
     version: "3.0.0",
     debug: true
   });
@@ -247,7 +249,10 @@ gulp.task('publish', ['build'], function() {
     version = semver.inc(pkg.version, release);
     pkg.version = version;
     json = JSON.stringify(pkg, null, 2);
-    return ['package.json', 'dist/package.json'].forEach(function(p) {
+    [
+      'package.json',
+      'dist/package.json'
+    ].forEach(function(p) {
       return writeFileSync(p, json);
     });
   })
@@ -290,9 +295,8 @@ gulp.task('publish', ['build'], function() {
   .then(pack)
   .then(function(dirs) {
     dirs = dirs.map(function(dir) {
-      var name, zip;
-      name = basename(dir);
-      zip = name + ".zip";
+      var name = basename(dir);
+      var zip = name + ".zip";
       return {
         dir: dir,
         name: name,

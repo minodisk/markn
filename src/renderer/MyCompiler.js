@@ -9,6 +9,13 @@ export default class MyCompiler extends Compiler {
     return super.compile(md);
   }
 
+  root(node, defs, key, tableAlign) {
+    return $('div', {
+      key,
+      className: 'markdown-body'
+    }, this.toChildren(node, defs, key));
+  }
+
   heading(node, defs, key, tableAlign) {
     let text = node.children
       .filter((child) => { return child.type == 'text' })
