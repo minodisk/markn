@@ -1,10 +1,6 @@
-'use strict';
-
 import React from 'react'
 import SearchStore from './SearchStore'
 import dispatcher from './Dispatcher'
-
-var $ = React.createElement;
 
 export default class SearchComponent extends React.Component {
   constructor(props) {

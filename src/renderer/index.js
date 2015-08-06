@@ -1,5 +1,4 @@
 import githubCSS from '../../node_modules/github-markdown-css/github-markdown.css'
-// import fontAwesomeCSS from '../../node_modules/font-awesome/css/font-awesome.css'
 import patchCSS from './patch.styl'
 
 import React from 'react'

@@ -64,8 +64,9 @@ export default class Window extends EventEmitter {
   }
 
   onContentsWillNavigate(e, url) {
-    e.preventDefault();
-    shell.openExternal(url);
+    console.log(url);
+    // e.preventDefault();
+    // shell.openExternal(url);
   }
 
   onMoved() {

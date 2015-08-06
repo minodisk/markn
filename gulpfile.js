@@ -12,6 +12,7 @@ var exec = require('child_process').exec;
 var Q = require('q');
 var argv = require('yargs').argv;
 var semver = require('semver');
+var livereload = require('gulp-livereload');
 
 var pkg = JSON.parse(readFileSync('package.json'));
 var url = pkg.repository.url;
@@ -21,6 +22,11 @@ var electron = null;
 var isWatch = false;
 
 gulp.task('default', function() {
+  livereload.listen({
+    basePath: 'dist',
+    start: true
+  });
+  isWatch = true;
   return gulp.start('debug');
 });
 
@@ -203,8 +209,13 @@ gulp.task('webpack', function(cb) {
       throw new gutil.PluginError('webpack', err);
     }
     gutil.log('[webpack]', stats.toString());
-    cb()
-    // return typeof cb === "function" ? cb() : void 0;
+    if (isWatch) {
+      livereload.reload('dist/renderer.js');
+    }
+    if (cb) {
+      cb();
+      cb = null;
+    }
   });
 });
 

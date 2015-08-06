@@ -1,11 +1,6 @@
-'use strict';
-
 import React from 'react'
-import Compiler from 'imports?React=react!../../node_modules/md2react/lib/index'
-// import MarknCompiler from './MarknCompiler'
+import MyCompiler from './MyCompiler'
 import MarkdownStore from './MarkdownStore'
-
-var $ = React.createElement;
 
 export default class MarkdownComponent extends React.Component {
   constructor(props) {
@@ -15,13 +10,14 @@ export default class MarkdownComponent extends React.Component {
       search: null
     };
 
-    this.compiler = new Compiler({
+    this.compiler = new MyCompiler({
       gfm: true,
       breaks: true,
       tables: true,
       commonmark: true,
       footnotes: true
     });
+    let elem = this.compiler.compile('foo');
     this.action = new ActionCreator();
     this.store = new MarkdownStore();
     this.store.on('change', this.update.bind(this));
@@ -29,7 +25,7 @@ export default class MarkdownComponent extends React.Component {
   }
 
   update(md) {
-    var el = this.compiler.compile(md);
+    let el = this.compiler.compile(md);
     this.setState({content: el});
   }
 

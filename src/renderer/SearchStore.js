@@ -1,5 +1,3 @@
-'use strict';
-
 import EventEmitter from 'events'
 import ipc from 'ipc'
 import dispatcher from './Dispatcher'
