@@ -295,6 +295,7 @@ gulp.task('release', ['build'], function() {
   .then(pack)
   .then(function(dirs) {
     dirs = dirs.map(function(dir) {
+      conosle.log(dir)
       var name = basename(dir);
       var zip = name + ".zip";
       return {
@@ -308,7 +309,7 @@ gulp.task('release', ['build'], function() {
       name = arg.name, zip = arg.zip;
       d = Q.defer();
       console.log("zip " + name + " to " + zip);
-      zip = spawn('zip', [zip, '-r', name]);
+      zip = spawn('zip', [zip, '-r', name], {cwd: 'tmp'});
       zip.stdout.on('data', function(data) {
         return console.log(data.toString('utf8'));
       });
@@ -348,7 +349,7 @@ gulp.task('release', ['build'], function() {
           repo: repo,
           id: id,
           name: zip,
-          filePath: zip
+          filePath: 'tmp' + zip
         }, function(err, res) {
           if (err != null) {
             d.reject(err);
