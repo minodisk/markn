@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Compiler from 'imports?React=react!../../node_modules/md2react/lib/index'
+// import MarknCompiler from './MarknCompiler'
 import MarkdownStore from './MarkdownStore'
 
 var $ = React.createElement;
