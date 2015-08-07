@@ -5,6 +5,7 @@ import jade from 'gulp-jade'
 import webpack from 'webpack'
 import {join, dirname, basename, extname, relative, resolve} from 'path'
 import {readFileSync, writeFileSync, mkdir} from 'fs'
+import mkdirp from 'mkdirp'
 import packager from 'electron-packager'
 import GitHub from 'github'
 import {spawn} from 'child_process'
@@ -56,12 +57,74 @@ gulp.task('package', ['build'], (cb) => {
   });
 });
 
+gulp.task('icon', (cb) => {
+  icon()
+  .then(() => {
+    cb();
+  })
+  .fail((err) => {
+    cb(err);
+  });
+});
+
 function icon() {
-  return Q
-  .when('')
+  let src = resolve('assets/icon.svg')
+  let macSizes = [];
+  [16, 32, 128, 256, 512].forEach(el => macSizes.push(el, el));
+  let winSizes = [16, 32, 48, 96, 256];
+
+  Q.all(['tmp/mac.iconset', 'tmp/win.iconset'].map((dir) => {
+    let d = Q.defer();
+    mkdirp(dir, (err) => {
+      if (err) {
+        d.reject(err);
+        return;
+      }
+      d.resolve();
+    });
+    return d.promise;
+  }))
+  .then(() => {
+    return Q.all(macSizes.map((size, i) => {
+      let d = Q.defer();
+      let ratio = 1;
+      let postfix = '';
+      if (i % 2) {
+        ratio = 2;
+        postfix = '@2x'
+      }
+      let dest = resolve(`tmp/mac.iconset/icon_${size}x${size}${postfix}.png`);
+      exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size*ratio} -h ${size*ratio} ${src}`, (err, stdout, stderr) => {
+        if (err) {
+          d.reject(err);
+          return;
+        }
+        if (stdout) console.log(stdout);
+        if (stderr) console.error(stderr);
+        d.resolve();
+      });
+      return d.promise
+    }));
+  })
+  .then(() => {
+    return Q.all(winSizes.map((size) => {
+      let d = Q.defer();
+      let dest = resolve(`tmp/win.iconset/icon_${size}x${size}.png`);
+      exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size} -h ${size} ${src}`, (err, stdout, stderr) => {
+        if (err) {
+          d.reject(err);
+          return;
+        }
+        if (stdout) console.log(stdout);
+        if (stderr) console.error(stderr);
+        d.resolve();
+      });
+      return d.promise
+    }));
+  })
   .then(() => {
     let d = Q.defer();
-    exec('iconutil -c icns Markn.iconset', {cwd: 'assets'}, (err, stdout, stderr) => {
+    exec('iconutil -c icns -o markn.icns mac.iconset', {cwd: 'tmp'}, (err, stdout, stderr) => {
       if (err) {
         d.reject(err);
         return;
@@ -74,20 +137,7 @@ function icon() {
   })
   .then(() => {
     let d = Q.defer();
-    exec('iconutil -c icns Markn.iconset', {cwd: 'assets'}, (err, stdout, stderr) => {
-      if (err) {
-        d.reject(err);
-        return;
-      }
-      if (stdout) console.log(stdout);
-      if (stderr) console.error(stderr);
-      d.resolve();
-    });
-    return d.promise;
-  })
-  .then(() => {
-    let d = Q.defer();
-    exec('convert Markn.iconset/icon_16x16.png Markn.iconset/icon_32x32.png Markn.iconset/icon_128x128.png Markn.iconset/icon_256x256.png Markn.iconset/icon_512x512.png Markn.ico', {cwd: 'assets'}, (err, stdout, stderr) => {
+    exec('convert win.iconset/icon_*.png markn.ico', {cwd: 'tmp'}, (err, stdout, stderr) => {
       if (err) {
         d.reject(err);
         return;
@@ -110,7 +160,7 @@ function pack() {
     platform: 'all',
     arch: 'all',
     version: '0.30.2',
-    icon: 'assets/Markn',
+    icon: 'tmp/markn',
     overwrite: true
   }, (err, dirs) => {
     if (err != null) {
