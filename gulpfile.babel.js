@@ -47,8 +47,20 @@ gulp.task('electron', (cb) => {
 });
 
 gulp.task('package', ['build'], (cb) => {
-  icon()
-  .then(pack)
+  icon()()
+  .then(pack())
+  .then((dirs) => {
+    cb(null, dirs);
+  })
+  .fail((err) => {
+    cb(err)
+  });
+});
+
+gulp.task('install', ['build'], (cb) => {
+  let {platform, arch} = process;
+  icon(platform)()
+  .then(pack(platform, arch)())
   .then((dirs) => {
     cb(null, dirs);
   })
@@ -58,7 +70,7 @@ gulp.task('package', ['build'], (cb) => {
 });
 
 gulp.task('icon', (cb) => {
-  icon()
+  icon()()
   .then(() => {
     cb();
   })
@@ -67,13 +79,13 @@ gulp.task('icon', (cb) => {
   });
 });
 
-function icon() {
+function icon(platform) {
   let src = resolve('assets/icon.svg');
   let macSizes = [];
   [16, 32, 128, 256, 512].forEach(el => macSizes.push(el, el));
   let winSizes = [16, 32, 48, 96, 256];
 
-  Q.all(['tmp/mac.iconset', 'tmp/win.iconset'].map((dir) => {
+  return Q.all(['tmp/mac.iconset', 'tmp/win.iconset'].map((dir) => {
     let d = Q.defer();
     mkdirp(dir, (err) => {
       if (err) {
