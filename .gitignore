@@ -31,7 +31,3 @@ node_modules
 .idea
 tmp
 dist
-*.svg
-*.ttf
-*.eot
-Markn-*
