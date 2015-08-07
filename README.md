@@ -22,6 +22,8 @@ Consists of awesome modules.
 - Style with [sindresorhus/github-markdown-css](https://github.com/sindresorhus/github-markdown-css).
   - Use some icons in [FortAwesome/Font-Awesome](https://github.com/FortAwesome/Font-Awesome).
 
-## Releases
+## Installation
 
-See [Releases](https://github.com/minodisk/markn/releases).
+1. Download zipped file from [latest release](https://github.com/minodisk/markn/releases/latest).
+1. Unzip.
+1. Double click Markn/Markn.app/Markn.exe.

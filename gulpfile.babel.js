@@ -68,7 +68,7 @@ gulp.task('icon', (cb) => {
 });
 
 function icon() {
-  let src = resolve('assets/icon.svg')
+  let src = resolve('assets/icon.svg');
   let macSizes = [];
   [16, 32, 128, 256, 512].forEach(el => macSizes.push(el, el));
   let winSizes = [16, 32, 48, 96, 256];
@@ -179,7 +179,6 @@ gulp.task('copy', () => {
   return gulp.src([
     'package.json',
     'README.md',
-    'bin/**/*',
     'node_modules/font-awesome/**/*',
     'node_modules/chokidar/**/*'
   ], {
