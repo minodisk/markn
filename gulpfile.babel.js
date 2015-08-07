@@ -97,6 +97,8 @@ function icon(platform) {
     return d.promise;
   }))
   .then(() => {
+    if (platform && platform !== 'darwin') {
+    }
     return Q.all(macSizes.map((size, i) => {
       let d = Q.defer();
       let ratio = 1;
