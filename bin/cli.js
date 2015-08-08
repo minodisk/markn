@@ -34,8 +34,11 @@ switch (platform) {
     command = app;
     opts = argv._;
     break;
+  default:
+    console.error('Unsupported platform:', platform);
+    process.exit(1);
+    break;
 }
-console.log(app);
 
 var Markn = spawn(command, opts);
 Markn.stdout.on('data', function (data) {
