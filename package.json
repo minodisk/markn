@@ -12,7 +12,7 @@
     "build": "./node_modules/gulp/bin/gulp.js build",
     "package": "./node_modules/gulp/bin/gulp.js package",
     "release": "./node_modules/gulp/bin/gulp.js release",
-    "install": "./node_modules/gulp/bin/gulp.js install"
+    "prepublish": "npm run package"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,10 @@
     "email": "daisuke.mino@gmail.com"
   },
   "license": "MIT",
+  "files": [
+    "bin",
+    "build"
+  ],
   "bugs": {
     "url": "https://github.com/minodisk/markn/issues"
   },
@@ -56,7 +60,8 @@
     "jade": "^1.11.0",
     "jade-loader": "^0.7.1",
     "lodash": "^3.10.1",
-    "md2react": "^0.8.8",
+    "md2react": "git://github.com/minodisk/md2react.git#markn",
+    "mdast": "^0.28.0",
     "mkdirp": "^0.5.1",
     "node-libs-browser": "^0.5.2",
     "q": "^1.4.1",

@@ -4,12 +4,11 @@ import plumber from 'gulp-plumber'
 import jade from 'gulp-jade'
 import webpack from 'webpack'
 import {join, dirname, basename, extname, relative, resolve} from 'path'
-import {readFileSync, writeFileSync, mkdir} from 'fs'
+import {readFileSync, writeFileSync} from 'fs'
 import mkdirp from 'mkdirp'
 import packager from 'electron-packager'
 import GitHub from 'github'
-import {spawn} from 'child_process'
-import {exec} from 'child_process'
+import cp from 'child_process'
 import Q from 'q'
 import argv from 'yargs'
 import semver from 'semver'
@@ -20,6 +19,121 @@ let url = pkg.repository.url;
 let owner = basename(dirname(url));
 let repo = basename(pkg.repository.url, extname(url));
 let isWatch = false;
+
+function exec(command, options) {
+  let d = Q.defer();
+  cp.exec(command, options, (err, stdout, stderr) => {
+    if (stdout) console.log(stdout);
+    if (stderr) console.error(stderr);
+    if (err) {
+      d.reject(err);
+      return;
+    }
+    d.resolve();
+  });
+  return d.promise;
+}
+
+function mkdir(dir) {
+  let d = Q.defer();
+  mkdirp(dir, (err) => {
+    if (err) {
+      d.reject(err);
+      return;
+    }
+    d.resolve();
+  });
+  return d.promise;
+}
+
+function icon(platform) {
+  let src = resolve('assets/icon.svg');
+
+  return Q.when('')
+  .then(() => {
+    if (platform && platform !== 'darwin') {
+      return;
+    }
+
+    return mkdir('tmp/mac.iconset')
+    .then(() => {
+      let macSizes = [];
+      [16, 32, 128, 256, 512].forEach(el => macSizes.push(el, el));
+
+      return Q.all(macSizes.map((size, i) => {
+        let d = Q.defer();
+        let ratio = 1;
+        let postfix = '';
+        if (i % 2) {
+          ratio = 2;
+          postfix = '@2x'
+        }
+        let dest = resolve(`tmp/mac.iconset/icon_${size}x${size}${postfix}.png`);
+        return exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size*ratio} -h ${size*ratio} ${src}`);
+      }));
+    })
+    .then(() => {
+      return exec('iconutil -c icns -o markn.icns mac.iconset', {cwd: 'tmp'});
+    });
+  })
+  .then(() => {
+    if (platform && platform !== 'win32') {
+      return;
+    }
+
+    return mkdir('tmp/win.iconset')
+    .then(() => {
+      let winSizes = [16, 32, 48, 96, 256];
+
+      return Q.all(winSizes.map((size) => {
+        let dest = resolve(`tmp/win.iconset/icon_${size}x${size}.png`);
+        return exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size} -h ${size} ${src}`);
+      }));
+    })
+    .then(() => {
+      return exec('convert win.iconset/icon_*.png markn.ico', {cwd: 'tmp'});
+    });
+  });
+}
+
+function pack(platform, arch) {
+  let d = Q.defer();
+  if (platform) {
+    if (['linux', 'win32', 'darwin'].indexOf(platform) === -1) {
+      setTimeout(() => {d.reject(new Error(`${platform} isn't supported`));}, 0);
+      return d.promise
+    }
+  } else {
+    platform = 'all';
+  }
+  if (arch) {
+    if (['ia32', 'x64'].indexOf(arch) === -1) {
+      setTimeout(() => {d.reject(new Error(`${arch} isn't supported`));}, 0);
+      return d.promise
+    }
+  } else {
+    arch = 'all';
+  }
+  packager({
+    dir: 'dist',
+    out: 'build',
+    name: 'Markn',
+    platform,
+    arch,
+    version: '0.30.2',
+    icon: 'tmp/markn',
+    overwrite: true
+  }, (err, dirs) => {
+    if (err != null) {
+      d.reject(err);
+      return;
+    }
+    d.resolve(dirs);
+    return;
+  });
+  return d.promise;
+}
+
 
 gulp.task('default', () => {
   livereload.listen({
@@ -35,20 +149,14 @@ gulp.task('debug', ['build'], () => {
 });
 
 gulp.task('electron', (cb) => {
-  exec('./node_modules/electron-prebuilt/cli.js dist', (err, stdout, stderr) => {
-    if (err) {
-      cb(err);
-      return;
-    }
-    if (stdout) console.log(stdout);
-    if (stderr) console.error(stderr);
-    cb();
-  });
+  exec('./node_modules/electron-prebuilt/cli.js dist')
+  .then(() => cb())
+  .fail(cb);
 });
 
 gulp.task('package', ['build'], (cb) => {
-  icon()()
-  .then(pack())
+  icon()
+  .then(pack)
   .then((dirs) => {
     cb(null, dirs);
   })
@@ -57,135 +165,27 @@ gulp.task('package', ['build'], (cb) => {
   });
 });
 
-gulp.task('install', ['build'], (cb) => {
-  let {platform, arch} = process;
-  icon(platform)()
-  .then(pack(platform, arch)())
-  .then((dirs) => {
-    cb(null, dirs);
-  })
-  .fail((err) => {
-    cb(err)
-  });
-});
-
-gulp.task('icon', (cb) => {
-  icon()()
-  .then(() => {
-    cb();
-  })
-  .fail((err) => {
-    cb(err);
-  });
-});
-
-function icon(platform) {
-  let src = resolve('assets/icon.svg');
-  let macSizes = [];
-  [16, 32, 128, 256, 512].forEach(el => macSizes.push(el, el));
-  let winSizes = [16, 32, 48, 96, 256];
-
-  return Q.all(['tmp/mac.iconset', 'tmp/win.iconset'].map((dir) => {
-    let d = Q.defer();
-    mkdirp(dir, (err) => {
-      if (err) {
-        d.reject(err);
-        return;
-      }
-      d.resolve();
-    });
-    return d.promise;
-  }))
-  .then(() => {
-    if (platform && platform !== 'darwin') {
-    }
-    return Q.all(macSizes.map((size, i) => {
-      let d = Q.defer();
-      let ratio = 1;
-      let postfix = '';
-      if (i % 2) {
-        ratio = 2;
-        postfix = '@2x'
-      }
-      let dest = resolve(`tmp/mac.iconset/icon_${size}x${size}${postfix}.png`);
-      exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size*ratio} -h ${size*ratio} ${src}`, (err, stdout, stderr) => {
-        if (err) {
-          d.reject(err);
-          return;
-        }
-        if (stdout) console.log(stdout);
-        if (stderr) console.error(stderr);
-        d.resolve();
-      });
-      return d.promise
-    }));
-  })
-  .then(() => {
-    return Q.all(winSizes.map((size) => {
-      let d = Q.defer();
-      let dest = resolve(`tmp/win.iconset/icon_${size}x${size}.png`);
-      exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size} -h ${size} ${src}`, (err, stdout, stderr) => {
-        if (err) {
-          d.reject(err);
-          return;
-        }
-        if (stdout) console.log(stdout);
-        if (stderr) console.error(stderr);
-        d.resolve();
-      });
-      return d.promise
-    }));
-  })
-  .then(() => {
-    let d = Q.defer();
-    exec('iconutil -c icns -o markn.icns mac.iconset', {cwd: 'tmp'}, (err, stdout, stderr) => {
-      if (err) {
-        d.reject(err);
-        return;
-      }
-      if (stdout) console.log(stdout);
-      if (stderr) console.error(stderr);
-      d.resolve();
-    });
-    return d.promise;
-  })
-  .then(() => {
-    let d = Q.defer();
-    exec('convert win.iconset/icon_*.png markn.ico', {cwd: 'tmp'}, (err, stdout, stderr) => {
-      if (err) {
-        d.reject(err);
-        return;
-      }
-      if (stdout) console.log(stdout);
-      if (stderr) console.error(stderr);
-      d.resolve();
-    });
-    return d.promise;
-  });
-}
-
-function pack() {
-  let d;
-  d = Q.defer();
-  packager({
-    dir: 'dist',
-    out: 'tmp',
-    name: 'Markn',
-    platform: 'all',
-    arch: 'all',
-    version: '0.30.2',
-    icon: 'tmp/markn',
-    overwrite: true
-  }, (err, dirs) => {
-    if (err != null) {
-      d.reject(err);
-      return;
-    }
-    d.resolve(dirs);
-    return;
-  });
-  return d.promise;
-}
+// gulp.task('prepublish', ['build'], (cb) => {
+//   let {platform, arch} = process;
+//   icon(platform)
+//   .then(() => {
+//     return pack(platform, arch);
+//   })
+//   .then((dirs) => {
+//     cb();
+//   })
+//   .fail(cb);
+// });
+//
+// gulp.task('icon', (cb) => {
+//   icon()
+//   .then(() => {
+//     cb();
+//   })
+//   .fail((err) => {
+//     cb(err);
+//   });
+// });
 
 gulp.task('build', ['copy', 'jade', 'webpack']);
 
@@ -282,7 +282,7 @@ gulp.task('webpack', (cb) => {
       setImmediate: false
     }
   }, (err, stats) => {
-    if (err != null) {
+    if (err) {
       throw new gutil.PluginError('webpack', err);
     }
     gutil.log('[webpack]', stats.toString());
@@ -307,12 +307,7 @@ gulp.task('release', ['build'], () => {
   });
 
   Q.when('')
-  .then(() => {
-    let d;
-    d = Q.defer();
-    mkdir('dist', d.resolve);
-    return d.promise;
-  })
+  .then(() => mkdir('dist'))
   .then(() => {
     let json, release, releases, version;
     releases = ['major', 'minor', 'patch'];
@@ -371,19 +366,14 @@ gulp.task('release', ['build'], () => {
     dirs = dirs.map((dir) => {
       console.log(dir)
       let name = basename(dir);
-      let zip = name + '.zip';
-      return {
-        dir: dir,
-        name: name,
-        zip: zip
-      };
+      return {dir, name, zip};
     });
     return Q.all(dirs.map((arg) => {
       let d, name, zip;
       name = arg.name, zip = arg.zip;
       d = Q.defer();
       console.log('zip ' + name + ' to ' + zip);
-      zip = spawn('zip', [zip, '-r', name], {cwd: 'tmp'});
+      zip = spawn('zip', ['../tmp/' + name + '.zip', '-r', name], {cwd: 'build'});
       zip.stdout.on('data', (data) => {
         return console.log(data.toString('utf8'));
       });

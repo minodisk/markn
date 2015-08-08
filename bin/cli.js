@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
-var electron = require('electron-prebuilt');
-var spawn = require('child_process').spawn;
+var path = require('path');
+
 var argv = require('yargs')
 .usage('Usage: markn [path]')
 .example('markn', 'Run Markn')
@@ -10,4 +10,32 @@ var argv = require('yargs')
 .alias('h', 'help')
 .argv;
 
-spawn(electron, argv[0], {stdio: 'inherit'})
+var spawn = require('child_process').spawn;
+
+var platform = process.platform;
+var arch = process.arch;
+var app = path.join(__dirname, '../build/Markn-' + platform + '-' + arch + '/');
+
+switch (platform) {
+  case 'darwin':
+    app += 'Markn.app';
+    break;
+  case 'linux':
+    app += 'Markn';
+    break;
+  case 'win32':
+    app += 'Markn.exe';
+    break;
+}
+console.log(app);
+
+var Markn = spawn('open', ['-a', app, '-W', '-n', '--args'].concat(argv._));
+Markn.stdout.on('data', function (data) {
+  console.log('stdout: ' + data);
+});
+Markn.stderr.on('data', function (data) {
+  console.log('stderr: ' + data);
+});
+Markn.on('close', function (code) {
+  console.log('child process exited with code ' + code);
+});

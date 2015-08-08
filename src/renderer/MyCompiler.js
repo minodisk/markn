@@ -1,4 +1,5 @@
 import React from 'react'
+// import Compiler from 'imports?React=react!md2react'
 import Compiler from 'imports?React=react!../../node_modules/md2react/src/index'
 
 let $ = React.createElement;
