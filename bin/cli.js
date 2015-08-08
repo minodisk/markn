@@ -16,20 +16,28 @@ var platform = process.platform;
 var arch = process.arch;
 var app = path.join(__dirname, '../build/Markn-' + platform + '-' + arch + '/');
 
+var command, opts;
+
 switch (platform) {
   case 'darwin':
     app += 'Markn.app';
+    command = 'open';
+    opts = ['-a',  app,  '-W',  '-n',  '--args'].concat(argv._);
     break;
   case 'linux':
     app += 'Markn';
+    command = app;
+    opts = argv._;
     break;
   case 'win32':
     app += 'Markn.exe';
+    command = app;
+    opts = argv._;
     break;
 }
 console.log(app);
 
-var Markn = spawn('open', ['-a', app, '-W', '-n', '--args'].concat(argv._));
+var Markn = spawn(command, opts);
 Markn.stdout.on('data', function (data) {
   console.log('stdout: ' + data);
 });
