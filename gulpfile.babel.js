@@ -342,12 +342,10 @@ gulp.task('release', ['build'], () => {
     dirs = dirs.map((dir) => {
       console.log(dir)
       let name = basename(dir);
-      return {dir, name, zip};
+      return {dir, name};
     });
-    return Q.all(dirs.map((arg) => {
-      let name = arg.name;
-      let zip = arg.zip;
-      console.log('zip ' + name + ' to ' + zip);
+    return Q.all(dirs.map(({name}) => {
+      console.log('zip:', name);
       return exec(`zip ../tmp/${name}.zip -r ${name}`, {cwd: 'build'});
     }))
     .then(() => {
@@ -369,16 +367,14 @@ gulp.task('release', ['build'], () => {
     })
     .then((id) => {
       console.log('complete to create new release: ' + id);
-      return Q.all(dirs.map((arg) => {
-        let d, zip;
-        zip = arg.zip;
-        d = Q.defer();
+      return Q.all(dirs.map(({name}) => {
+        let d = Q.defer();
         github.releases.uploadAsset({
           owner: owner,
           repo: repo,
           id: id,
-          name: zip,
-          filePath: 'tmp' + zip
+          name: `${name}.zip`,
+          filePath: join('tmp', `${name}.zip`)
         }, (err, res) => {
           if (err != null) {
             d.reject(err);
