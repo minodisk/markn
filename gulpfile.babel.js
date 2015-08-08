@@ -329,36 +329,12 @@ gulp.task('release', ['build'], () => {
     return console.log('bump package.json');
   })
   .then(() => {
-    let d, git;
-    d = Q.defer();
     console.log('git commit package.json');
-    git = spawn('git', ['commit', '-m', `Bump version to v${pkg.version}`, 'package.json']);
-    git.stdout.on('data', (data) => {
-      return console.log(data.toString('utf8'));
-    });
-    git.stderr.on('data', (data) => {
-      return console.log(data.toString('utf8'));
-    });
-    git.on('close', (code) => {
-      return d.resolve();
-    });
-    return d.promise;
+    return exec(`git commit -m "Bump version to v${pkg.version}" package.json`);
   })
   .then(() => {
-    let d, git;
-    d = Q.defer();
     console.log('git push');
-    git = spawn('git', ['push']);
-    git.stdout.on('data', (data) => {
-      return console.log(data.toString('utf8'));
-    });
-    git.stderr.on('data', (data) => {
-      return console.log(data.toString('utf8'));
-    });
-    git.on('close', (code) => {
-      return d.resolve();
-    });
-    return d.promise;
+    return exec('git push');
   })
   .then(icon)
   .then(pack)
@@ -369,21 +345,10 @@ gulp.task('release', ['build'], () => {
       return {dir, name, zip};
     });
     return Q.all(dirs.map((arg) => {
-      let d, name, zip;
-      name = arg.name, zip = arg.zip;
-      d = Q.defer();
+      let name = arg.name;
+      let zip = arg.zip;
       console.log('zip ' + name + ' to ' + zip);
-      zip = spawn('zip', ['../tmp/' + name + '.zip', '-r', name], {cwd: 'build'});
-      zip.stdout.on('data', (data) => {
-        return console.log(data.toString('utf8'));
-      });
-      zip.stderr.on('data', (data) => {
-        return console.log(data.toString('utf8'));
-      });
-      zip.on('close', (code) => {
-        return d.resolve();
-      });
-      return d.promise;
+      return exec(`zip ../tmp/${name}.zip -r ${name}`, {cwd: 'build'});
     }))
     .then(() => {
       let d;
