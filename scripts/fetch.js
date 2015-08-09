@@ -4,7 +4,7 @@ import mkdirp from 'mkdirp'
 import request from 'request'
 import cp from 'child_process'
 // import unzip from 'unzip'
-import yauzl from 'yauzl'
+// import yauzl from 'yauzl'
 
 async function readFile(filename) {
   return new Promise((resolve, reject) => {

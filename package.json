@@ -30,6 +30,8 @@
   },
   "license": "MIT",
   "files": [
+    "bin",
+    "scripts",
     "LICENSE",
     "README.md"
   ],
