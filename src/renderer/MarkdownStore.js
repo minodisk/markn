@@ -9,8 +9,8 @@ export default class MarkdownStore extends EventEmitter {
     dispatcher.on('search', this.onSearch.bind(this));
   }
 
-  onRender(data) {
-    this.emit('change', data);
+  onRender(data, dirname) {
+    this.emit('change', data, dirname);
   }
 
   onSearch(text) {

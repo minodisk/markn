@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import {readFile} from 'fs'
-import {join, extname} from 'path'
+import {join, extname, dirname} from 'path'
 import {watch} from 'chokidar'
 import BrowserWindow from 'browser-window'
 import {showOpenDialog} from 'dialog'
@@ -168,11 +168,11 @@ export default class Window extends EventEmitter {
       if (err != null) {
         throw err;
       }
-      this.render(data);
+      this.render(data, dirname(filename));
     });
   }
 
-  render(md) {
-    this.browserWindow.webContents.send('render', md);
+  render(md, dir) {
+    this.browserWindow.webContents.send('render', md, dir);
   }
 }

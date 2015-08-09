@@ -1,11 +1,13 @@
 import React from 'react'
 // import Compiler from 'imports?React=react!md2react'
 import Compiler from 'imports?React=react!../../node_modules/md2react/src/index'
+import path from 'path'
 
 let $ = React.createElement;
 
 export default class MyCompiler extends Compiler {
-  compile(md) {
+  compile(md, dir) {
+    this.dir = dir;
     this.ids = {};
     return super.compile(md);
   }
@@ -15,6 +17,18 @@ export default class MyCompiler extends Compiler {
       key,
       className: 'markdown-body'
     }, this.toChildren(node, defs, key));
+  }
+
+  image({src, title, alt}, defs, key, tableAlign) {
+    if(!(/^https?:\/\//.test(src))) {
+      src = path.resolve(this.dir, src);
+    }
+    return $('img', {
+      key,
+      src: src,
+      title: title,
+      alt: alt
+    });
   }
 
   heading(node, defs, key, tableAlign) {

@@ -17,15 +17,14 @@ export default class MarkdownComponent extends React.Component {
       commonmark: true,
       footnotes: true
     });
-    let elem = this.compiler.compile('foo');
     this.action = new ActionCreator();
     this.store = new MarkdownStore();
     this.store.on('change', this.update.bind(this));
     this.store.on('search', this.mark.bind(this));
   }
 
-  update(md) {
-    let el = this.compiler.compile(md);
+  update(md, dirname) {
+    let el = this.compiler.compile(md, dirname);
     this.setState({content: el});
   }
 
