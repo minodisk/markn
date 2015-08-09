@@ -4,14 +4,15 @@
   "description": "Lightweight markdown viewer",
   "main": "main.js",
   "bin": {
-    "markn": "./bin/cli.js"
+    "markn": "./bin/markn"
   },
   "scripts": {
     "test": "exit 0;",
     "run": "./node_modules/gulp/bin/gulp.js",
     "build": "./node_modules/gulp/bin/gulp.js build",
     "package": "./node_modules/gulp/bin/gulp.js package",
-    "release": "./node_modules/gulp/bin/gulp.js release"
+    "release": "./node_modules/gulp/bin/gulp.js release",
+    "install": "./node_modules/babel/bin/babel-node.js ./scripts/fetch.js"
   },
   "repository": {
     "type": "git",
@@ -66,9 +67,11 @@
     "q": "^1.4.1",
     "raw-loader": "^0.5.1",
     "react": "^0.13.3",
+    "request": "^2.60.0",
     "semver": "^4.3.6",
     "style-loader": "^0.12.3",
     "stylus-loader": "^1.2.1",
+    "unzip": "^0.1.11",
     "url-loader": "^0.5.6",
     "webpack": "^1.10.1",
     "yargs": "^3.17.1"

@@ -1,5 +1,3 @@
-#! /usr/bin/env node
-
 var path = require('path');
 
 var argv = require('yargs')
@@ -42,10 +40,10 @@ switch (platform) {
 
 var Markn = spawn(command, opts);
 Markn.stdout.on('data', function (data) {
-  console.log('stdout: ' + data);
+  console.log('stdout: ' + data.toString('utf8'));
 });
 Markn.stderr.on('data', function (data) {
-  console.log('stderr: ' + data);
+  console.log('stderr: ' + data.toString('utf8'));
 });
 Markn.on('close', function (code) {
   console.log('child process exited with code ' + code);

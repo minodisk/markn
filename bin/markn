@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+var cp = require('child_process');
+var path = require('path');
+
+var babel = cp.spawn(path.join(__dirname, '../node_modules/babel/bin/babel-node.js'), [path.join(__dirname, '../scripts/run.js')]);
+babel.stdout.on('data', function (data) {
+  console.log(data.toString('utf8'));
+});
+babel.stderr.on('data', function (data) {
+  console.error(data.toString('utf8'));
+});
+babel.on('close', function (code) {
+  console.log('child process exited with code ' + code);
+});
