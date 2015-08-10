@@ -3,8 +3,6 @@ import fs from 'fs'
 import mkdirp from 'mkdirp'
 import request from 'request'
 import cp from 'child_process'
-// import unzip from 'unzip'
-// import yauzl from 'yauzl'
 
 async function readFile(filename) {
   return new Promise((resolve, reject) => {
@@ -39,8 +37,8 @@ async function fetch(url, filename) {
     console.log('fetch:', url, 'to', filename);
     request(url)
     .on('response', (response) => {
-      console.log(response.statusCode);
-      console.log(response.headers['content-type']);
+      console.log('  status-code:', response.statusCode);
+      console.log('  content-type:', response.headers['content-type']);
     })
     .on('close', resolve)
     .on('error', reject)
@@ -63,17 +61,7 @@ function distribution({platform, arch}) {
     ]);
     await fetch(zipUrl, `tmp/${dist}.zip`);
     await spawn('unzip', ['-d', 'build', '-o', `tmp/${dist}.zip`])
-    // await unzip(`./tmp/${dist}.zip`);
-    // await (async () => {
-    //   return new Promise((resolve, reject) => {
-    //     fs.createReadStream(`./tmp/${dist}.zip`)
-    //     .on('close', resolve)
-    //     .on('error', reject)
-    //     .pipe(unzip.Extract({ path: 'build' }));
-    //   });
-    // })();
   } catch(err) {
     console.error('error:', err);
   }
 })();
-
