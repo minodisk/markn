@@ -16,6 +16,8 @@ var app = path.join(__dirname, '../build/Markn-' + platform + '-' + arch + '/');
 
 var command, opts;
 
+console.log('argv:', argv._);
+
 switch (platform) {
   case 'darwin':
     app += 'Markn.app';

@@ -165,17 +165,17 @@ gulp.task('package', ['build'], (cb) => {
   });
 });
 
-// gulp.task('prepublish', ['build'], (cb) => {
-//   let {platform, arch} = process;
-//   icon(platform)
-//   .then(() => {
-//     return pack(platform, arch);
-//   })
-//   .then((dirs) => {
-//     cb();
-//   })
-//   .fail(cb);
-// });
+gulp.task('install', ['build'], (cb) => {
+  let {platform, arch} = process;
+  icon(platform)
+  .then(() => {
+    return pack(platform, arch);
+  })
+  .then((dirs) => {
+    cb();
+  })
+  .fail(cb);
+});
 //
 // gulp.task('icon', (cb) => {
 //   icon()

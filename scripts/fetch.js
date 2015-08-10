@@ -60,7 +60,8 @@ function distribution({platform, arch}) {
       mkdir('build')
     ]);
     await fetch(zipUrl, `tmp/${dist}.zip`);
-    await spawn('unzip', ['-d', 'build', '-o', `tmp/${dist}.zip`])
+    // await spawn('curl', [zipUrl], {cwd: 'tmp'});
+    await spawn('unzip', ['-d', 'build', '-o', `tmp/${dist}.zip`]);
   } catch(err) {
     console.error('error:', err);
   }
