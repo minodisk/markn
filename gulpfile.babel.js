@@ -14,6 +14,11 @@ import argv from 'yargs'
 import semver from 'semver'
 import livereload from 'gulp-livereload'
 
+const APP_DIR = 'app';
+const TEMP_DIR = 'tmp';
+const BUILD_DIR = 'build';
+const ASSETS_DIR = 'assets';
+
 let pkg = JSON.parse(readFileSync('package.json'));
 let url = pkg.repository.url;
 let owner = basename(dirname(url));
@@ -55,7 +60,7 @@ function icon(platform) {
       return;
     }
 
-    return mkdir('tmp/mac.iconset')
+    return mkdir(`${TEMP_DIR}/mac.iconset`)
     .then(() => {
       let macSizes = [];
       [16, 32, 128, 256, 512].forEach(el => macSizes.push(el, el));
@@ -68,12 +73,12 @@ function icon(platform) {
           ratio = 2;
           postfix = '@2x'
         }
-        let dest = resolve(`tmp/mac.iconset/icon_${size}x${size}${postfix}.png`);
+        let dest = resolve(`${TEMP_DIR}/mac.iconset/icon_${size}x${size}${postfix}.png`);
         return exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size*ratio} -h ${size*ratio} ${src}`);
       }));
     })
     .then(() => {
-      return exec('iconutil -c icns -o markn.icns mac.iconset', {cwd: 'tmp'});
+      return exec(`iconutil -c icns -o ${ASSETS_DIR}/markn.icns ${TEMP_DIR}/mac.iconset`);
     });
   })
   .then(() => {
@@ -81,80 +86,64 @@ function icon(platform) {
       return;
     }
 
-    return mkdir('tmp/win.iconset')
+    return mkdir(`${TEMP_DIR}/win.iconset`)
     .then(() => {
       let winSizes = [16, 32, 48, 96, 256];
 
       return Q.all(winSizes.map((size) => {
-        let dest = resolve(`tmp/win.iconset/icon_${size}x${size}.png`);
+        let dest = resolve(`${TEMP_DIR}/win.iconset/icon_${size}x${size}.png`);
         return exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size} -h ${size} ${src}`);
       }));
     })
     .then(() => {
-      return exec('convert win.iconset/icon_*.png markn.ico', {cwd: 'tmp'});
+      return exec(`convert ${TEMP_DIR}/win.iconset/icon_*.png ${ASSETS_DIR}/markn.ico`);
     });
   });
 }
 
-function pack(platform, arch) {
-  let d = Q.defer();
-  if (platform) {
-    if (['linux', 'win32', 'darwin'].indexOf(platform) === -1) {
-      setTimeout(() => {d.reject(new Error(`${platform} isn't supported`));}, 0);
-      return d.promise
-    }
-  } else {
-    platform = 'all';
-  }
-  if (arch) {
-    if (['ia32', 'x64'].indexOf(arch) === -1) {
-      setTimeout(() => {d.reject(new Error(`${arch} isn't supported`));}, 0);
-      return d.promise
-    }
-  } else {
-    arch = 'all';
-  }
-  packager({
-    dir: 'dist',
-    out: 'build',
-    name: 'Markn',
-    platform,
-    arch,
-    version: '0.30.2',
-    icon: 'tmp/markn',
-    overwrite: true
-  }, (err, dirs) => {
-    if (err != null) {
-      d.reject(err);
+async function pack(platform = 'all', arch = 'all') {
+  return new Promise((resolve, reject) => {
+    packager({
+      platform,
+      arch,
+      dir: APP_DIR,
+      out: BUILD_DIR,
+      name: 'Markn',
+      version: '0.30.2',
+      icon: `${ASSETS_DIR}/markn`,
+      overwrite: true
+    }, (err, dirs) => {
+      if (err != null) {
+        d.reject(err);
+        return;
+      }
+      resolve(dirs);
       return;
-    }
-    d.resolve(dirs);
-    return;
+    });
   });
-  return d.promise;
 }
 
 
 gulp.task('default', () => {
   livereload.listen({
-    basePath: 'dist',
+    basePath: APP_DIR,
     start: true
   });
   isWatch = true;
   return gulp.start('debug');
 });
 
-gulp.task('debug', ['build'], () => {
+gulp.task('debug', ['compile'], () => {
   return gulp.start('electron');
 });
 
 gulp.task('electron', (cb) => {
-  exec('./node_modules/electron-prebuilt/cli.js dist')
+  exec(`./node_modules/electron-prebuilt/cli.js ${APP_DIR}`)
   .then(() => cb())
   .fail(cb);
 });
 
-gulp.task('package', ['build'], (cb) => {
+gulp.task('package', ['compile'], (cb) => {
   icon()
   .then(pack)
   .then((dirs) => {
@@ -165,7 +154,7 @@ gulp.task('package', ['build'], (cb) => {
   });
 });
 
-gulp.task('install', ['build'], (cb) => {
+gulp.task('install', ['compile'], (cb) => {
   let {platform, arch} = process;
   icon(platform)
   .then(() => {
@@ -176,18 +165,18 @@ gulp.task('install', ['build'], (cb) => {
   })
   .fail(cb);
 });
-//
-// gulp.task('icon', (cb) => {
-//   icon()
-//   .then(() => {
-//     cb();
-//   })
-//   .fail((err) => {
-//     cb(err);
-//   });
-// });
 
-gulp.task('build', ['copy', 'jade', 'webpack']);
+gulp.task('icon', (cb) => {
+  icon()
+  .then(() => {
+    cb();
+  })
+  .fail((err) => {
+    cb(err);
+  });
+});
+
+gulp.task('compile', ['copy', 'jade', 'webpack']);
 
 gulp.task('copy', () => {
   return gulp.src([
@@ -198,14 +187,14 @@ gulp.task('copy', () => {
   ], {
     base: '.'
   })
-  .pipe(gulp.dest('dist'));
+  .pipe(gulp.dest(APP_DIR));
 });
 
 gulp.task('jade', () => {
   return gulp
   .src('src/renderer/index.jade')
   .pipe(jade())
-  .pipe(gulp.dest('./dist'))
+  .pipe(gulp.dest(APP_DIR))
   .pipe(livereload());
 });
 
@@ -217,7 +206,7 @@ gulp.task('webpack', (cb) => {
       renderer: './src/renderer/index.js'
     },
     output: {
-      path: './dist/',
+      path: APP_DIR,
       filename: '[name].js'
     },
     module: {
@@ -278,7 +267,7 @@ gulp.task('webpack', (cb) => {
     }
     gutil.log('[webpack]', stats.toString());
     if (isWatch) {
-      livereload.reload('dist/renderer.js');
+      livereload.reload(`${APP_DIR}/renderer.js`);
     }
     if (cb) {
       cb();
@@ -287,7 +276,7 @@ gulp.task('webpack', (cb) => {
   });
 });
 
-gulp.task('release', ['build'], () => {
+gulp.task('release', ['compile'], () => {
   let github = new GitHub({
     version: '3.0.0',
     debug: true
@@ -298,7 +287,7 @@ gulp.task('release', ['build'], () => {
   });
 
   Q.when('')
-  .then(() => mkdir('dist'))
+  .then(() => mkdir(APP_DIR))
   .then(() => {
     let json, release, releases, version;
     releases = ['major', 'minor', 'patch'];
@@ -311,7 +300,7 @@ gulp.task('release', ['build'], () => {
     json = JSON.stringify(pkg, null, 2);
     [
       'package.json',
-      'dist/package.json'
+      `${APP_DIR}/package.json`
     ].forEach((p) => {
       return writeFileSync(p, json);
     });
@@ -337,7 +326,7 @@ gulp.task('release', ['build'], () => {
     });
     return Q.all(dirs.map(({name}) => {
       console.log('zip:', name);
-      return exec(`zip ../tmp/${name}.zip -r ${name}`, {cwd: 'build'});
+      return exec(`zip ../${TEMP_DIR}/${name}.zip -r ${name}`, {cwd: BUILD_DIR});
     }))
     .then(() => {
       let d;
@@ -365,7 +354,7 @@ gulp.task('release', ['build'], () => {
           repo: repo,
           id: id,
           name: `${name}.zip`,
-          filePath: join('tmp', `${name}.zip`)
+          filePath: join(TEMP_DIR, `${name}.zip`)
         }, (err, res) => {
           if (err != null) {
             d.reject(err);
