@@ -15,14 +15,12 @@ async function readFile(filename) {
   });
 }
 
-async function exec(cmd) {
+async function spawn(cmd, args, opts) {
   return new Promise((resolve, reject) => {
-    cp.exec(cmd, (err, stdout, stderr) => {
-      if (err) return reject(err);
-      if (stderr) return reject(err);
-      console.log(stdout);
-      resolve();
-    });
+    let p = cp.spawn(cmd, args, opts);
+    p.stderr.on('data', (data) => reject(data.toString('utf8')));
+    p.stdout.on('data', (data) => console.log(data.toString('utf8')));
+    p.on('close', resolve);
   });
 }
 
@@ -49,7 +47,7 @@ function distribution({platform, arch}) {
       mkdir('build')
     ]);
     console.log(`tmp/${dist}.zip`);
-    await exec(`unzip -d build -o tmp/${dist}.zip`)
+    await spawn('unzip', ['-d', 'build', '-o', `tmp/${dist}.zip`])
     // await (async () => {
     //   return new Promise((resolve, reject) => {
     //     request(zipUrl)
