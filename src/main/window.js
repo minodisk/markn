@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import {readFile} from 'fs'
-import {join, extname, dirname} from 'path'
+import {join, extname, dirname, normalize} from 'path'
 import {watch} from 'chokidar'
 import BrowserWindow from 'browser-window'
 import {showOpenDialog} from 'dialog'
@@ -78,9 +78,17 @@ export default class Window extends EventEmitter {
 
   onContentsWillNavigate(e, url) {
     console.log(url);
-    if (url === URL || EXTENSIONS.indexOf(extname(url).toLowerCase()) !== -1) {
+    // Renderer file: Reload.
+    if (url === URL) {
       return;
     }
+
+    // Markdown file: Render it.
+    if (EXTENSIONS.indexOf(extname(url).toLowerCase()) !== -1) {
+      this.start(url);
+    }
+
+    // Others: Open external application.
     e.preventDefault();
     shell.openExternal(url);
   }
@@ -146,15 +154,21 @@ export default class Window extends EventEmitter {
 
   start(filename) {
     if (filename) {
-      this.filename = filename;
+      this.filename = normalize(filename);
+      console.log(this.filename);
     }
 
     if (this.watcher != null) {
       this.watcher.removeAllListeners();
       this.watcher.close();
     }
-    this.watcher = watch(this.filename);
-    this.watcher.on('change', this.onFileChanged);
+
+    // Watch only local file.
+    if (!(/^https?:\/\//.test(this.filename))) {
+      this.watcher = watch(this.filename);
+      this.watcher.on('change', this.onFileChanged);
+    }
+
     this.browserWindow.setTitle(this.filename);
     this.load(this.filename);
   }

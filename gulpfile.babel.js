@@ -20,7 +20,7 @@ let owner = basename(dirname(url));
 let repo = basename(pkg.repository.url, extname(url));
 let isWatch = false;
 
-function exec(command, options) {
+function exec(command, options = {}) {
   let d = Q.defer();
   cp.exec(command, options, (err, stdout, stderr) => {
     if (stdout) console.log(stdout);

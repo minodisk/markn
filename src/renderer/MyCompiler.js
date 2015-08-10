@@ -31,6 +31,17 @@ export default class MyCompiler extends Compiler {
     });
   }
 
+  link(node, defs, key, tableAlign) {
+    if(!(/^https?:\/\//.test(node.href))) {
+      node.href = path.resolve(this.dir, node.href);
+    }
+    return $('a', {
+      key,
+      href: node.href,
+      title: node.title
+    }, this.toChildren(node, defs, key));
+  }
+
   heading(node, defs, key, tableAlign) {
     let text = node.children
       .filter((child) => { return child.type == 'text' })
