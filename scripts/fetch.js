@@ -26,10 +26,25 @@ async function spawn(cmd, args, opts) {
 
 async function mkdir(dir) {
   return new Promise((resolve, reject) => {
+    console.log('mkdir:', dir);
     mkdirp(dir, (err, made) => {
       if (err) return reject(err);
       resolve(made);
     });
+  });
+}
+
+async function fetch(url, filename) {
+  return new Promise((resolve, reject) => {
+    console.log('fetch:', url, 'to', filename);
+    request(url)
+    .on('response', (response) => {
+      console.log(response.statusCode);
+      console.log(response.headers['content-type']);
+    })
+    .on('close', resolve)
+    .on('error', reject)
+    .pipe(fs.createWriteStream(filename))
   });
 }
 
@@ -46,20 +61,8 @@ function distribution({platform, arch}) {
       mkdir('tmp'),
       mkdir('build')
     ]);
-    console.log(`tmp/${dist}.zip`);
+    await fetch(zipUrl, `tmp/${dist}.zip`);
     await spawn('unzip', ['-d', 'build', '-o', `tmp/${dist}.zip`])
-    // await (async () => {
-    //   return new Promise((resolve, reject) => {
-    //     request(zipUrl)
-    //     .on('response', (response) => {
-    //       console.log(response.statusCode);
-    //       console.log(response.headers['content-type']);
-    //     })
-    //     .on('close', resolve)
-    //     .on('error', reject)
-    //     .pipe(fs.createWriteStream(`./tmp/${dist}.zip`))
-    //   });
-    // })();
     // await unzip(`./tmp/${dist}.zip`);
     // await (async () => {
     //   return new Promise((resolve, reject) => {
@@ -70,7 +73,7 @@ function distribution({platform, arch}) {
     //   });
     // })();
   } catch(err) {
-    console.error(err);
+    console.error('error:', err);
   }
 })();
 

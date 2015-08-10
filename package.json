@@ -32,6 +32,7 @@
   "files": [
     "bin",
     "scripts",
+    "build",
     "LICENSE",
     "README.md"
   ],
