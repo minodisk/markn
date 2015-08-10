@@ -24,17 +24,6 @@ Consists of awesome modules.
 
 ## Installation
 
-You can choose from 2 ways to install.
-
-### Download way
-
 1. Download zipped file from [latest release](https://github.com/minodisk/markn/releases/latest).
 1. Unzip.
 1. Double click Markn/Markn.app/Markn.exe.
-
-### npm way
-
-Easy to run application from terminal.
-
-1. `npm install -g markn`
-1. `markn foo.md`
