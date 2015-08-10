@@ -86,6 +86,7 @@ export default class Window extends EventEmitter {
     // Markdown file: Render it.
     if (EXTENSIONS.indexOf(extname(url).toLowerCase()) !== -1) {
       this.start(url);
+      return;
     }
 
     // Others: Open external application.
