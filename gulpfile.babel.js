@@ -301,7 +301,7 @@ gulp.task('release', ['compile'], (cb) => {
 
       await Promise.all(dirs.map(({name}) => {
         console.log('zip:', name);
-        return spawn('zip', [`../${TEMP_DIR}/${name}.zip -r ${name}`], {cwd: BUILD_DIR});
+        return spawn('zip', [`${TEMP_DIR}/${name}.zip -r ${BUILD_DIR}/${name}`]);
       }));
 
       let id = await (async () => {
