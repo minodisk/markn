@@ -25,80 +25,60 @@ let owner = basename(dirname(url));
 let repo = basename(pkg.repository.url, extname(url));
 let isWatch = false;
 
-function exec(command, options = {}) {
-  let d = Q.defer();
-  cp.exec(command, options, (err, stdout, stderr) => {
-    if (stdout) console.log(stdout);
-    if (stderr) console.error(stderr);
-    if (err) {
-      d.reject(err);
-      return;
-    }
-    d.resolve();
-  });
-  return d.promise;
-}
-
-function mkdir(dir) {
-  let d = Q.defer();
-  mkdirp(dir, (err) => {
-    if (err) {
-      d.reject(err);
-      return;
-    }
-    d.resolve();
-  });
-  return d.promise;
-}
-
-function icon(platform) {
-  let src = resolve('assets/icon.svg');
-
-  return Q.when('')
-  .then(() => {
-    if (platform && platform !== 'darwin') {
-      return;
-    }
-
-    return mkdir(`${TEMP_DIR}/mac.iconset`)
-    .then(() => {
-      let macSizes = [];
-      [16, 32, 128, 256, 512].forEach(el => macSizes.push(el, el));
-
-      return Q.all(macSizes.map((size, i) => {
-        let d = Q.defer();
-        let ratio = 1;
-        let postfix = '';
-        if (i % 2) {
-          ratio = 2;
-          postfix = '@2x'
-        }
-        let dest = resolve(`${TEMP_DIR}/mac.iconset/icon_${size}x${size}${postfix}.png`);
-        return exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size*ratio} -h ${size*ratio} ${src}`);
-      }));
-    })
-    .then(() => {
-      return exec(`iconutil -c icns -o ${ASSETS_DIR}/markn.icns ${TEMP_DIR}/mac.iconset`);
-    });
-  })
-  .then(() => {
-    if (platform && platform !== 'win32') {
-      return;
-    }
-
-    return mkdir(`${TEMP_DIR}/win.iconset`)
-    .then(() => {
-      let winSizes = [16, 32, 48, 96, 256];
-
-      return Q.all(winSizes.map((size) => {
-        let dest = resolve(`${TEMP_DIR}/win.iconset/icon_${size}x${size}.png`);
-        return exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size} -h ${size} ${src}`);
-      }));
-    })
-    .then(() => {
-      return exec(`convert ${TEMP_DIR}/win.iconset/icon_*.png ${ASSETS_DIR}/markn.ico`);
+async function exec(command, options = {}) {
+  return new Promise((resolve, reject) => {
+    cp.exec(command, options, (err, stdout, stderr) => {
+      if (stdout) console.log(stdout);
+      if (stderr) reject(stderr);
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
     });
   });
+}
+
+async function mkdir(dir) {
+  return new Promise((resolve, reject) => {
+    mkdirp(dir, (err) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
+    });
+  });
+}
+
+async function icon(platform = 'all') {
+  let src = resolve(`${ASSETS_DIR}/icon.svg`);
+
+  if (['all', 'darwin'].indexOf(platform) !== -1) {
+    let macSizes = [];
+    [16, 32, 128, 256, 512].forEach(el => macSizes.push(el, el));
+    await mkdir(`${TEMP_DIR}/mac.iconset`);
+    await Promise.all([macSizes.map((size, i) => {
+      let ratio = 1;
+      let postfix = '';
+      if (i % 2) {
+        ratio = 2;
+        postfix = '@2x'
+      }
+      let dest = resolve(`${TEMP_DIR}/mac.iconset/icon_${size}x${size}${postfix}.png`);
+      return exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size*ratio} -h ${size*ratio} ${src}`);
+    })]);
+    await exec(`iconutil -c icns -o ${ASSETS_DIR}/markn.icns ${TEMP_DIR}/mac.iconset`);
+  }
+  if (['all', 'win32'].indexOf(platform) !== -1) {
+    let winSizes = [16, 32, 48, 96, 256];
+    await mkdir(`${TEMP_DIR}/win.iconset`);
+    await Promise.all(winSizes.map((size) => {
+      let dest = resolve(`${TEMP_DIR}/win.iconset/icon_${size}x${size}.png`);
+      return exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size} -h ${size} ${src}`);
+    }));
+    await exec(`convert ${TEMP_DIR}/win.iconset/icon_*.png ${ASSETS_DIR}/markn.ico`);
+  }
 }
 
 async function pack(platform = 'all', arch = 'all') {
@@ -114,7 +94,7 @@ async function pack(platform = 'all', arch = 'all') {
       overwrite: true
     }, (err, dirs) => {
       if (err != null) {
-        d.reject(err);
+        reject(err);
         return;
       }
       resolve(dirs);
@@ -122,7 +102,6 @@ async function pack(platform = 'all', arch = 'all') {
     });
   });
 }
-
 
 gulp.task('default', () => {
   livereload.listen({
@@ -137,43 +116,23 @@ gulp.task('debug', ['compile'], () => {
   return gulp.start('electron');
 });
 
-gulp.task('electron', (cb) => {
-  exec(`./node_modules/electron-prebuilt/cli.js ${APP_DIR}`)
-  .then(() => cb())
-  .fail(cb);
+gulp.task('electron', async () => {
+  await exec(`./node_modules/electron-prebuilt/cli.js ${APP_DIR}`);
 });
 
-gulp.task('package', ['compile'], (cb) => {
-  icon()
-  .then(pack)
-  .then((dirs) => {
-    cb(null, dirs);
-  })
-  .fail((err) => {
-    cb(err)
-  });
+gulp.task('package', ['compile'], async () => {
+  await icon();
+  await pack();
 });
 
-gulp.task('install', ['compile'], (cb) => {
+gulp.task('install', ['compile'], async () => {
   let {platform, arch} = process;
-  icon(platform)
-  .then(() => {
-    return pack(platform, arch);
-  })
-  .then((dirs) => {
-    cb();
-  })
-  .fail(cb);
+  await icon(platform);
+  await pack(platform, arch);
 });
 
-gulp.task('icon', (cb) => {
-  icon()
-  .then(() => {
-    cb();
-  })
-  .fail((err) => {
-    cb(err);
-  });
+gulp.task('icon', async () => {
+  await icon()
 });
 
 gulp.task('compile', ['copy', 'jade', 'webpack']);
@@ -276,7 +235,7 @@ gulp.task('webpack', (cb) => {
   });
 });
 
-gulp.task('release', ['compile'], () => {
+gulp.task('release', ['compile'], async () => {
   let github = new GitHub({
     version: '3.0.0',
     debug: true
@@ -286,69 +245,64 @@ gulp.task('release', ['compile'], () => {
     token: process.env.TOKEN
   });
 
-  Q.when('')
-  .then(() => mkdir(APP_DIR))
-  .then(() => {
-    let json, release, releases, version;
-    releases = ['major', 'minor', 'patch'];
-    release = argv.r;
-    if (releases.indexOf(release) < 0) {
-      release = 'patch';
-    }
-    version = semver.inc(pkg.version, release);
-    pkg.version = version;
-    json = JSON.stringify(pkg, null, 2);
-    [
-      'package.json',
-      `${APP_DIR}/package.json`
-    ].forEach((p) => {
-      return writeFileSync(p, json);
-    });
-  })
-  .then(() => {
-    return console.log('bump package.json');
-  })
-  .then(() => {
+  try {
+    await mkdir(APP_DIR);
+    await (async () => {
+      return console.log('bump package.json');
+      let releases = ['major', 'minor', 'patch'];
+      let release = argv.r;
+      if (releases.indexOf(release) < 0) {
+        release = 'patch';
+      }
+      let version = semver.inc(pkg.version, release);
+      pkg.version = version;
+      let json = JSON.stringify(pkg, null, 2);
+      [
+        'package.json',
+        `${APP_DIR}/package.json`
+      ].forEach((p) => {
+        return writeFileSync(p, json);
+      });
+    })()
+
     console.log('git commit package.json');
-    return exec(`git commit -m "Bump version to v${pkg.version}" package.json`);
-  })
-  .then(() => {
+    await exec(`git commit -m "Bump version to v${pkg.version}" package.json`);
+
     console.log('git push');
-    return exec('git push');
-  })
-  .then(icon)
-  .then(pack)
-  .then((dirs) => {
+    await exec('git push');
+
+    await icon();
+    let dirs = await pack();
+
     dirs = dirs.map((dir) => {
       console.log(dir)
       let name = basename(dir);
       return {dir, name};
     });
-    return Q.all(dirs.map(({name}) => {
+
+    await Promise.all(dirs.map(({name}) => {
       console.log('zip:', name);
       return exec(`zip ../${TEMP_DIR}/${name}.zip -r ${name}`, {cwd: BUILD_DIR});
-    }))
-    .then(() => {
-      let d;
-      d = Q.defer();
+    }));
+
+    let id = await (async () => {
       console.log('create new release');
-      github.releases.createRelease({
-        owner: owner,
-        repo: repo,
-        tag_name: 'v' + pkg.version
-      }, (err, res) => {
-        if (err != null) {
-          d.reject(err);
-        }
-        console.log(JSON.stringify(res, null, 2));
-        return d.resolve(res.id);
+      return new Promise((resolve, reject) => {
+        github.releases.createRelease({
+          owner: owner,
+          repo: repo,
+          tag_name: 'v' + pkg.version
+        }, (err, res) => {
+          if (err) return reject(err);
+          console.log(JSON.stringify(res, null, 2));
+          resolve(res.id);
+        });
       });
-      return d.promise;
-    })
-    .then((id) => {
-      console.log('complete to create new release: ' + id);
-      return Q.all(dirs.map(({name}) => {
-        let d = Q.defer();
+    });
+
+    console.log('complete to create new release: ' + id);
+    await Promise.all(dirs.map(({name}) => {
+      return new Promise((release, reject) => {
         github.releases.uploadAsset({
           owner: owner,
           repo: repo,
@@ -356,23 +310,16 @@ gulp.task('release', ['compile'], () => {
           name: `${name}.zip`,
           filePath: join(TEMP_DIR, `${name}.zip`)
         }, (err, res) => {
-          if (err != null) {
-            d.reject(err);
-          }
+          if (err) return reject(err);
           console.log(JSON.stringify(res, null, 2));
-          return d.resolve();
+          resolve();
         });
-        return d.promise;
-      }))
-      .then(() => {
-        return console.log('complete to upload');
       });
-    });
-  })
-  .then(() => {
+    }));
+    console.log('complete to upload');
+
     console.log('done');
-  })
-  .fail((err) => {
+  } catch (err) {
     console.error(err);
-  });
+  }
 });
