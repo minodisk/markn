@@ -9,8 +9,7 @@ import mkdirp from 'mkdirp'
 import packager from 'electron-packager'
 import GitHub from 'github'
 import cp from 'child_process'
-import Q from 'q'
-import argv from 'yargs'
+import yargs from 'yargs'
 import semver from 'semver'
 import livereload from 'gulp-livereload'
 
@@ -85,7 +84,7 @@ async function pack(platform = 'all', arch = 'all') {
       dir: APP_DIR,
       out: BUILD_DIR,
       name: 'Markn',
-      version: '0.30.2',
+      version: '0.30.4',
       icon: `${ASSETS_DIR}/markn`,
       overwrite: true
     }, (err, dirs) => {
@@ -104,11 +103,7 @@ gulp.task('default', () => {
   return gulp.start('debug');
 });
 
-gulp.task('debug', ['compile'], () => {
-  return gulp.start('electron');
-});
-
-gulp.task('electron', (cb) => {
+gulp.task('debug', ['compile'], (cb) => {
   (async () => {
     try {
       await spawn('./node_modules/electron-prebuilt/cli.js', [APP_DIR]);
@@ -197,9 +192,9 @@ gulp.task('webpack', (cb) => {
           test: /\.coffee$/,
           loader: 'coffee'
         }, {
-          test: /\.jade$/,
-          loader: 'jade'
-        }, {
+        //   test: /\.jade$/,
+        //   loader: 'jade'
+        // }, {
           test: /\.css$/,
           loaders: ['style', 'raw']
         }, {
@@ -271,7 +266,7 @@ gulp.task('release', ['compile'], (cb) => {
       await (async () => {
         return console.log('bump package.json');
         let releases = ['major', 'minor', 'patch'];
-        let release = argv.r;
+        let release = yargs.r;
         if (releases.indexOf(release) < 0) {
           release = 'patch';
         }
