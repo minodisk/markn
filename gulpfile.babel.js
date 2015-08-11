@@ -78,6 +78,7 @@ async function icon(platform = 'all') {
 
 async function pack(platform = 'all', arch = 'all') {
   return new Promise((resolve, reject) => {
+    console.log('pack:', platform, arch);
     packager({
       platform,
       arch,
@@ -130,13 +131,12 @@ gulp.task('install', ['compile'], (cb) => {
   (async () => {
     try {
       let {platform, arch} = process;
-      await icon(platform);
       await pack(platform, arch);
       cb();
     } catch (err) {
       cb(err);
     }
-  });
+  })();
 });
 
 gulp.task('icon', async () => {

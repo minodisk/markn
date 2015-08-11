@@ -36,6 +36,7 @@ export default class Main {
 
   onReady() {
     let {argv} = process;
+    console.log('Markn argv:', argv);
     let filename = argv[1]
     if (filename) {
       filename = resolve(filename);

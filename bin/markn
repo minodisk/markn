@@ -15,23 +15,23 @@ var platform = process.platform;
 var arch = process.arch;
 var app = path.join(__dirname, '../build/Markn-' + platform + '-' + arch + '/');
 
-var command, opts;
+var cmd, args;
 
 switch (platform) {
   case 'darwin':
-    app += 'Markn.app';
-    command = 'open';
-    opts = ['-a',  app,  '-W',  '-n',  '--args'].concat(argv._);
+    app += 'Markn.app/Contents/MacOS/Electron';
+    cmd = app
+    args = argv._
     break;
   case 'linux':
     app += 'Markn';
-    command = app;
-    opts = argv._;
+    cmd = app;
+    args = argv._;
     break;
   case 'win32':
     app += 'Markn.exe';
-    command = app;
-    opts = argv._;
+    cmd = app;
+    args = argv._;
     break;
   default:
     console.error('Unsupported platform:', platform);
@@ -39,7 +39,8 @@ switch (platform) {
     break;
 }
 
-var Markn = spawn(command, opts);
+console.log('spawn:', cmd, args);
+var Markn = spawn(cmd, args);
 Markn.stdout.on('data', function (data) {
   console.log(data.toString('utf8'));
 });
