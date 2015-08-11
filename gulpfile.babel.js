@@ -25,17 +25,13 @@ let owner = basename(dirname(url));
 let repo = basename(pkg.repository.url, extname(url));
 let isWatch = false;
 
-async function exec(command, options = {}) {
+async function spawn(cmd, args, opts = {}) {
   return new Promise((resolve, reject) => {
-    cp.exec(command, options, (err, stdout, stderr) => {
-      if (stdout) console.log(stdout);
-      if (stderr) reject(stderr);
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve();
-    });
+    let p = cp.spawn(cmd, args, opts);
+    p.stderr.on('data', (data) => console.error(data.toString('utf8')));
+    p.stdout.on('data', (data) => console.log(data.toString('utf8')));
+    p.on('error', reject);
+    p.on('close', resolve);
   });
 }
 
@@ -66,18 +62,18 @@ async function icon(platform = 'all') {
         postfix = '@2x'
       }
       let dest = resolve(`${TEMP_DIR}/mac.iconset/icon_${size}x${size}${postfix}.png`);
-      return exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size*ratio} -h ${size*ratio} ${src}`);
+      return spawn('inkscape', ['-z', '-e', dest, '-d', 72, '-y', 0, '-w', size*ratio, '-h', size*ratio, src]);
     })]);
-    await exec(`iconutil -c icns -o ${ASSETS_DIR}/markn.icns ${TEMP_DIR}/mac.iconset`);
+    await spawn('iconutil', ['-c', 'icns', '-o', `${ASSETS_DIR}/markn.icns`, `${TEMP_DIR}/mac.iconset`]);
   }
   if (['all', 'win32'].indexOf(platform) !== -1) {
     let winSizes = [16, 32, 48, 96, 256];
     await mkdir(`${TEMP_DIR}/win.iconset`);
     await Promise.all(winSizes.map((size) => {
       let dest = resolve(`${TEMP_DIR}/win.iconset/icon_${size}x${size}.png`);
-      return exec(`inkscape -z -e ${dest} -d 72 -y 0 -w ${size} -h ${size} ${src}`);
+      return spawn('inkscape', ['-z', '-e', dest, '-d', 72, '-y', 0, '-w', size, '-h', size, src]);
     }));
-    await exec(`convert ${TEMP_DIR}/win.iconset/icon_*.png ${ASSETS_DIR}/markn.ico`);
+    await spawn('convert', [`${TEMP_DIR}/win.iconset/icon_*.png`, `${ASSETS_DIR}/markn.ico`]);
   }
 }
 
@@ -93,12 +89,8 @@ async function pack(platform = 'all', arch = 'all') {
       icon: `${ASSETS_DIR}/markn`,
       overwrite: true
     }, (err, dirs) => {
-      if (err != null) {
-        reject(err);
-        return;
-      }
+      if (err) return reject(err);
       resolve(dirs);
-      return;
     });
   });
 }
@@ -116,23 +108,51 @@ gulp.task('debug', ['compile'], () => {
   return gulp.start('electron');
 });
 
-gulp.task('electron', async () => {
-  await exec(`./node_modules/electron-prebuilt/cli.js ${APP_DIR}`);
+gulp.task('electron', (cb) => {
+  (async () => {
+    try {
+      await spawn('./node_modules/electron-prebuilt/cli.js', [APP_DIR]);
+      cb();
+    } catch (err) {
+      cb(err);
+    }
+  })();
 });
 
-gulp.task('package', ['compile'], async () => {
-  await icon();
-  await pack();
+gulp.task('package', ['compile'], (cb) => {
+  (async () => {
+    try {
+      await icon();
+      await pack();
+      cb();
+    } catch (err) {
+      cb(err);
+    }
+  })();
 });
 
-gulp.task('install', ['compile'], async () => {
-  let {platform, arch} = process;
-  await icon(platform);
-  await pack(platform, arch);
+gulp.task('install', ['compile'], (cb) => {
+  (async () => {
+    try {
+      let {platform, arch} = process;
+      await icon(platform);
+      await pack(platform, arch);
+      cb();
+    } catch (err) {
+      cb(err);
+    }
+  });
 });
 
 gulp.task('icon', async () => {
-  await icon()
+  (async () => {
+    try {
+      await icon()
+      cb();
+    } catch (err) {
+      cb(err);
+    }
+  });
 });
 
 gulp.task('compile', ['copy', 'jade', 'webpack']);
@@ -235,91 +255,95 @@ gulp.task('webpack', (cb) => {
   });
 });
 
-gulp.task('release', ['compile'], async () => {
-  let github = new GitHub({
-    version: '3.0.0',
-    debug: true
-  });
-  github.authenticate({
-    type: 'oauth',
-    token: process.env.TOKEN
-  });
-
-  try {
-    await mkdir(APP_DIR);
-    await (async () => {
-      return console.log('bump package.json');
-      let releases = ['major', 'minor', 'patch'];
-      let release = argv.r;
-      if (releases.indexOf(release) < 0) {
-        release = 'patch';
-      }
-      let version = semver.inc(pkg.version, release);
-      pkg.version = version;
-      let json = JSON.stringify(pkg, null, 2);
-      [
-        'package.json',
-        `${APP_DIR}/package.json`
-      ].forEach((p) => {
-        return writeFileSync(p, json);
+gulp.task('release', ['compile'], (cb) => {
+  (async () => {
+    try {
+      let github = new GitHub({
+        version: '3.0.0',
+        debug: true
       });
-    })()
+      github.authenticate({
+        type: 'oauth',
+        token: process.env.TOKEN
+      });
 
-    console.log('git commit package.json');
-    await exec(`git commit -m "Bump version to v${pkg.version}" package.json`);
+      await mkdir(APP_DIR);
+      await (async () => {
+        return console.log('bump package.json');
+        let releases = ['major', 'minor', 'patch'];
+        let release = argv.r;
+        if (releases.indexOf(release) < 0) {
+          release = 'patch';
+        }
+        let version = semver.inc(pkg.version, release);
+        pkg.version = version;
+        let json = JSON.stringify(pkg, null, 2);
+        [
+          'package.json',
+          `${APP_DIR}/package.json`
+        ].forEach((p) => {
+          return writeFileSync(p, json);
+        });
+      })()
 
-    console.log('git push');
-    await exec('git push');
+      console.log('git commit package.json');
+      await spawn('git', ['commit', '-m', `Bump version to v${pkg.version}`, 'package.json']);
 
-    await icon();
-    let dirs = await pack();
+      console.log('git push');
+      await spawn('git', ['push']);
 
-    dirs = dirs.map((dir) => {
-      console.log(dir)
-      let name = basename(dir);
-      return {dir, name};
-    });
+      await icon();
+      let dirs = await pack();
 
-    await Promise.all(dirs.map(({name}) => {
-      console.log('zip:', name);
-      return exec(`zip ../${TEMP_DIR}/${name}.zip -r ${name}`, {cwd: BUILD_DIR});
-    }));
+      dirs = dirs.map((dir) => {
+        console.log(dir)
+        let name = basename(dir);
+        return {dir, name};
+      });
 
-    let id = await (async () => {
-      console.log('create new release');
-      return new Promise((resolve, reject) => {
-        github.releases.createRelease({
-          owner: owner,
-          repo: repo,
-          tag_name: 'v' + pkg.version
-        }, (err, res) => {
-          if (err) return reject(err);
-          console.log(JSON.stringify(res, null, 2));
-          resolve(res.id);
+      await Promise.all(dirs.map(({name}) => {
+        console.log('zip:', name);
+        return spawn('zip', [`../${TEMP_DIR}/${name}.zip -r ${name}`], {cwd: BUILD_DIR});
+      }));
+
+      let id = await (async () => {
+        console.log('create new release');
+        return new Promise((resolve, reject) => {
+          github.releases.createRelease({
+            owner: owner,
+            repo: repo,
+            tag_name: 'v' + pkg.version
+          }, (err, res) => {
+            if (err) return reject(err);
+            console.log(JSON.stringify(res, null, 2));
+            resolve(res.id);
+          });
         });
       });
-    });
 
-    console.log('complete to create new release: ' + id);
-    await Promise.all(dirs.map(({name}) => {
-      return new Promise((release, reject) => {
-        github.releases.uploadAsset({
-          owner: owner,
-          repo: repo,
-          id: id,
-          name: `${name}.zip`,
-          filePath: join(TEMP_DIR, `${name}.zip`)
-        }, (err, res) => {
-          if (err) return reject(err);
-          console.log(JSON.stringify(res, null, 2));
-          resolve();
+      console.log('complete to create new release: ' + id);
+      await Promise.all(dirs.map(({name}) => {
+        return new Promise((release, reject) => {
+          github.releases.uploadAsset({
+            owner: owner,
+            repo: repo,
+            id: id,
+            name: `${name}.zip`,
+            filePath: join(TEMP_DIR, `${name}.zip`)
+          }, (err, res) => {
+            if (err) return reject(err);
+            console.log(JSON.stringify(res, null, 2));
+            resolve();
+          });
         });
-      });
-    }));
-    console.log('complete to upload');
+      }));
+      console.log('complete to upload');
 
-    console.log('done');
-  } catch (err) {
-    console.error(err);
-  }
+      console.log('done');
+      cb();
+    } catch (err) {
+      console.error(err);
+      cb(err);
+    }
+  })();
 });
