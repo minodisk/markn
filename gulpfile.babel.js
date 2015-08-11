@@ -139,7 +139,7 @@ gulp.task('install', ['compile'], (cb) => {
   })();
 });
 
-gulp.task('icon', async () => {
+gulp.task('icon', (cb) => {
   (async () => {
     try {
       await icon()
@@ -147,7 +147,7 @@ gulp.task('icon', async () => {
     } catch (err) {
       cb(err);
     }
-  });
+  })();
 });
 
 gulp.task('compile', ['copy', 'jade', 'webpack']);
@@ -264,7 +264,7 @@ gulp.task('release', ['compile'], (cb) => {
 
       await mkdir(APP_DIR);
       await (async () => {
-        return console.log('bump package.json');
+
         let releases = ['major', 'minor', 'patch'];
         let release = yargs.r;
         if (releases.indexOf(release) < 0) {
@@ -272,6 +272,9 @@ gulp.task('release', ['compile'], (cb) => {
         }
         let version = semver.inc(pkg.version, release);
         pkg.version = version;
+
+        console.log('bump the version of package.json:', pkg.version);
+
         let json = JSON.stringify(pkg, null, 2);
         [
           'package.json',
@@ -279,7 +282,7 @@ gulp.task('release', ['compile'], (cb) => {
         ].forEach((p) => {
           return writeFileSync(p, json);
         });
-      })()
+      })();
 
       console.log('git commit package.json');
       await spawn('git', ['commit', '-m', `Bump version to v${pkg.version}`, 'package.json']);
@@ -307,16 +310,17 @@ gulp.task('release', ['compile'], (cb) => {
           github.releases.createRelease({
             owner: owner,
             repo: repo,
-            tag_name: 'v' + pkg.version
+            tag_name: `v${pkg.version}`
           }, (err, res) => {
             if (err) return reject(err);
             console.log(JSON.stringify(res, null, 2));
             resolve(res.id);
           });
         });
-      });
+      })();
 
-      console.log('complete to create new release: ' + id);
+      console.log('complete to create new release:', id);
+
       await Promise.all(dirs.map(({name}) => {
         return new Promise((release, reject) => {
           github.releases.uploadAsset({
