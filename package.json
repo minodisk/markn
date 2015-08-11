@@ -1,6 +1,6 @@
 {
   "name": "markn",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Lightweight markdown viewer",
   "main": "main.js",
   "bin": {
