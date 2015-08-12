@@ -6,8 +6,13 @@ import path from 'path'
 let $ = React.createElement;
 
 export default class MyCompiler extends Compiler {
-  compile(md, dir) {
+  compile(md, dir, search) {
     this.dir = dir;
+    if (search === '') {
+      this.search = null;
+    } else {
+      this.search = new RegExp(`(${search})`, 'ig');
+    }
     this.ids = {};
     return super.compile(md);
   }
@@ -17,6 +22,21 @@ export default class MyCompiler extends Compiler {
       key,
       className: 'markdown-body'
     }, this.toChildren(node, defs, key));
+  }
+
+  text(node, defs, key, tableAlign) {
+    if (!this.search) {
+      return node.value;
+    }
+    let children = [];
+    let words = node.value.split(this.search);
+    words = words.map((word, i) => {
+      if (i % 2 === 0) {
+        return word
+      }
+      return $('mark', {}, word);
+    });
+    return $('span', {}, words);
   }
 
   image({src, title, alt}, defs, key, tableAlign) {

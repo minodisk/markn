@@ -19,17 +19,11 @@ export default class MarkdownComponent extends React.Component {
     });
     this.action = new ActionCreator();
     this.store = new MarkdownStore();
-    this.store.on('change', this.update.bind(this));
-    this.store.on('search', this.mark.bind(this));
+    this.store.on('update', this.update.bind(this));
   }
 
-  update(md, dirname) {
-    let el = this.compiler.compile(md, dirname);
-    this.setState({content: el});
-  }
-
-  mark(text) {
-    this.setState({search: text});
+  update(md, dirname, search) {
+    this.setState({content: this.compiler.compile(md, dirname, search)});
   }
 
   render() {
