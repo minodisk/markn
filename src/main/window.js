@@ -24,8 +24,26 @@ const EXTENSIONS = [
 ];
 
 export default class Window extends EventEmitter {
+  static add(window) {
+    console.log(this);
+    if (!this.windows) this.windows = _([]);
+    this.windows = this.windows.push(window);
+    console.log('current windows:', this.windows.size(), this.windows.value());
+  }
+
+  static remove(window) {
+    this.windows = this.windows.remove(window);
+    console.log('current windows:', this.windows.size(), this.windows.value());
+  }
+
+  static closeAllWindows() {
+    this.windows.each((window) => window.close());
+  }
+
   constructor(filename) {
     super();
+
+    Window.add(this);
 
     this.filename = filename;
     this.onFileChanged = this.onFileChanged.bind(this);
@@ -105,10 +123,12 @@ export default class Window extends EventEmitter {
   }
 
   onClose() {
+    console.log('onClose');
     this.destruct();
     this.emit('close', {
       currentTarget: this
     });
+    Window.remove(this);
   }
 
   onOpenFileRequested() {

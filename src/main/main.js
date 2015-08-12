@@ -15,7 +15,7 @@ import Window from './window'
 export default class Main {
   constructor() {
     this.VERSION = app.getVersion();
-    this.onWindowClosed = this.onWindowClosed.bind(this);
+    this.onWindowClose = this.onWindowClose.bind(this);
     this.onOpenHelpRequested = this.onOpenHelpRequested.bind(this);
     this.onOpenAboutDialogRequested = this.onOpenAboutDialogRequested.bind(this);
     this.onQuitRequested = this.onQuitRequested.bind(this);
@@ -24,7 +24,7 @@ export default class Main {
     this.onWindowAllClosed = this.onWindowAllClosed.bind(this);
     this.onReady = this.onReady.bind(this);
 
-    this.windows = _([]);
+    // this.windows = _([]);
     app.on('ready', this.onReady);
     app.on('window-all-closed', this.onWindowAllClosed);
     app.on('quit', this.onQuit);
@@ -90,21 +90,29 @@ export default class Main {
     console.log(`open ${filename}`);
 
     let window = new Window(filename);
-    window.on('closed', this.onWindowClosed);
-    this.windows = this.windows.push(window);
+    window.on('close', this.onWindowClose);
+
+    // if (!Window.windows) Window.windows = _([]);
+    // // Window.windows.each((i, window) => console.log(i, window.browserWindow.isFocused()))
+    // // Window.windows = Window.windows.push(window);
+    // console.log('current windows:', this.windows.size());
+    // console.log(this.windows.value());
   }
 
   closeAllWindows() {
-    console.log("close all windows: " + (this.windows.size()) + " windows");
-    this.windows.each((window) => {
-      window.close();
-    });
+    // console.log("close all windows: " + this.windows.size() + " windows");
+    // this.windows.each((window) => window.close());
+
+    Window.closeAllWindows();
   }
 
-  onWindowClosed(e) {
+  onWindowClose(e) {
     let window = e.currentTarget;
     window.removeAllListeners();
-    this.windows = this.windows.splice(this.windows.indexOf(window), 1);
+
+    // this.windows.remove(window);
+    // console.log('current windows:', this.windows.size());
+    // console.log(this.windows.value());
   }
 
   quit() {
