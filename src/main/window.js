@@ -41,11 +41,11 @@ export default class Window extends EventEmitter {
 
     this.storage = new Storage;
     this.storage.get('bounds', (err, bounds) => {
-      if (err != null) {
+      if (err) {
         bounds = {
           width: 800,
           height: 600
-        }
+        };
       }
       this.browserWindow = new BrowserWindow(bounds);
       this.browserWindow.webContents.on('did-finish-load', this.onContentsDidFinishLoad);
@@ -62,9 +62,11 @@ export default class Window extends EventEmitter {
   }
 
   destruct() {
+    this.browserWindow.webContents.removeAllListeners();
     this.browserWindow.removeAllListeners();
     mediator.removeListener(events.OPEN_FILE, this.onOpenFileRequested);
     mediator.removeListener(events.TOGGLE_DEVTOOLS, this.onToggleDevToolsRequested);
+    mediator.removeListener(events.FIND, this.onFindRequested);
     mediator.removeListener(events.RELOAD, this.onReloadRequested);
   }
 
