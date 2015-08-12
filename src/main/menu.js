@@ -1,10 +1,14 @@
 import Menu from 'menu'
+import Item from 'menu-item'
 import mediator from './mediator'
 import events from './events'
 
 export default class {
   constructor() {
-    Menu.setApplicationMenu(Menu.buildFromTemplate(Menu.sendActionToFirstResponder != null ? [
+    // this.onStartFile = this.onStartFile.bind(this);
+    // mediator.on(events.START_FILE, this.onStartFile);
+
+    this.menu = Menu.buildFromTemplate(Menu.sendActionToFirstResponder != null ? [
       {
         label: 'Markn',
         submenu: [
@@ -49,6 +53,11 @@ export default class {
             click: function() {
               mediator.emit(events.OPEN_FILE);
             }
+          }, {
+            type: 'separator'
+          }, {
+            label: 'Recently opened files',
+            submenu: []
           }
         ]
       }, {
@@ -145,6 +154,11 @@ export default class {
           }, {
             type: 'separator'
           }, {
+            label: 'Recently opened files',
+            submenu: []
+          }, {
+            type: 'separator'
+          }, {
             label: 'Exit',
             accelerator: 'CommandOrControl+Q',
             click: function() {
@@ -191,6 +205,50 @@ export default class {
           }
         ]
       }
-    ]));
+    ]);
+    Menu.setApplicationMenu(this.menu);
+
+    // this.menu.items.forEach((item) => {
+    //   switch (item.label) {
+    //     case 'File':
+    //       item.submenu.items.forEach((item) => {
+    //         switch (item.label) {
+    //           case 'Recently opened files':
+    //             this.rof = item.submenu;
+    //             break;
+    //         }
+    //       });
+    //       break;
+    //   }
+    // });
+    // console.log(this.rof);
   }
+
+  // onStartFile(filename) {
+    // console.log('----------');
+
+    // let index;
+    // this.rof.submenu.items.forEach((f, i) => {
+    //   console.log(i, f.label);
+    //   if (f.filename === filename) {
+    //     index = i;
+    //     return false;
+    //   }
+    // });
+    // if (index != null) {
+    //   this.items.splice(index, 1);
+    // }
+    //
+    // console.log('   ---   ');
+
+    // this.rof.insert(0, new Item({
+    //   label: filename,
+    //   click: () => {
+    //     console.log('click:', filename);
+    //   }
+    // }));
+    // this.rof.items.forEach((f, i) => {
+    //   console.log(i, f.label);
+    // });
+  // }
 }

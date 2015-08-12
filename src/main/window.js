@@ -35,7 +35,7 @@ export default class Window extends EventEmitter {
   }
 
   static closeAllWindows() {
-    this.windows.each((window) => window.close());
+    this.windows.forEach((window) => window.close());
   }
 
   constructor(filename) {
@@ -176,7 +176,6 @@ export default class Window extends EventEmitter {
   start(filename) {
     if (filename) {
       this.filename = normalize(filename);
-      console.log(this.filename);
     }
 
     if (this.watcher != null) {
@@ -192,6 +191,7 @@ export default class Window extends EventEmitter {
 
     this.browserWindow.setTitle(this.filename);
     this.load(this.filename);
+    mediator.emit(events.START_FILE, this.filename);
   }
 
   onFileChanged(filename) {
