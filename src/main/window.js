@@ -24,16 +24,14 @@ const EXTENSIONS = [
 ];
 
 export default class Window extends EventEmitter {
+
   static add(window) {
-    console.log(this);
-    if (!this.windows) this.windows = _([]);
-    this.windows = this.windows.push(window);
-    console.log('current windows:', this.windows.size(), this.windows.value());
+    if (!this.windows) this.windows = [];
+    this.windows.push(window);
   }
 
   static remove(window) {
-    this.windows = this.windows.remove(window);
-    console.log('current windows:', this.windows.size(), this.windows.value());
+    this.windows.splice(this.windows.indexOf(window), 1);
   }
 
   static closeAllWindows() {
