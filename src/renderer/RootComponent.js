@@ -14,7 +14,7 @@ export default class RootComponent extends React.Component {
   onFocusMark(mark) {
     let rect = mark.getBoundingClientRect();
     let root = React.findDOMNode(this.refs.root);
-    root.scrollTop = rect.top;
+    root.scrollTop += rect.top - window.innerHeight / 2;
   }
 
   render() {
