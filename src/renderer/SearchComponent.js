@@ -7,13 +7,15 @@ export default class SearchComponent extends React.Component {
     super(props);
     this.state = {
       index: '',
-      isShown: false
+      isShown: false,
+      disabled: false
     };
 
     this.action = new ActionCreator();
     this.store = new SearchStore();
     this.store.on('openFind', this.show.bind(this));
     this.store.on('closeFind', this.hide.bind(this));
+    this.store.on('updateDisable', this.updateDisable.bind(this));
   }
 
   update(index) {
@@ -29,24 +31,34 @@ export default class SearchComponent extends React.Component {
     this.setState({isShown: false});
   }
 
+  updateDisable(disabled) {
+    this.setState({disabled});
+  }
+
   onInput() {
-    var text = React.findDOMNode(this.refs.search).value;
+    let text = React.findDOMNode(this.refs.search).value;
     this.action.search(text);
   }
 
+  onKeyDown(e) {
+    if (e.key != 'Enter') return;
+    this.action.scrollToNext();
+  }
+
   render() {
-    var classNames = ['search-box'];
+    let classNames = ['search-box'];
     if (this.state.isShown) {
       classNames.push('is-shown');
     }
+    console.log(this.state);
     return (
       <div className={classNames.join(' ')}>
         <div className='search'>
-          <input type='text' ref='search' onInput={this.onInput.bind(this)}/>
+          <input type='text' ref='search' onInput={this.onInput.bind(this)} onKeyDown={this.onKeyDown.bind(this)}/>
           <span className='index'>{this.state.index}</span>
         </div>
-        <button className='fa fa-chevron-up button-up'/>
-        <button className='fa fa-chevron-down button-up'/>
+        <button className='fa fa-chevron-up button-up' disabled={this.state.disabled}/>
+        <button className='fa fa-chevron-down button-up' disabled={this.state.disabled}/>
         <button className='fa fa-times button-close' onClick={this.onClickClose.bind(this)}/>
       </div>
     );
@@ -64,5 +76,9 @@ class ActionCreator {
 
   search(text) {
     dispatcher.emit('search', text);
+  }
+
+  scrollToNext() {
+    dispatcher.emit('next-mark');
   }
 }
