@@ -24,7 +24,9 @@ export default class SearchComponent extends React.Component {
 
   show() {
     this.setState({isShown: true});
-    React.findDOMNode(this.refs.search).focus();
+    let input = React.findDOMNode(this.refs.search);
+    input.focus();
+    input.select();
   }
 
   hide() {
