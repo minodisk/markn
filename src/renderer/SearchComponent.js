@@ -7,7 +7,8 @@ export default class SearchComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      index: '',
+      current: 0,
+      total: 0,
       isShown: false,
       disabled: false
     };
@@ -17,10 +18,7 @@ export default class SearchComponent extends React.Component {
     this.store.on('openFind', this.show.bind(this));
     this.store.on('closeFind', this.hide.bind(this));
     this.store.on('updateDisable', this.updateDisable.bind(this));
-  }
-
-  update(index) {
-    this.setState({index: '1/11'});
+    this.store.on('focus-mark', this.onFocusMark.bind(this));
   }
 
   show() {
@@ -48,12 +46,16 @@ export default class SearchComponent extends React.Component {
     this.action.next();
   }
 
+  onFocusMark(_, current, total) {
+    this.setState({current, total});
+  }
+
   render() {
     return (
       <div className={classNames('search-box', {'is-shown': this.state.isShown})}>
         <div className='search'>
           <input type='text' ref='search' onInput={this.onInput.bind(this)} onKeyDown={this.onKeyDown.bind(this)}/>
-          <span className='index'>{this.state.index}</span>
+          <span className='index'>{this.state.total === 0 ? '' : `${this.state.current + 1}/${this.state.total}`}</span>
         </div>
         <button className='fa fa-chevron-up button-up' disabled={this.state.disabled}/>
         <button className='fa fa-chevron-down button-down' disabled={this.state.disabled}/>

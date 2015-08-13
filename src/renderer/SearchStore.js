@@ -24,6 +24,7 @@ export default new class SearchStore extends EventEmitter {
   }
 
   updateMarks(marks) {
+    this.focusedIndex = 0;
     this.marks = marks;
 
     if (this.marks.length === 0) {
@@ -31,10 +32,15 @@ export default new class SearchStore extends EventEmitter {
     } else {
       this.emit('updateDisable', false);
     }
+
+    this.nextMark();
   }
 
   nextMark() {
     let len = this.marks.length;
+    let mark = this.marks[this.focusedIndex];
+    this.emit('focus-mark', mark, this.focusedIndex, len);
+
     if (len === 0) {
       return;
     }
@@ -43,8 +49,5 @@ export default new class SearchStore extends EventEmitter {
     if (this.focusedIndex >= len) {
       this.focusedIndex = 0;
     }
-
-    let mark = this.marks[this.focusedIndex];
-    this.emit('focus-mark', mark);
   }
 }
