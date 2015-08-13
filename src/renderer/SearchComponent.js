@@ -1,6 +1,7 @@
 import React from 'react'
-import SearchStore from './SearchStore'
+import searchStore from './SearchStore'
 import dispatcher from './Dispatcher'
+import classNames from 'classnames'
 
 export default class SearchComponent extends React.Component {
   constructor(props) {
@@ -12,7 +13,7 @@ export default class SearchComponent extends React.Component {
     };
 
     this.action = new ActionCreator();
-    this.store = new SearchStore();
+    this.store = searchStore;
     this.store.on('openFind', this.show.bind(this));
     this.store.on('closeFind', this.hide.bind(this));
     this.store.on('updateDisable', this.updateDisable.bind(this));
@@ -44,23 +45,18 @@ export default class SearchComponent extends React.Component {
 
   onKeyDown(e) {
     if (e.key != 'Enter') return;
-    this.action.scrollToNext();
+    this.action.next();
   }
 
   render() {
-    let classNames = ['search-box'];
-    if (this.state.isShown) {
-      classNames.push('is-shown');
-    }
-    console.log(this.state);
     return (
-      <div className={classNames.join(' ')}>
+      <div className={classNames('search-box', {'is-shown': this.state.isShown})}>
         <div className='search'>
           <input type='text' ref='search' onInput={this.onInput.bind(this)} onKeyDown={this.onKeyDown.bind(this)}/>
           <span className='index'>{this.state.index}</span>
         </div>
         <button className='fa fa-chevron-up button-up' disabled={this.state.disabled}/>
-        <button className='fa fa-chevron-down button-up' disabled={this.state.disabled}/>
+        <button className='fa fa-chevron-down button-down' disabled={this.state.disabled}/>
         <button className='fa fa-times button-close' onClick={this.onClickClose.bind(this)}/>
       </div>
     );
@@ -80,7 +76,7 @@ class ActionCreator {
     dispatcher.emit('search', text);
   }
 
-  scrollToNext() {
+  next() {
     dispatcher.emit('next-mark');
   }
 }

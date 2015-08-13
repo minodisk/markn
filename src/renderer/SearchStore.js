@@ -2,7 +2,7 @@ import EventEmitter from 'events'
 import ipc from 'ipc'
 import dispatcher from './Dispatcher'
 
-export default class SearchStore extends EventEmitter {
+export default new class SearchStore extends EventEmitter {
   constructor() {
     super();
 
@@ -40,11 +40,11 @@ export default class SearchStore extends EventEmitter {
     }
 
     this.focusedIndex++;
-    if (this.focuedIndex >= len) {
+    if (this.focusedIndex >= len) {
       this.focusedIndex = 0;
     }
 
     let mark = this.marks[this.focusedIndex];
-    let rect = mark.getBoundingClientRect();
+    this.emit('focus-mark', mark);
   }
 }

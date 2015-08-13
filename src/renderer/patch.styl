@@ -23,7 +23,7 @@ body
   border-top none
   border-radius 0 0 4px 4px
   background-color #DADBDA
-  transition transform 0.3s ease-in-out-quad
+  transition transform 0.15s ease-out
   &.is-shown
     transform translateY(0)
   .search
@@ -63,10 +63,19 @@ body
     background none
     border none
     outline none
+    &.button-up, &.button-down
+      color #000
+      background -moz-linear-gradient(top, #f2f2f2, #dad8d8)
+      background -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#dad8d8))
+      &:disabled
+        color #747474
+        background none
     &.button-up
       border-top 1px solid #c8c9c9
-      border-right 1px solid #DADBDA
+      border-right 1px solid #f3f4f2
       border-bottom 1px solid #c8c9c9
+      &:disabled
+        border-right 1px solid #DADBDA
     &.button-down
       width 23px
       border-top 1px solid #c8c9c9
@@ -92,16 +101,6 @@ body
           border 1px solid #c35354
           border-radius 50%
           background #db8282
-  .is-applicable
-    button
-      &.button-up
-        border-right 1px solid #f3f4f2
-
-.search-box .is-applicable button.button-up,
-.search-box .is-applicable button.button-down
-  color #000
-  background -moz-linear-gradient(top, #f2f2f2, #dad8d8)
-  background -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#dad8d8))
 
 .body
   position relative
