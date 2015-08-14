@@ -17,8 +17,9 @@ export default class SearchComponent extends React.Component {
     this.store = searchStore;
     this.store.on('openFind', this.show.bind(this));
     this.store.on('closeFind', this.hide.bind(this));
-    this.store.on('updateDisable', this.updateDisable.bind(this));
-    this.store.on('focus-mark', this.onFocusMark.bind(this));
+    this.store.on('disabling', this.onDisabling.bind(this));
+    this.store.on('enabling', this.onEnabling.bind(this));
+    this.store.on('indicating', this.onIndicating.bind(this));
   }
 
   show() {
@@ -32,21 +33,15 @@ export default class SearchComponent extends React.Component {
     this.setState({isShown: false});
   }
 
-  updateDisable(disabled) {
-    this.setState({disabled});
+  onDisabling() {
+    this.setState({disabled: true});
   }
 
-  onInput() {
-    let text = React.findDOMNode(this.refs.search).value;
-    this.action.search(text);
+  onEnabling() {
+    this.setState({disabled: false});
   }
 
-  onKeyDown(e) {
-    if (e.key != 'Enter') return;
-    this.action.next();
-  }
-
-  onFocusMark(_, current, total) {
+  onIndicating(current, total) {
     this.setState({current, total});
   }
 
@@ -54,17 +49,23 @@ export default class SearchComponent extends React.Component {
     return (
       <div className={classNames('search-box', {'is-shown': this.state.isShown})}>
         <div className='search'>
-          <input type='text' ref='search' onInput={this.onInput.bind(this)} onKeyDown={this.onKeyDown.bind(this)}/>
-          <span className='index'>{this.state.total === 0 ? '' : `${this.state.current + 1}/${this.state.total}`}</span>
+          <input type='text' ref='search' onInput={this.action.input} onKeyDown={this.action.keydown}/>
+          <span className='indication'>{this.state.total === 0 ? '' : `${this.state.current + 1} / ${this.state.total}`}</span>
         </div>
-        <button className='fa fa-chevron-up button-up' disabled={this.state.disabled}/>
-        <button className='fa fa-chevron-down button-down' disabled={this.state.disabled}/>
-        <button className='fa fa-times button-close' onClick={this.onClickClose.bind(this)}/>
+        <button className='fa fa-chevron-up button-up' disabled={this.state.disabled} onClick={this.action.backward}/>
+        <button className='fa fa-chevron-down button-down' disabled={this.state.disabled} onClick={this.action.forward}/>
+        <button className='fa fa-times button-close' onClick={this.action.close}/>
       </div>
     );
   }
 
-  onClickClose() {
+  onPrevClick() {
+  }
+
+  onNextClick() {
+  }
+
+  onCloseClick() {
     this.action.close();
   }
 }
@@ -74,11 +75,20 @@ class ActionCreator {
     dispatcher.emit('closeFind');
   }
 
-  search(text) {
-    dispatcher.emit('search', text);
+  input(e) {
+    dispatcher.emit('searching', e.currentTarget.value);
   }
 
-  next() {
-    dispatcher.emit('next-mark');
+  keydown(e) {
+    if (e.key != 'Enter') return;
+    dispatcher.emit('forwarding');
+  }
+
+  forward() {
+    dispatcher.emit('forwarding');
+  }
+
+  backward() {
+    dispatcher.emit('backwarding');
   }
 }

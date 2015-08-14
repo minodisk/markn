@@ -1,6 +1,7 @@
 import React from 'react'
 import MyCompiler from './MyCompiler'
-import MarkdownStore from './MarkdownStore'
+import markdownStore from './MarkdownStore'
+import searchStore from './SearchStore'
 import dispatcher from './Dispatcher'
 
 export default class MarkdownComponent extends React.Component {
@@ -9,7 +10,8 @@ export default class MarkdownComponent extends React.Component {
     this.state = {
       md: null,
       dirname: null,
-      search: null
+      search: null,
+      indication: -1
     };
 
     this.compiler = new MyCompiler({
@@ -19,13 +21,26 @@ export default class MarkdownComponent extends React.Component {
       commonmark: true,
       footnotes: true
     });
-    this.store = new MarkdownStore();
-    this.store.on('update', this.update.bind(this));
+
+    markdownStore.on('updating', this.onUpdating.bind(this));
+    markdownStore.on('searching', this.onSearching.bind(this));
+    searchStore.on('indicating', this.onIndicating.bind(this));
+
     this.action = new ActionCreator();
   }
 
-  update(md, dirname, search) {
-    this.setState({md, dirname, search});
+  onUpdating(md, dirname) {
+    this.isUpdating = true;
+    this.setState({md, dirname});
+  }
+
+  onSearching(search) {
+    this.isSearching = true;
+    this.setState({search});
+  }
+
+  onIndicating(indication) {
+    this.setState({indication});
   }
 
   render() {
@@ -33,17 +48,28 @@ export default class MarkdownComponent extends React.Component {
   }
 
   componentDidUpdate() {
-    let marks = [];
-    for (let i = 0; i < this.compiler.marksCount; i++) {
-      let mark = React.findDOMNode(this.refs[`mark${i}`]);
-      marks.push(mark);
+    if (this.isUpdating) {
+      this.isUpdating = false;
+      this.action.updated();
     }
-    this.action.updateMarks(marks);
+    if (this.isSearching) {
+      this.isSearching = false;
+      let marks = [];
+      for (let i = 0; i < this.compiler.marksCount; i++) {
+        let mark = React.findDOMNode(this.refs[`mark${i}`]);
+        marks.push(mark);
+      }
+      this.action.searched(marks);
+    }
   }
 }
 
 class ActionCreator {
-  updateMarks(marks) {
-    dispatcher.emit('update-marks', marks);
+  updated(marks) {
+    dispatcher.emit('updated');
+  }
+
+  searched(marks) {
+    dispatcher.emit('searched', marks);
   }
 }

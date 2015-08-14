@@ -11,8 +11,9 @@ export default new class SearchStore extends EventEmitter {
 
     ipc.on('openFind', this.onOpenFind.bind(this));
     dispatcher.on('closeFind', this.onCloseFind.bind(this));
-    dispatcher.on('update-marks', this.updateMarks.bind(this));
-    dispatcher.on('next-mark', this.nextMark.bind(this));
+    dispatcher.on('searched', this.onSearched.bind(this));
+    dispatcher.on('forwarding', this.onForwarding.bind(this));
+    dispatcher.on('backwarding', this.onBackwarding.bind(this));
   }
 
   onOpenFind() {
@@ -23,31 +24,42 @@ export default new class SearchStore extends EventEmitter {
     this.emit('closeFind');
   }
 
-  updateMarks(marks) {
+  onSearched(marks) {
     this.focusedIndex = 0;
     this.marks = marks;
 
     if (this.marks.length === 0) {
-      this.emit('updateDisable', true);
+      this.emit('disabling');
     } else {
-      this.emit('updateDisable', false);
+      this.emit('enabling');
     }
 
-    this.nextMark();
+    this.onForwarding();
   }
 
-  nextMark() {
+  onForwarding() {
+    this.moveIndication(1);
+  }
+
+  onBackwarding() {
+    this.moveIndication(-1);
+  }
+
+  moveIndication(delta) {
     let len = this.marks.length;
     let mark = this.marks[this.focusedIndex];
-    this.emit('focus-mark', mark, this.focusedIndex, len);
+    this.emit('indicating', this.focusedIndex, len, mark);
 
     if (len === 0) {
       return;
     }
 
-    this.focusedIndex++;
+    this.focusedIndex += delta;
     if (this.focusedIndex >= len) {
       this.focusedIndex = 0;
+    }
+    if (this.focusedIndex < 0) {
+      this.focusedIndex = len - 1;
     }
   }
 }

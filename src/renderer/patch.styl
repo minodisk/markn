@@ -1,5 +1,6 @@
 html,
 body
+  font-family sans-serif
   overflow hidden
   height 100%
 
@@ -46,11 +47,13 @@ body
         padding 0 42px 0 3px
         line-height 18px
         border 2px solid #a8cbf7
-    .index
+    .indication
       position absolute
       right 7px
       top 4px
       color #c9c9c9
+      font-size 0.85em
+      line-height 1.4
   .controller
     float left
   button
@@ -177,3 +180,6 @@ body
   .markdown-body h5:hover .anchor .icon-link,
   .markdown-body h6:hover .anchor .icon-link
     display inline-block
+
+  mark.indicated
+    background-color orange

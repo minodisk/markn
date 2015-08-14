@@ -6,13 +6,15 @@ import path from 'path'
 let $ = React.createElement;
 
 export default class MyCompiler extends Compiler {
-  compile({md, dir, search}) {
+  compile({md, dir, search, indication}) {
     this.dir = dir;
     if (search === '') {
       this.search = null;
     } else {
       this.search = new RegExp(`(${search})`, 'ig');
     }
+    this.indication = indication;
+
     this.ids = {};
     this.marksCount = 0;
     return super.compile(md);
@@ -35,7 +37,10 @@ export default class MyCompiler extends Compiler {
       if (i % 2 === 0) {
         return word
       }
-      return $('mark', {ref: `mark${this.marksCount++}`}, word);
+      return $('mark', {
+        className: this.marksCount === this.indication ? 'indicated' : '',
+        ref: `mark${this.marksCount++}`
+      }, word);
     });
     return $('span', {}, words);
   }
