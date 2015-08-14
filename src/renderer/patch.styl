@@ -51,6 +51,9 @@ body
       position absolute
       right 7px
       top 4px
+      font-family arial, sans-serif
+      font-size 13px
+      letter-spacing 0.8px
       color #c9c9c9
       font-size 0.85em
       line-height 1.4
@@ -67,12 +70,21 @@ body
     border none
     outline none
     &.button-up, &.button-down
+      position relative
       color #000
       background -moz-linear-gradient(top, #f2f2f2, #dad8d8)
       background -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#dad8d8))
+      &:before
+        position absolute
+        left 50%
+        top 50%
+        margin-top -6px
+        margin-left -5px
       &:disabled
         color #747474
         background none
+      &:active
+        background #8a8a8a
     &.button-up
       border-top 1px solid #c8c9c9
       border-right 1px solid #f3f4f2
@@ -96,14 +108,20 @@ body
       margin-right 5px
       &:before
         display inline-block
+        width 12px
+        height 12px
+        border-radius 50%
       &:hover
         &:before
-          width 12px
-          height 12px
           color #fff
           border 1px solid #c35354
-          border-radius 50%
           background #db8282
+      &:active
+        &:before
+          color #fff
+          border 1px solid #c35354
+          bg-color = #db8282;
+          background darken(bg-color,20%)
 
 .body
   position relative
