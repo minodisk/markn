@@ -1,14 +1,18 @@
-# Markn
+# ![Markn](title.png)
 
 Lightweight markdown viewer.
 
 ## Features
 
-- Re-render only changed elements.
-  - Possible to preview huge markdown with editing.
-  - Scroll position won't be changed while editing.
 - Only viewer.
   - You may use any editor you like.
+- Live reload.
+- Re-render only changed elements.
+  - Possible to preview huge markdown while editing.
+  - Scroll position won't be changed while editing.
+- Search text.
+  - With regular expression.
+- Possible to load local images.
 
 ## Components
 

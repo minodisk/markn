@@ -156,6 +156,7 @@ gulp.task('copy', () => {
   return gulp.src([
     'package.json',
     'README.md',
+    'title.png',
     'node_modules/font-awesome/**/*',
     'node_modules/chokidar/**/*'
   ], {
@@ -266,7 +267,7 @@ gulp.task('release', ['compile'], (cb) => {
       await (async () => {
 
         let releases = ['major', 'minor', 'patch'];
-        let release = yargs.r;
+        let release = yargs.argv.r;
         if (releases.indexOf(release) < 0) {
           release = 'patch';
         }
