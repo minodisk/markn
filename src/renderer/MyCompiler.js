@@ -6,8 +6,8 @@ import path from 'path'
 let $ = React.createElement;
 
 export default class MyCompiler extends Compiler {
-  compile({md, dir, search, indication}) {
-    this.dir = dir;
+  compile({md, dirname, search, indication}) {
+    this.dirname = dirname;
     if (search === '') {
       this.search = null;
     } else {
@@ -47,7 +47,9 @@ export default class MyCompiler extends Compiler {
 
   image({src, title, alt}, defs, key, tableAlign) {
     if(!(/^https?:\/\//.test(src))) {
-      src = path.resolve(this.dir, src);
+    console.log(this.dirname, src);
+      src = path.resolve(this.dirname, src);
+    console.log(this.dirname, src);
     }
     return $('img', {
       key,
@@ -59,7 +61,7 @@ export default class MyCompiler extends Compiler {
 
   link(node, defs, key, tableAlign) {
     if(!(/^https?:\/\//.test(node.href))) {
-      node.href = path.resolve(this.dir, node.href);
+      node.href = path.resolve(this.dirname, node.href);
     }
     return $('a', {
       key,

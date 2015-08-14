@@ -8,9 +8,9 @@ export default class MarkdownComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      md: null,
-      dirname: null,
-      search: null,
+      md: '',
+      dirname: '',
+      search: '',
       indication: -1
     };
 
