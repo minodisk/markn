@@ -47,9 +47,7 @@ export default class MyCompiler extends Compiler {
 
   image({src, title, alt}, defs, key, tableAlign) {
     if(!(/^https?:\/\//.test(src))) {
-    console.log(this.dirname, src);
       src = path.resolve(this.dirname, src);
-    console.log(this.dirname, src);
     }
     return $('img', {
       key,
