@@ -157,6 +157,7 @@ gulp.task('copy', () => {
     'package.json',
     'README.md',
     'title.png',
+    'demo.gif',
     'node_modules/font-awesome/**/*',
     'node_modules/chokidar/**/*'
   ], {
