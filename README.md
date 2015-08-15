@@ -14,6 +14,16 @@ Lightweight markdown viewer.
   - With regular expression.
 - Possible to load local images.
 
+## Screenshot
+
+![Demo](demo.gif)
+
+## Installation
+
+1. Download zipped file from [latest release](https://github.com/minodisk/markn/releases/latest).
+1. Unzip.
+1. Double click Markn/Markn.app/Markn.exe.
+
 ## Components
 
 Consists of awesome modules.
@@ -25,9 +35,3 @@ Consists of awesome modules.
 - Watch file with [paulmillr/chokidar](https://github.com/paulmillr/chokidar).
 - Style with [sindresorhus/github-markdown-css](https://github.com/sindresorhus/github-markdown-css).
   - Use some icons in [FortAwesome/Font-Awesome](https://github.com/FortAwesome/Font-Awesome).
-
-## Installation
-
-1. Download zipped file from [latest release](https://github.com/minodisk/markn/releases/latest).
-1. Unzip.
-1. Double click Markn/Markn.app/Markn.exe.
