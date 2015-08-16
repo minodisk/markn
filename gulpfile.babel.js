@@ -159,7 +159,8 @@ gulp.task('copy', () => {
     'title.png',
     'demo.gif',
     'node_modules/font-awesome/**/*',
-    'node_modules/chokidar/**/*'
+    'node_modules/chokidar/**/*',
+    'node_modules/highlight.js/**/*'
   ], {
     base: '.'
   })

@@ -2,10 +2,20 @@ import React from 'react'
 // import Compiler from 'imports?React=react!md2react'
 import Compiler from 'imports?React=react!../../node_modules/md2react/src/index'
 import path from 'path'
+import Highlight from 'react-highlight'
 
 let $ = React.createElement;
 
+function highlight(code, lang, key) {
+  return <Highlight className={lang}>{code}</Highlight>;
+}
+
 export default class MyCompiler extends Compiler {
+  constructor(opts) {
+    opts.highlight = highlight;
+    super(opts);
+  }
+
   compile({md, dirname, search, indication}) {
     this.dirname = dirname;
     if (search === '') {
