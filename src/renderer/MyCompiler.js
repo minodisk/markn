@@ -11,6 +11,8 @@ function highlight(code, lang, key) {
 }
 
 export default class MyCompiler extends Compiler {
+  static rEmoji = /:[0-9a-z_+-]+:/g;
+
   constructor(opts) {
     opts.highlight = highlight;
     super(opts);
@@ -21,7 +23,10 @@ export default class MyCompiler extends Compiler {
     if (search === '') {
       this.search = null;
     } else {
-      this.search = new RegExp(`(${search})`, 'ig');
+      this.search = {
+        text: search,
+        regExp: new RegExp(`(${search})`, 'ig')
+      };
     }
     this.indication = indication;
 
@@ -38,11 +43,13 @@ export default class MyCompiler extends Compiler {
   }
 
   text(node, defs, key, tableAlign) {
-    if (!this.search) {
+
+
+    if (!this.search || node.value.indexOf(this.search.text) === -1) {
       return node.value;
     }
     let children = [];
-    let words = node.value.split(this.search);
+    let words = node.value.split(this.search.regExp);
     words = words.map((word, i) => {
       if (i % 2 === 0) {
         return word
