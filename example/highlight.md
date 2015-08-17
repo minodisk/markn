@@ -1,4 +1,4 @@
-Borrow example from https://highlightjs.org/static/demo/
+This example is borrowed from https://highlightjs.org/static/demo/
 
 ```js
 import {x, y} as p from 'point';
