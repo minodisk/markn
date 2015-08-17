@@ -11,7 +11,7 @@ function highlight(code, lang, key) {
 }
 
 export default class MyCompiler extends Compiler {
-  static rEmoji = /:[0-9a-z_+-]+:/g;
+  // static rEmoji = /:[0-9a-z_+-]+:/g;
 
   constructor(opts) {
     opts.highlight = highlight;
@@ -43,8 +43,6 @@ export default class MyCompiler extends Compiler {
   }
 
   text(node, defs, key, tableAlign) {
-
-
     if (!this.search || node.value.indexOf(this.search.text) === -1) {
       return node.value;
     }

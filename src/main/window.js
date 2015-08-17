@@ -95,20 +95,22 @@ export default class Window extends EventEmitter {
   }
 
   onContentsWillNavigate(e, url) {
-    console.log(url);
     // Renderer file: Reload.
     if (url === URL) {
       return;
     }
 
+    // Prevent navigation in this application.
+    e.preventDefault();
+
     // Markdown file: Render it.
     if (EXTENSIONS.indexOf(extname(url).toLowerCase()) !== -1) {
+      url = url.replace(/^file:\/*/, '/');
       this.start(url);
       return;
     }
 
     // Others: Open external application.
-    e.preventDefault();
     shell.openExternal(url);
   }
 
