@@ -1,3 +1,5 @@
+Borrow example from https://highlightjs.org/static/demo/
+
 ```js
 import {x, y} as p from 'point';
 const ANSWER = 42;
