@@ -9,23 +9,22 @@ npm install
 ## Debugging
 
 ```bash
-gulp
+npm run debug
 ```
 
-## Update icons
+## Release to github releases (Only Owner or Collaborator)
 
-### Ready in MacOSX
+requires github oauth `TOKEN`.
 
 1. Install wine with `brew install wine`.
+2. Then:
 
-### Make iconset
+- major release: `TOKEN=xxxxxxxxxxxx gulp publish -r major`
+- minor release: `TOKEN=xxxxxxxxxxxx gulp publish -r minor`
+- patch release: `TOKEN=xxxxxxxxxxxx gulp publish -r patch` or just `token=xxxxxxxxxxxx gulp publish`
 
-Write icons into `assets/Markn.iconset`
+## Publish to npm (Only Owner)
 
-## Publication (Only Owner or Collaborator)
-
-Requires github OAuth `TOKEN`.
-
-- Major release: `TOKEN=XXXXXXXXXXXX gulp publish -r major`
-- Minor release: `TOKEN=XXXXXXXXXXXX gulp publish -r minor`
-- Patch release: `TOKEN=XXXXXXXXXXXX gulp publish -r patch` or just `TOKEN=XXXXXXXXXXXX gulp publish`
+```bash
+npm run publish
+```

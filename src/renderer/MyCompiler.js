@@ -2,7 +2,10 @@ import React from 'react'
 // import Compiler from 'imports?React=react!md2react'
 import Compiler from 'imports?React=react!../../node_modules/md2react/src/index'
 import path from 'path'
+import classnames from 'classnames'
 import Highlight from 'react-highlight'
+import emoji from 'node-emoji'
+import twemoji from 'twemoji'
 
 let $ = React.createElement;
 
@@ -11,8 +14,6 @@ function highlight(code, lang, key) {
 }
 
 export default class MyCompiler extends Compiler {
-  // static rEmoji = /:[0-9a-z_+-]+:/g;
-
   constructor(opts) {
     opts.highlight = highlight;
     super(opts);
@@ -43,6 +44,25 @@ export default class MyCompiler extends Compiler {
   }
 
   text(node, defs, key, tableAlign) {
+    if (node.value.indexOf(':') !== -1) {
+      let chunks = node.value
+      .split(/:([0-9a-z_+-]+):/g)
+      .map((type, i) => {
+        if (i % 2 === 0) {
+          return type;
+        }
+        return <i className={classnames('twa', `twa-${type}`)}></i>;
+        // let char = emoji.get(type);
+        // if (char) {
+        //   let code = twemoji.convert.toCodePoint(char);
+        //   // return <img src={`../node_modules/twemoji/svg/${code}.svg`} />;
+        //   return
+        // }
+        // return type;
+      });
+      return $('span', {}, chunks);
+    }
+
     if (!this.search || node.value.indexOf(this.search.text) === -1) {
       return node.value;
     }

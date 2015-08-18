@@ -158,8 +158,9 @@ gulp.task('copy', () => {
     'README.md',
     'title.png',
     'demo.gif',
-    'node_modules/font-awesome/**/*',
     'node_modules/chokidar/**/*',
+    'node_modules/font-awesome/**/*',
+    'node_modules/twemoji-awesome/**/*',
     'node_modules/highlight.js/**/*'
   ], {
     base: '.'
@@ -203,6 +204,9 @@ gulp.task('webpack', (cb) => {
         }, {
           test: /\.styl$/,
           loaders: ['style', 'raw', 'stylus']
+        }, {
+          test: /\.json/,
+          loader: 'json'
         }
       ]
     },
