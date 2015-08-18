@@ -4,13 +4,34 @@ import Compiler from 'imports?React=react!../../node_modules/md2react/src/index'
 import path from 'path'
 import classnames from 'classnames'
 import Highlight from 'react-highlight'
-import emoji from 'node-emoji'
-import twemoji from 'twemoji'
+// import emoji from 'node-emoji'
+// import twemoji from 'twemoji'
+// import 'emojione'
 
 let $ = React.createElement;
 
 function highlight(code, lang, key) {
   return <Highlight className={lang}>{code}</Highlight>;
+}
+
+function toCodePoint(unicodeSurrogates, sep) {
+  var
+    r = [],
+    c = 0,
+    p = 0,
+    i = 0;
+  while (i < unicodeSurrogates.length) {
+    c = unicodeSurrogates.charCodeAt(i++);
+    if (p) {
+      r.push((0x10000 + ((p - 0xD800) << 10) + (c - 0xDC00)).toString(16));
+      p = 0;
+    } else if (0xD800 <= c && c <= 0xDBFF) {
+      p = c;
+    } else {
+      r.push(c.toString(16));
+    }
+  }
+  return r.join(sep || '-');
 }
 
 export default class MyCompiler extends Compiler {
@@ -43,6 +64,10 @@ export default class MyCompiler extends Compiler {
     }, this.toChildren(node, defs, key));
   }
 
+  onError(e) {
+    console.error(e.currentTarget.title, e.currentTarget.alt);
+  }
+
   text(node, defs, key, tableAlign) {
     if (node.value.indexOf(':') !== -1) {
       let chunks = node.value
@@ -51,14 +76,19 @@ export default class MyCompiler extends Compiler {
         if (i % 2 === 0) {
           return type;
         }
-        return <i className={classnames('twa', `twa-${type}`)}></i>;
         // let char = emoji.get(type);
-        // if (char) {
-        //   let code = twemoji.convert.toCodePoint(char);
-        //   // return <img src={`../node_modules/twemoji/svg/${code}.svg`} />;
-        //   return
+        // if (char == null) {
+        //   console.warn(type);
+        //   return type;
         // }
-        // return type;
+        // let code = twemoji.convert.toCodePoint(char);
+        // // return <img src={`https://twemoji.maxcdn.com/svg/${code}.svg`} />;
+
+        // let image = emojione.shortnameToImage(type);
+        // console.log(image);
+
+        // return <img title={type} alt={code} src={`../node_modules/twemoji/svg/${code}.svg`} onError={this.onError.bind(this)} />;
+        // return <i className={classnames('twa', `twa-${type}`)}></i>;
       });
       return $('span', {}, chunks);
     }
