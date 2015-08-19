@@ -4,34 +4,21 @@ import Compiler from 'imports?React=react!../../node_modules/md2react/src/index'
 import path from 'path'
 import classnames from 'classnames'
 import Highlight from 'react-highlight'
-// import emoji from 'node-emoji'
-// import twemoji from 'twemoji'
-// import 'emojione'
+import em from '../../node_modules/emojione/emoji.json'
+
+let emo = {};
+for (let key in em) {
+  let val = em[key];
+  emo[val.shortname] = val;
+  val.aliases.forEach((alias) => {
+    emo[alias] = val;
+  });
+}
 
 let $ = React.createElement;
 
 function highlight(code, lang, key) {
   return <Highlight className={lang}>{code}</Highlight>;
-}
-
-function toCodePoint(unicodeSurrogates, sep) {
-  var
-    r = [],
-    c = 0,
-    p = 0,
-    i = 0;
-  while (i < unicodeSurrogates.length) {
-    c = unicodeSurrogates.charCodeAt(i++);
-    if (p) {
-      r.push((0x10000 + ((p - 0xD800) << 10) + (c - 0xDC00)).toString(16));
-      p = 0;
-    } else if (0xD800 <= c && c <= 0xDBFF) {
-      p = c;
-    } else {
-      r.push(c.toString(16));
-    }
-  }
-  return r.join(sep || '-');
 }
 
 export default class MyCompiler extends Compiler {
@@ -65,7 +52,7 @@ export default class MyCompiler extends Compiler {
   }
 
   onError(e) {
-    console.error(e.currentTarget.title, e.currentTarget.alt);
+    // console.error(e.currentTarget.title, e.currentTarget.src);
   }
 
   text(node, defs, key, tableAlign) {
@@ -76,19 +63,14 @@ export default class MyCompiler extends Compiler {
         if (i % 2 === 0) {
           return type;
         }
-        // let char = emoji.get(type);
-        // if (char == null) {
-        //   console.warn(type);
+
+        // let data = emo[type];
+        // if (data == null) {
+        //   console.warn("not found:", type);
         //   return type;
         // }
-        // let code = twemoji.convert.toCodePoint(char);
-        // // return <img src={`https://twemoji.maxcdn.com/svg/${code}.svg`} />;
-
-        // let image = emojione.shortnameToImage(type);
-        // console.log(image);
-
-        // return <img title={type} alt={code} src={`../node_modules/twemoji/svg/${code}.svg`} onError={this.onError.bind(this)} />;
-        // return <i className={classnames('twa', `twa-${type}`)}></i>;
+        // return <img title={type} alt={type} src={`../node_modules/emojione/assets/svg/${data.unicode}.svg`} onError={this.onError.bind(this)} />;
+        return <i className={classnames('emoji', `emoji-${type}`)}></i>;
       });
       return $('span', {}, chunks);
     }

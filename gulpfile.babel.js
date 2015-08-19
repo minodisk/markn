@@ -12,6 +12,8 @@ import cp from 'child_process'
 import yargs from 'yargs'
 import semver from 'semver'
 import livereload from 'gulp-livereload'
+import emoji from './node_modules/emojione/emoji.json'
+
 
 const APP_DIR = 'app';
 const TEMP_DIR = 'tmp';
@@ -150,7 +152,41 @@ gulp.task('icon', (cb) => {
   })();
 });
 
-gulp.task('compile', ['copy', 'jade', 'webpack']);
+gulp.task('compile', ['emoji', 'copy', 'jade', 'webpack']);
+
+gulp.task('emoji', createEmojiCSS);
+
+function createEmojiCSS() {
+  let urls = {};
+  for (let key in emoji) {
+    let val = emoji[key];
+    let url = `./node_modules/emojione/assets/svg/${val.unicode}.svg`;
+    urls[val.shortname.substring(1, val.shortname.length - 1)] = url;
+    val.aliases.forEach((alias) => {
+      urls[alias.substring(1, val.shortname.length - 1)] = url;
+    });
+  }
+
+  let styles = [
+`.emoji {
+  display: inline-block;
+  height: 1em;
+  width: 1em;
+  margin: 0 .05em 0 .1em;
+  vertical-align: -0.1em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 1em 1em;
+}`
+  ];
+  for (let name in urls) {
+    let url = urls[name];
+    styles.push(`.emoji.emoji-${name} { background-image: url(${url}); }`)
+  }
+
+  let css = styles.join('\n');
+  writeFileSync('app/emoji.css', css);
+}
 
 gulp.task('copy', () => {
   return gulp.src([
@@ -160,8 +196,8 @@ gulp.task('copy', () => {
     'demo.gif',
     'node_modules/chokidar/**/*',
     'node_modules/font-awesome/**/*',
-    'node_modules/twemoji-awesome/**/*',
-    'node_modules/highlight.js/**/*'
+    'node_modules/highlight.js/**/*',
+    'node_modules/emojione/**/*',
   ], {
     base: '.'
   })
