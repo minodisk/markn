@@ -96,7 +96,7 @@
 - `mantlepiece_clock`: :mantlepiece_clock:
 - `alarm_clock`: :alarm_clock:
 - `calculator`: :calculator:
-- `pocket calculator`: :pocket calculator:
+- `pocket_calculator`: :pocket_calculator:
 - `desktop_window`: :desktop_window:
 - `printer`: :printer:
 - `network`: :network:

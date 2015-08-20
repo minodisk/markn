@@ -93,13 +93,9 @@ export default class MyCompiler extends Compiler {
         if (i % 2 === 0) {
           return type;
         }
-
-        // let data = emo[type];
-        // if (data == null) {
-        //   console.warn("not found:", type);
-        //   return type;
-        // }
-        // return <img title={type} alt={type} src={`../node_modules/emojione/assets/svg/${data.unicode}.svg`} onError={this.onError.bind(this)} />;
+        if (type.charAt(0) === '+') {
+          type = type.substr(1);
+        }
         return <i className={classnames('emojione', `emojione-${type}`)}></i>;
       });
       return $('span', {}, chunks);

@@ -18,7 +18,7 @@ import livereload from 'gulp-livereload'
 const APP_DIR = 'app';
 const TEMP_DIR = 'tmp';
 const BUILD_DIR = 'build';
-const ICON_DIR = 'sec/icon';
+const ICON_DIR = 'src/icon';
 const ASSETS_DIR = 'assets';
 
 let pkg = JSON.parse(readFileSync('package.json'));
