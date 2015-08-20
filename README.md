@@ -35,3 +35,5 @@ Consists of awesome modules.
 - Watch file with [paulmillr/chokidar](https://github.com/paulmillr/chokidar).
 - Style with [sindresorhus/github-markdown-css](https://github.com/sindresorhus/github-markdown-css).
   - Use some icons in [FortAwesome/Font-Awesome](https://github.com/FortAwesome/Font-Awesome).
+  - Render emoji with [Ranks/emojione](https://github.com/Ranks/emojione).
+  - Highlight code with [isagalaev/highlight.js](https://github.com/isagalaev/highlight.js)
