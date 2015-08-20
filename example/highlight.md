@@ -1,3 +1,5 @@
+# Highlight
+
 This example is borrowed from https://highlightjs.org/static/demo/
 
 ```js

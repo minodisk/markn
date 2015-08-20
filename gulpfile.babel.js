@@ -1,7 +1,9 @@
 import gulp from 'gulp'
 import gutil from 'gulp-util'
 import plumber from 'gulp-plumber'
+import filter from 'gulp-filter'
 import jade from 'gulp-jade'
+import stylus from 'gulp-stylus'
 import webpack from 'webpack'
 import {join, dirname, basename, extname, relative, resolve} from 'path'
 import {readFileSync, writeFileSync} from 'fs'
@@ -12,12 +14,11 @@ import cp from 'child_process'
 import yargs from 'yargs'
 import semver from 'semver'
 import livereload from 'gulp-livereload'
-import emoji from './node_modules/emojione/emoji.json'
-
 
 const APP_DIR = 'app';
 const TEMP_DIR = 'tmp';
 const BUILD_DIR = 'build';
+const ICON_DIR = 'sec/icon';
 const ASSETS_DIR = 'assets';
 
 let pkg = JSON.parse(readFileSync('package.json'));
@@ -49,7 +50,7 @@ async function mkdir(dir) {
 }
 
 async function icon(platform = 'all') {
-  let src = resolve(`${ASSETS_DIR}/icon.svg`);
+  let src = resolve(`${ICON_DIR}/icon.svg`);
 
   if (['all', 'darwin'].indexOf(platform) !== -1) {
     let macSizes = [];
@@ -65,7 +66,7 @@ async function icon(platform = 'all') {
       let dest = resolve(`${TEMP_DIR}/mac.iconset/icon_${size}x${size}${postfix}.png`);
       return spawn('inkscape', ['-z', '-e', dest, '-d', 72, '-y', 0, '-w', size*ratio, '-h', size*ratio, src]);
     })]);
-    await spawn('iconutil', ['-c', 'icns', '-o', `${ASSETS_DIR}/markn.icns`, `${TEMP_DIR}/mac.iconset`]);
+    await spawn('iconutil', ['-c', 'icns', '-o', `${ICON_DIR}/markn.icns`, `${TEMP_DIR}/mac.iconset`]);
   }
   if (['all', 'win32'].indexOf(platform) !== -1) {
     let winSizes = [16, 32, 48, 96, 256];
@@ -74,7 +75,7 @@ async function icon(platform = 'all') {
       let dest = resolve(`${TEMP_DIR}/win.iconset/icon_${size}x${size}.png`);
       return spawn('inkscape', ['-z', '-e', dest, '-d', 72, '-y', 0, '-w', size, '-h', size, src]);
     }));
-    await spawn('convert', [`${TEMP_DIR}/win.iconset/icon_*.png`, `${ASSETS_DIR}/markn.ico`]);
+    await spawn('convert', [`${TEMP_DIR}/win.iconset/icon_*.png`, `${ICON_DIR}/markn.ico`]);
   }
 }
 
@@ -88,7 +89,7 @@ async function pack(platform = 'all', arch = 'all') {
       out: BUILD_DIR,
       name: 'Markn',
       version: '0.30.4',
-      icon: `${ASSETS_DIR}/markn`,
+      icon: `${ICON_DIR}/markn`,
       overwrite: true
     }, (err, dirs) => {
       if (err) return reject(err);
@@ -103,6 +104,7 @@ gulp.task('default', () => {
     start: true
   });
   isWatch = true;
+  gulp.start('watch');
   return gulp.start('debug');
 });
 
@@ -152,64 +154,50 @@ gulp.task('icon', (cb) => {
   })();
 });
 
-gulp.task('compile', ['emoji', 'copy', 'jade', 'webpack']);
-
-gulp.task('emoji', createEmojiCSS);
-
-function createEmojiCSS() {
-  let urls = {};
-  for (let key in emoji) {
-    let val = emoji[key];
-    let url = `./node_modules/emojione/assets/svg/${val.unicode}.svg`;
-    urls[val.shortname.substring(1, val.shortname.length - 1)] = url;
-    val.aliases.forEach((alias) => {
-      urls[alias.substring(1, val.shortname.length - 1)] = url;
-    });
-  }
-
-  let styles = [
-`.emoji {
-  display: inline-block;
-  height: 1em;
-  width: 1em;
-  margin: 0 .05em 0 .1em;
-  vertical-align: -0.1em;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 1em 1em;
-}`
-  ];
-  for (let name in urls) {
-    let url = urls[name];
-    styles.push(`.emoji.emoji-${name} { background-image: url(${url}); }`)
-  }
-
-  let css = styles.join('\n');
-  writeFileSync('app/emoji.css', css);
-}
+gulp.task('compile', ['copy', 'jade', 'stylus', 'webpack']);
 
 gulp.task('copy', () => {
   return gulp.src([
     'package.json',
     'README.md',
-    'title.png',
-    'demo.gif',
+    'assets/**/*',
     'node_modules/chokidar/**/*',
+    'node_modules/github-markdown-css/**/*',
     'node_modules/font-awesome/**/*',
     'node_modules/highlight.js/**/*',
     'node_modules/emojione/**/*',
   ], {
     base: '.'
   })
-  .pipe(gulp.dest(APP_DIR));
+  .pipe(gulp.dest(APP_DIR))
+  .pipe(filter(['**/*.css']))
+  .pipe(livereload());
 });
 
 gulp.task('jade', () => {
   return gulp
-  .src('src/renderer/index.jade')
+  .src('src/static/*.jade')
+  .pipe(plumber())
   .pipe(jade())
   .pipe(gulp.dest(APP_DIR))
   .pipe(livereload());
+});
+
+gulp.task('stylus', () => {
+  return gulp
+  .src('src/static/*.styl')
+  .pipe(plumber())
+  .pipe(stylus())
+  .pipe(gulp.dest(APP_DIR))
+  .pipe(livereload());
+});
+
+gulp.task('watch', () => {
+  gulp.watch('src/static/*.jade', ['jade']);
+  gulp.watch('src/static/*.styl', ['stylus']);
+  gulp.watch('package.json', ['copy']);
+  gulp.watch('README.md', ['copy']);
+  gulp.watch('assets/**/*', ['copy']);
 });
 
 gulp.task('webpack', (cb) => {
@@ -257,7 +245,18 @@ gulp.task('webpack', (cb) => {
           'fs',
           'path',
           // Electron
-          'crash-reporter', 'app', 'menu', 'menu-item', 'browser-window', 'dialog', 'shell', 'ipc', 'chokidar'];
+          'crash-reporter',
+          'app',
+          'menu',
+          'menu-item',
+          'browser-window',
+          'dialog',
+          'shell',
+          'ipc',
+          // NPM
+          'chokidar',
+          'emojione',
+        ];
         return (context, request, callback) => {
           if (IGNORE.indexOf(request) >= 0) {
             return callback(null, `require('${request}')`);

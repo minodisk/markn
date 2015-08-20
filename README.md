@@ -1,4 +1,4 @@
-# ![Markn](title.png)
+# ![Markn](assets/title.png)
 
 Lightweight markdown viewer.
 
@@ -16,7 +16,7 @@ Lightweight markdown viewer.
 
 ## Screenshot
 
-![Demo](demo.gif)
+![Demo](assets/demo.gif)
 
 ## Installation
 

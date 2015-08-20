@@ -5,6 +5,7 @@ import path from 'path'
 import classnames from 'classnames'
 import Highlight from 'react-highlight'
 import em from '../../node_modules/emojione/emoji.json'
+import emojione from 'emojione'
 
 let emo = {};
 for (let key in em) {
@@ -16,6 +17,35 @@ for (let key in em) {
 }
 
 let $ = React.createElement;
+
+function emoji() {
+  if( (typeof shortname === 'undefined') || (shortname === '') || (!(shortname in ns.emojioneList)) ) {
+    // if the shortname doesnt exist just return the entire match
+    return shortname;
+  } else {
+    unicode = ns.emojioneList[shortname][ns.emojioneList[shortname].length-1].toUpperCase();
+
+    // depending on the settings, we'll either add the native unicode as the alt tag, otherwise the shortname
+    // alt = (ns.unicodeAlt) ? ns.convert(unicode) : shortname;
+
+    // if(ns.imageType === 'png') {
+    //   if(ns.sprites) {
+    //     replaceWith = '<span class="emojione-'+unicode+'" title="'+shortname+'">'+alt+'</span>';
+    //   } else {
+    //     replaceWith = '<img class="emojione" alt="'+alt+'" src="'+ns.imagePathPNG+unicode+'.png'+ns.cacheBustParam+'"/>';
+    //   }
+    // } else {
+      // svg
+      // if(ns.sprites) {
+      //   replaceWith = '<svg class="emojione"><description>'+alt+'</description><use xlink:href="'+ns.imagePathSVGSprites+'#emoji-'+unicode+'"></use></svg>';
+      // } else {
+      //   replaceWith = '<object class="emojione" data="'+ns.imagePathSVG+unicode+'.svg'+ns.cacheBustParam+'" type="image/svg+xml" standby="'+alt+'">'+alt+'</object>';
+      // }
+    // }
+
+    // return replaceWith;
+  }
+}
 
 function highlight(code, lang, key) {
   return <Highlight className={lang}>{code}</Highlight>;
@@ -70,7 +100,7 @@ export default class MyCompiler extends Compiler {
         //   return type;
         // }
         // return <img title={type} alt={type} src={`../node_modules/emojione/assets/svg/${data.unicode}.svg`} onError={this.onError.bind(this)} />;
-        return <i className={classnames('emoji', `emoji-${type}`)}></i>;
+        return <i className={classnames('emojione', `emojione-${type}`)}></i>;
       });
       return $('span', {}, chunks);
     }
