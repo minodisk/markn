@@ -9,7 +9,6 @@
   "scripts": {
     "test": "exit 0;",
     "debug": "./node_modules/gulp/bin/gulp.js",
-    "build": "./node_modules/gulp/bin/gulp.js build",
     "package": "./node_modules/gulp/bin/gulp.js package",
     "release": "./node_modules/gulp/bin/gulp.js release",
     "install": "./node_modules/gulp/bin/gulp.js install"
