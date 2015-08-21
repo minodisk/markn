@@ -169,9 +169,9 @@ gulp.task('copy', () => {
   ], {
     base: '.'
   })
-  .pipe(gulp.dest(APP_DIR))
-  .pipe(filter(['**/*.css']))
-  .pipe(livereload());
+  .pipe(gulp.dest(APP_DIR));
+  // .pipe(filter(['**/*.css']))
+  // .pipe(livereload());
 });
 
 gulp.task('jade', () => {
@@ -188,7 +188,7 @@ gulp.task('stylus', () => {
   .src('src/static/*.styl')
   .pipe(plumber())
   .pipe(stylus())
-  .pipe(gulp.dest(APP_DIR))
+  .pipe(gulp.dest(join(APP_DIR, 'styles')))
   .pipe(livereload());
 });
 
@@ -208,7 +208,7 @@ gulp.task('webpack', (cb) => {
       renderer: './src/renderer/index.js'
     },
     output: {
-      path: APP_DIR,
+      path: join(APP_DIR, 'scripts'),
       filename: '[name].js'
     },
     module: {

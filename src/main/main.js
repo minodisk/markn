@@ -83,7 +83,7 @@ export default class Main {
 
   openNewWindow(filename) {
     if (!filename) {
-      filename = join(__dirname, 'README.md');
+      filename = join(__dirname, '../README.md');
     }
     console.log(`open ${filename}`);
 

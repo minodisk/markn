@@ -10,7 +10,7 @@ import events from './events'
 import Storage from './storage'
 import {bindTarget} from './util'
 
-const URL = `file://${__dirname}/index.html`;
+const URL = 'file://' + join(__dirname, '..', 'index.html');
 const EXTENSIONS = [
   '.markdown',
   '.mdown',
@@ -20,7 +20,7 @@ const EXTENSIONS = [
   '.mdwn',
   '.mdtxt',
   '.mdtext',
-  '.text'
+  '.text',
 ];
 
 export default class Window extends EventEmitter {

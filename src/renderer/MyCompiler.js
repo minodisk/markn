@@ -96,7 +96,7 @@ export default class MyCompiler extends Compiler {
         if (type.charAt(0) === '+') {
           type = type.substr(1);
         }
-        return <i className={classnames('emojione', `emojione-${type}`)}></i>;
+        return <i className={classnames('emoji', `emoji-${type}`)}></i>;
       });
       return $('span', {}, chunks);
     }

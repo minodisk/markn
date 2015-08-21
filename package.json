@@ -2,7 +2,7 @@
   "name": "markn",
   "version": "0.1.2",
   "description": "Lightweight markdown viewer",
-  "main": "main.js",
+  "main": "scripts/main.js",
   "bin": {
     "markn": "./bin/markn"
   },
