@@ -81,18 +81,11 @@ export default class MyCompiler extends Compiler {
     }, this.toChildren(node, defs, key));
   }
 
-  onError(e) {
-    // console.error(e.currentTarget.title, e.currentTarget.src);
-  }
-
   text(node, defs, key, tableAlign) {
     if (node.value.indexOf(':') !== -1) {
       let chunks = node.value
       .split(/:([0-9a-z_+-]+):/g)
       .map((type, i) => {
-        if (i % 2 === 0) {
-          return type;
-        }
         if (type.charAt(0) === '+') {
           type = type.substr(1);
         }
