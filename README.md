@@ -7,12 +7,13 @@ Lightweight markdown viewer.
 - Only viewer.
   - You may use any editor you like.
 - Live reload.
-- Re-render only changed elements.
-  - Possible to preview huge markdown while editing.
-  - Scroll position won't be changed while editing.
+  - Re-render only changed elements.
+    - Possible to preview huge markdown while editing.
+    - Scroll position won't be changed while editing.
 - Search text.
   - With regular expression.
-- Possible to load local images.
+- Load local images.
+- Open a link to markdown in this application.
 
 ## Screenshot
 
