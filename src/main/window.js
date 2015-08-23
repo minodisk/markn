@@ -9,6 +9,7 @@ import mediator from './mediator'
 import events from './events'
 import Storage from './storage'
 import {bindTarget} from './util'
+import ipc from 'ipc'
 
 const URL = 'file://' + join(__dirname, '..', 'index.html');
 const EXTENSIONS = [
@@ -76,6 +77,7 @@ export default class Window extends EventEmitter {
       mediator.on(events.TOGGLE_DEVTOOLS, this.onToggleDevToolsRequested);
       mediator.on(events.FIND, this.onFindRequested);
       mediator.on(events.RELOAD, this.onReloadRequested);
+      ipc.on(events.RELOAD, this.onReloadRequested);
     });
   }
 

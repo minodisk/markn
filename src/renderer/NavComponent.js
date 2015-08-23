@@ -1,7 +1,8 @@
 import React from 'react'
 import classnames from 'classnames'
-import dispatcher from './Dispatcher'
 import navStore from './NavStore'
+import dispatcher from './Dispatcher'
+import ipc from 'ipc'
 
 export default class NavComponent extends React.Component {
   constructor(props) {
@@ -25,17 +26,22 @@ export default class NavComponent extends React.Component {
 
 class ActionCreator {
   backward() {
+    dispatcher.emit('backward');
   }
 
   forward() {
+    dispatcher.emit('forward');
   }
 
   reload() {
+    ipc.send('reload');
   }
 
   submit() {
+    dispatcher.emit('change-uri');
   }
 
   toggleMenu() {
+    dispatcher.emit('toggle-menu');
   }
 }
