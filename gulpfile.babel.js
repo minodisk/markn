@@ -215,7 +215,11 @@ gulp.task('webpack', (cb) => {
       loaders: [
         {
           test: /\.js$/,
-          loader: 'babel'
+          loader: 'babel',
+          query: {
+            // optional: ['runtime'],
+            stage: 2,
+          }
         }, {
           test: /\.coffee$/,
           loader: 'coffee'

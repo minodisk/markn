@@ -1,5 +1,5 @@
 import EventEmitter from 'events'
-import {readFile} from 'fs'
+import fs from 'fs'
 import {join, extname, dirname, normalize} from 'path'
 import {watch} from 'chokidar'
 import BrowserWindow from 'browser-window'
@@ -10,6 +10,7 @@ import events from './events'
 import Storage from './storage'
 import {bindTarget} from './util'
 import ipc from 'ipc'
+import polyfill from 'babel/polyfill'
 
 const URL = 'file://' + join(__dirname, '..', 'index.html');
 const EXTENSIONS = [
@@ -23,6 +24,15 @@ const EXTENSIONS = [
   '.mdtext',
   '.text',
 ];
+
+async function readFile(path) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, 'utf8', (err, data) => {
+      if (err) return reject(err);
+      resolve(data);
+    });
+  });
+}
 
 export default class Window extends EventEmitter {
 
@@ -73,12 +83,20 @@ export default class Window extends EventEmitter {
       this.browserWindow.on('resize', this.onResized);
       this.browserWindow.on('close', this.onClose);
       this.browserWindow.loadUrl(URL);
+      this.setTitle();
+
       mediator.on(events.OPEN_FILE, this.onOpenFileRequested);
       mediator.on(events.TOGGLE_DEVTOOLS, this.onToggleDevToolsRequested);
       mediator.on(events.FIND, this.onFindRequested);
       mediator.on(events.RELOAD, this.onReloadRequested);
       ipc.on(events.RELOAD, this.onReloadRequested);
     });
+  }
+
+  async setTitle() {
+    let pkg = await readFile('package.json');
+    let p = JSON.parse(pkg);
+    this.browserWindow.setTitle(`${p.appName} v${p.version}`);
   }
 
   destruct() {
@@ -188,7 +206,7 @@ export default class Window extends EventEmitter {
     });
   }
 
-  start(filename) {
+  async start(filename) {
     if (filename) {
       this.filename = normalize(filename);
     }
@@ -204,8 +222,8 @@ export default class Window extends EventEmitter {
       this.watcher.on('change', this.onFileChanged);
     }
 
-    this.browserWindow.setTitle(this.filename);
-    this.load(this.filename);
+    // this.browserWindow.setTitle(this.filename);
+    await this.load(this.filename);
     mediator.emit(events.START_FILE, this.filename);
   }
 
@@ -213,13 +231,9 @@ export default class Window extends EventEmitter {
     this.load(filename);
   }
 
-  load(filename) {
-    readFile(filename, 'utf8', (err, data) => {
-      if (err != null) {
-        throw err;
-      }
-      this.render(data, dirname(filename));
-    });
+  async load(filename) {
+    let data = await readFile(filename);
+    this.render(data, dirname(filename));
   }
 
   render(md, dir) {
