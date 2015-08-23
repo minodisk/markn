@@ -1,45 +1,52 @@
 import React from 'react'
+import Nav from './NavComponent'
 import Search from './SearchComponent'
-import Markdown from './MarkdownComponent'
-import Rail from './RailComponent'
-import searchStore from './SearchStore'
+import Body from './BodyComponent'
+import windowStore from './windowStore'
 import dispatcher from './Dispatcher'
+import classnames from 'classnames'
 
 export default class RootComponent extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      isFocused: false,
+    };
+
+    windowStore.on('focus', this.onWindowFocus.bind(this));
+    windowStore.on('blur', this.onWindowBlur.bind(this));
+
     this.action = new ActionCreator();
-
-    this.searchStore = searchStore;
-    this.searchStore.on('indicating', this.onIndicating.bind(this));
   }
 
-  onIndicating({}, {}, mark) {
-    if (!mark) return;
-    let rect = mark.getBoundingClientRect();
-    let root = React.findDOMNode(this.refs.root);
-    root.scrollTop += rect.top - window.innerHeight / 2;
+  onWindowFocus() {
+    this.setState({
+      isFocused: true,
+    });
   }
 
-  onScroll(e) {
-    let root = React.findDOMNode(this.refs.root);
-    this.action.scrolled(root.scrollTop);
+  onWindowBlur() {
+    this.setState({
+      isFocused: false,
+    });
   }
 
   render() {
-    return <div className="root" ref="root" onScroll={this.onScroll.bind(this)}>
-      <div className="body">
-        <Markdown/>
-        <Rail/>
-      </div>
+    return <div ref='root' className={classnames('root', {'is-focused': this.state.isFocused})}>
+      <Nav/>
       <Search/>
+      <Body/>
     </div>;
+  }
+
+  componentDidMount() {
+    this.action.ready();
   }
 }
 
 class ActionCreator {
-  scrolled(scrollTop) {
-    dispatcher.emit('scrolled', scrollTop);
+  ready() {
+    dispatcher.emit('ready');
   }
 }

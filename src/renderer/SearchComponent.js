@@ -1,7 +1,7 @@
 import React from 'react'
 import searchStore from './SearchStore'
 import dispatcher from './Dispatcher'
-import classNames from 'classnames'
+import classnames from 'classnames'
 
 export default class SearchComponent extends React.Component {
   constructor(props) {
@@ -47,7 +47,7 @@ export default class SearchComponent extends React.Component {
 
   render() {
     return (
-      <div className={classNames('search-box', {'is-shown': this.state.isShown})}>
+      <div className={classnames('search-box', {'is-shown': this.state.isShown})}>
         <div className='search'>
           <input type='text' ref='search' onInput={this.action.input} onKeyDown={this.action.keydown}/>
           <span className='indication'>{this.state.total === 0 ? '' : `${this.state.current + 1} / ${this.state.total}`}</span>

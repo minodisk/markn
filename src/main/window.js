@@ -66,6 +66,8 @@ export default class Window extends EventEmitter {
       this.browserWindow = new BrowserWindow(bounds);
       this.browserWindow.webContents.on('did-finish-load', this.onContentsDidFinishLoad);
       this.browserWindow.webContents.on('will-navigate', this.onContentsWillNavigate);
+      this.browserWindow.on('focus', this.onFocus.bind(this));
+      this.browserWindow.on('blur', this.onBlur.bind(this));
       this.browserWindow.on('move', this.onMoved);
       this.browserWindow.on('resize', this.onResized);
       this.browserWindow.on('close', this.onClose);
@@ -114,12 +116,21 @@ export default class Window extends EventEmitter {
     shell.openExternal(url);
   }
 
+  onFocus() {
+    this.browserWindow.webContents.send('focus');
+  }
+
+  onBlur() {
+    this.browserWindow.webContents.send('blur');
+  }
+
   onMoved() {
     this.registerBounds();
   }
 
   onResized() {
     this.registerBounds();
+    this.browserWindow.webContents.send('resize', this.browserWindow.getSize());
   }
 
   onClose() {
@@ -169,9 +180,9 @@ export default class Window extends EventEmitter {
 
   registerBounds() {
     this.storage.set('bounds', this.browserWindow.getBounds(), (err) => {
-        if (err != null) {
-          throw err;
-        }
+      if (err != null) {
+        throw err;
+      }
     });
   }
 
