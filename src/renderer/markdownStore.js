@@ -6,13 +6,13 @@ export default new class MarkdownStore extends EventEmitter {
   constructor() {
     super();
 
-    ipc.on('render', this.onRender.bind(this));
+    // ipc.on('render', this.onRender.bind(this));
     dispatcher.on('searching', this.onSearching.bind(this));
   }
 
-  onRender(md, dirname) {
-    this.emit('updating', md, dirname);
-  }
+  // onRender(md, filename) {
+  //   this.emit('updating', md, filename);
+  // }
 
   onSearching(word) {
     this.emit('searching', word);

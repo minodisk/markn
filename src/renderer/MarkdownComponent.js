@@ -1,8 +1,12 @@
 import React from 'react'
 import MyCompiler from './MyCompiler'
+import fileStore from './stores/file'
 import markdownStore from './markdownStore'
 import searchStore from './SearchStore'
 import dispatcher from './Dispatcher'
+import remote from 'remote'
+
+let path = remote.require('path');
 
 export default class MarkdownComponent extends React.Component {
   constructor(props) {
@@ -22,16 +26,19 @@ export default class MarkdownComponent extends React.Component {
       footnotes: true
     });
 
-    markdownStore.on('updating', this.onUpdating.bind(this));
+    fileStore.on('change', this.onChange.bind(this));
     markdownStore.on('searching', this.onSearching.bind(this));
     searchStore.on('indicating', this.onIndicating.bind(this));
 
     this.action = new ActionCreator();
   }
 
-  onUpdating(md, dirname) {
+  onChange(file) {
     this.isUpdating = true;
-    this.setState({md, dirname});
+    this.setState({
+      md: file.content,
+      dirname: path.dirname(file.path),
+    });
   }
 
   onSearching(search) {

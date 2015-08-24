@@ -11,6 +11,7 @@ import Storage from './storage'
 import {bindTarget} from './util'
 import ipc from 'ipc'
 import polyfill from 'babel/polyfill'
+import File from '../common/file'
 
 const URL = 'file://' + join(__dirname, '..', 'index.html');
 const EXTENSIONS = [
@@ -24,15 +25,6 @@ const EXTENSIONS = [
   '.mdtext',
   '.text',
 ];
-
-async function readFile(path) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path, 'utf8', (err, data) => {
-      if (err) return reject(err);
-      resolve(data);
-    });
-  });
-}
 
 export default class Window extends EventEmitter {
 
@@ -49,12 +41,11 @@ export default class Window extends EventEmitter {
     this.windows.forEach((window) => window.close());
   }
 
-  constructor(filename) {
+  constructor(path) {
     super();
 
     Window.add(this);
 
-    this.filename = filename;
     this.onFileChanged = this.onFileChanged.bind(this);
     this.onReloadRequested = this.onReloadRequested.bind(this);
     this.onFindRequested = this.onFindRequested.bind(this);
@@ -64,7 +55,6 @@ export default class Window extends EventEmitter {
     this.onResized = this.onResized.bind(this);
     this.onMoved = this.onMoved.bind(this);
     this.onContentsWillNavigate = this.onContentsWillNavigate.bind(this);
-    this.onContentsDidFinishLoad = this.onContentsDidFinishLoad.bind(this);
 
     this.storage = new Storage;
     this.storage.get('bounds', (err, bounds) => {
@@ -75,7 +65,9 @@ export default class Window extends EventEmitter {
         };
       }
       this.browserWindow = new BrowserWindow(bounds);
-      this.browserWindow.webContents.on('did-finish-load', this.onContentsDidFinishLoad);
+      this.browserWindow.webContents.on('did-finish-load', () => {
+        this.start(path);
+      });
       this.browserWindow.webContents.on('will-navigate', this.onContentsWillNavigate);
       this.browserWindow.on('focus', this.onFocus.bind(this));
       this.browserWindow.on('blur', this.onBlur.bind(this));
@@ -89,14 +81,9 @@ export default class Window extends EventEmitter {
       mediator.on(events.TOGGLE_DEVTOOLS, this.onToggleDevToolsRequested);
       mediator.on(events.FIND, this.onFindRequested);
       mediator.on(events.RELOAD, this.onReloadRequested);
-      ipc.on(events.RELOAD, this.onReloadRequested);
+      ipc.on('file-reloading', this.onReloadRequested);
+      ipc.on('file-changing', this.onFileChanging.bind(this));
     });
-  }
-
-  async setTitle() {
-    let pkg = await readFile('package.json');
-    let p = JSON.parse(pkg);
-    this.browserWindow.setTitle(`${p.appName} v${p.version}`);
   }
 
   destruct() {
@@ -108,12 +95,15 @@ export default class Window extends EventEmitter {
     mediator.removeListener(events.RELOAD, this.onReloadRequested);
   }
 
-  close() {
-    this.browserWindow.close();
+  async setTitle() {
+    let f = new File('package.json');
+    await f.read();
+    let p = JSON.parse(f.content);
+    this.browserWindow.setTitle(`${p.appName} v${p.version}`);
   }
 
-  onContentsDidFinishLoad() {
-    this.start();
+  close() {
+    this.browserWindow.close();
   }
 
   onContentsWillNavigate(e, url) {
@@ -127,13 +117,17 @@ export default class Window extends EventEmitter {
 
     // Markdown file: Render it.
     if (EXTENSIONS.indexOf(extname(url).toLowerCase()) !== -1) {
-      url = url.replace(/^file:\/*/, '/');
+      url = url.replace(/^file:\/+/, '/');
       this.start(url);
       return;
     }
 
     // Others: Open external application.
     shell.openExternal(url);
+  }
+
+  onFileChanging(_, path) {
+    this.start(path);
   }
 
   onFocus() {
@@ -154,7 +148,6 @@ export default class Window extends EventEmitter {
   }
 
   onClose() {
-    console.log('onClose');
     this.destruct();
     this.emit('close', {
       currentTarget: this
@@ -190,12 +183,13 @@ export default class Window extends EventEmitter {
     this.browserWindow.webContents.send('openFind');
   }
 
-  onReloadRequested() {
-    if (!(this.browserWindow.isFocused() && (this.filename != null))) {
+  async onReloadRequested() {
+    if (!(this.browserWindow.isFocused() && this.file)) {
       return;
     }
-    this.render('');
-    this.start();
+
+    await this.file.read();
+    this.render(this.file);
   }
 
   registerBounds() {
@@ -206,10 +200,8 @@ export default class Window extends EventEmitter {
     });
   }
 
-  async start(filename) {
-    if (filename) {
-      this.filename = normalize(filename);
-    }
+  async start(path) {
+    path = normalize(path);
 
     if (this.watcher != null) {
       this.watcher.removeAllListeners();
@@ -217,26 +209,24 @@ export default class Window extends EventEmitter {
     }
 
     // Watch only local file.
-    if (!(/^https?:\/\//.test(this.filename))) {
-      this.watcher = watch(this.filename);
+    if (!(/^https?:\/\//.test(path))) {
+      this.watcher = watch(path);
       this.watcher.on('change', this.onFileChanged);
     }
 
-    // this.browserWindow.setTitle(this.filename);
-    await this.load(this.filename);
-    mediator.emit(events.START_FILE, this.filename);
+    this.file = new File(path);
+    await this.file.read();
+    this.render(this.file);
+
+    mediator.emit(events.START_FILE, path);
   }
 
-  onFileChanged(filename) {
-    this.load(filename);
+  async onFileChanged(path) {
+    await this.file.read();
+    this.render(this.file);
   }
 
-  async load(filename) {
-    let data = await readFile(filename);
-    this.render(data, filename);
-  }
-
-  render(md, filename) {
-    this.browserWindow.webContents.send('render', md, filename);
+  render(file) {
+    this.browserWindow.webContents.send('file-changed', file);
   }
 }
