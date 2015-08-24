@@ -1,5 +1,5 @@
 import React from 'react'
-import railStore from './RailStore'
+import railStore from './railStore'
 
 export default class RailComponent extends React.Component {
   constructor(props) {

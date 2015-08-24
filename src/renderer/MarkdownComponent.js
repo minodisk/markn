@@ -1,6 +1,6 @@
 import React from 'react'
 import MyCompiler from './MyCompiler'
-import markdownStore from './MarkdownStore'
+import markdownStore from './markdownStore'
 import searchStore from './SearchStore'
 import dispatcher from './Dispatcher'
 

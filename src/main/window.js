@@ -233,10 +233,10 @@ export default class Window extends EventEmitter {
 
   async load(filename) {
     let data = await readFile(filename);
-    this.render(data, dirname(filename));
+    this.render(data, filename);
   }
 
-  render(md, dir) {
-    this.browserWindow.webContents.send('render', md, dir);
+  render(md, filename) {
+    this.browserWindow.webContents.send('render', md, filename);
   }
 }

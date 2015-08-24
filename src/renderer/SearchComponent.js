@@ -1,5 +1,5 @@
 import React from 'react'
-import searchStore from './SearchStore'
+import searchStore from './searchStore'
 import dispatcher from './Dispatcher'
 import classnames from 'classnames'
 
