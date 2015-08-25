@@ -86,6 +86,9 @@ export default class MyCompiler extends Compiler {
       let chunks = node.value
       .split(/:([0-9a-z_+-]+):/g)
       .map((type, i) => {
+        if (i % 2 === 0) {
+          return <span>{type}</span>;
+        }
         if (type.charAt(0) === '+') {
           type = type.substr(1);
         }
