@@ -1,6 +1,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import fileStore from '../stores/file'
+import historyStore from '../stores/history'
 import historyAction from '../actions/history'
 import menuAction from '../actions/menu'
 
@@ -8,17 +9,23 @@ export default class NavComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      canBackward: false,
+      canForward: false,
       path: '',
     };
 
     fileStore.on('change', this.onFileChanged.bind(this));
+    historyStore.on('state-change', this.onHistoryStateChanged.bind(this));
+    // historyStore.on('forward', this.onHistoryChanged.bind(this));
+    // historyStore.on('backward', this.onHistoryChanged.bind(this));
+    historyStore.on('dated', this.onHistoryUpdated.bind(this));
   }
 
   render() {
     return (
       <div ref='nav' className='nav'>
-        <button className='backward' disabled={this.state.disabled} onClick={historyAction.backward}/>
-        <button className='forward' disabled={this.state.disabled} onClick={historyAction.forward}/>
+        <button className='backward' disabled={!this.state.canBackward} onClick={historyAction.backward}/>
+        <button className='forward' disabled={!this.state.canForward} onClick={historyAction.forward}/>
         <button className='reload' disabled={this.state.disabled} onClick={historyAction.reload}/>
         <input className='path' type='text' value={this.state.path} onChange={this.onChange.bind(this)} onKeyDown={this.onKeyDown.bind(this)}/>
         <button className='tools' onClick={menuAction.toggle}/>
@@ -42,6 +49,15 @@ export default class NavComponent extends React.Component {
 
   onFileChanged(file) {
     console.log('onFileChanged:', file.path);
+    this.setState({path: file.path});
+  }
+
+  onHistoryStateChanged(state) {
+    this.setState(state);
+  }
+
+  onHistoryUpdated(file) {
+    console.log('onHistoryUpdated:', file.path);
     this.setState({path: file.path});
   }
 }

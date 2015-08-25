@@ -1,19 +1,20 @@
+import ipc from 'ipc'
 import dispatcher from '../dispatcher'
 
 export default new class HistoryAction {
   backward() {
-    dispatcher.emit('backward');
+    dispatcher.emit('history-backwarding');
   }
 
   forward() {
-    dispatcher.emit('forward');
+    dispatcher.emit('history-forwarding');
   }
 
   reload() {
-    dispatcher.emit('file-reloading');
+    ipc.send('file-reloading');
   }
 
   change(path) {
-    dispatcher.emit('file-changing', path);
+    ipc.send('file-changing', path);
   }
 }

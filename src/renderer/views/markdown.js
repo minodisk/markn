@@ -2,6 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 import remote from 'remote'
 import fileStore from '../stores/file'
+import historyStore from '../stores/history'
 import searchStore from '../stores/search'
 import markdownAction from '../actions/markdown'
 import searchAction from '../actions/search'
@@ -33,6 +34,8 @@ export default class MarkdownComponent extends React.Component {
     });
 
     fileStore.on('change', this.onChange.bind(this));
+    historyStore.on('forwarded', this.onChange.bind(this));
+    historyStore.on('backwarded', this.onChange.bind(this));
     searchStore.on('searching', this.onSearching.bind(this));
     searchStore.on('indicating', this.onIndicating.bind(this));
   }

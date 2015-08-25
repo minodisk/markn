@@ -47,7 +47,7 @@ export default class Window extends EventEmitter {
     Window.add(this);
 
     this.onFileChanged = this.onFileChanged.bind(this);
-    this.onReloadRequested = this.onReloadRequested.bind(this);
+    this.onFileReloading = this.onFileReloading.bind(this);
     this.onFindRequested = this.onFindRequested.bind(this);
     this.onToggleDevToolsRequested = this.onToggleDevToolsRequested.bind(this);
     this.onOpenFileRequested = this.onOpenFileRequested.bind(this);
@@ -65,8 +65,9 @@ export default class Window extends EventEmitter {
         };
       }
       this.browserWindow = new BrowserWindow(bounds);
-      this.browserWindow.webContents.on('did-finish-load', () => {
-        this.start(path);
+      this.browserWindow.webContents.on('did-finish-load', async () => {
+        await this.start(path);
+        this.render();
       });
       this.browserWindow.webContents.on('will-navigate', this.onContentsWillNavigate);
       this.browserWindow.on('focus', this.onFocus.bind(this));
@@ -80,9 +81,11 @@ export default class Window extends EventEmitter {
       mediator.on(events.OPEN_FILE, this.onOpenFileRequested);
       mediator.on(events.TOGGLE_DEVTOOLS, this.onToggleDevToolsRequested);
       mediator.on(events.FIND, this.onFindRequested);
-      mediator.on(events.RELOAD, this.onReloadRequested);
-      ipc.on('file-reloading', this.onReloadRequested);
+      mediator.on(events.RELOAD, this.onFileReloading);
+      ipc.on('file-reloading', this.onFileReloading);
       ipc.on('file-changing', this.onFileChanging.bind(this));
+      ipc.on('history-backwarding', this.onHistoryBackwarding.bind(this));
+      ipc.on('history-forwarding', this.onHistoryForwarding.bind(this));
     });
   }
 
@@ -92,7 +95,7 @@ export default class Window extends EventEmitter {
     mediator.removeListener(events.OPEN_FILE, this.onOpenFileRequested);
     mediator.removeListener(events.TOGGLE_DEVTOOLS, this.onToggleDevToolsRequested);
     mediator.removeListener(events.FIND, this.onFindRequested);
-    mediator.removeListener(events.RELOAD, this.onReloadRequested);
+    mediator.removeListener(events.RELOAD, this.onFileReloading);
   }
 
   async setTitle() {
@@ -106,7 +109,7 @@ export default class Window extends EventEmitter {
     this.browserWindow.close();
   }
 
-  onContentsWillNavigate(e, url) {
+  async onContentsWillNavigate(e, url) {
     // Renderer file: Reload.
     if (url === URL) {
       return;
@@ -118,7 +121,8 @@ export default class Window extends EventEmitter {
     // Markdown file: Render it.
     if (EXTENSIONS.indexOf(extname(url).toLowerCase()) !== -1) {
       url = url.replace(/^file:\/+/, '/');
-      this.start(url);
+      await this.start(url);
+      this.render();
       return;
     }
 
@@ -126,8 +130,19 @@ export default class Window extends EventEmitter {
     shell.openExternal(url);
   }
 
-  onFileChanging(_, path) {
-    this.start(path);
+  async onFileChanging(_, path) {
+    await this.start(path);
+    this.render();
+  }
+
+  async onHistoryBackwarding(_, path) {
+    await this.start(path);
+    this.browserWindow.webContents.send('history-backwarded', this.file);
+  }
+
+  async onHistoryForwarding(_, path) {
+    await this.start(path);
+    this.browserWindow.webContents.send('history-forwarded', this.file);
   }
 
   onFocus() {
@@ -161,11 +176,12 @@ export default class Window extends EventEmitter {
     }
     showOpenDialog({
       properties: ['openFile']
-    }, (filenames) => {
+    }, async (filenames) => {
       if (!filenames || !filenames[0]) {
         return;
       }
-      this.start(filenames[0]);
+      await this.start(filenames[0]);
+      this.render();
     });
   }
 
@@ -183,13 +199,13 @@ export default class Window extends EventEmitter {
     this.browserWindow.webContents.send('openFind');
   }
 
-  async onReloadRequested() {
+  async onFileReloading() {
     if (!(this.browserWindow.isFocused() && this.file)) {
       return;
     }
 
     await this.file.read();
-    this.render(this.file);
+    this.render();
   }
 
   registerBounds() {
@@ -198,6 +214,11 @@ export default class Window extends EventEmitter {
         throw err;
       }
     });
+  }
+
+  async onFileChanged(path) {
+    await this.file.read();
+    this.render();
   }
 
   async start(path) {
@@ -216,17 +237,12 @@ export default class Window extends EventEmitter {
 
     this.file = new File(path);
     await this.file.read();
-    this.render(this.file);
+    // this.render();
 
     mediator.emit(events.START_FILE, path);
   }
 
-  async onFileChanged(path) {
-    await this.file.read();
-    this.render(this.file);
-  }
-
-  render(file) {
-    this.browserWindow.webContents.send('file-changed', file);
+  render() {
+    this.browserWindow.webContents.send('file-changed', this.file);
   }
 }
