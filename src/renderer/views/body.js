@@ -1,9 +1,9 @@
 import React from 'react'
-import Markdown from './MarkdownComponent'
-import Rail from './RailComponent'
-import windowStore from './windowStore'
-import searchStore from './SearchStore'
-import dispatcher from './Dispatcher'
+import Markdown from './markdown'
+import Rail from './rail'
+import windowStore from '../stores/window'
+import searchStore from '../stores/search'
+import scrollAction from '../actions/scroll'
 
 export default class BodyComponent extends React.Component {
   constructor(props) {
@@ -11,8 +11,6 @@ export default class BodyComponent extends React.Component {
 
     this.state = {
     };
-
-    this.action = new ActionCreator();
 
     windowStore.on('resize', this.onWindowResized.bind(this));
     searchStore.on('indicating', this.onIndicating.bind(this));
@@ -32,7 +30,7 @@ export default class BodyComponent extends React.Component {
 
   onScroll(e) {
     let body = React.findDOMNode(this.refs.body);
-    this.action.scrolled(body.scrollTop);
+    scrollAction.scrolled(body.scrollTop);
   }
 
   render() {
@@ -42,11 +40,5 @@ export default class BodyComponent extends React.Component {
         <Rail/>
       </div>
     </div>;
-  }
-}
-
-class ActionCreator {
-  scrolled(scrollTop) {
-    dispatcher.emit('scrolled', scrollTop);
   }
 }

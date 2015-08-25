@@ -1,5 +1,5 @@
 import React from 'react'
-import RootComponent from './RootComponent'
+import RootComponent from './views/root'
 
 var $ = React.createElement;
 

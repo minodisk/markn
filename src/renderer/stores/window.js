@@ -1,8 +1,8 @@
 import EventEmitter from 'events'
+import dispatcher from '../dispatcher'
 import ipc from 'ipc'
-import dispatcher from './Dispatcher'
 
-export default new class ScrollStore extends EventEmitter {
+export default new class WindowStore extends EventEmitter {
   constructor() {
     super();
 

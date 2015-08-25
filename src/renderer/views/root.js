@@ -1,10 +1,10 @@
 import React from 'react'
-import Nav from './NavComponent'
-import Search from './SearchComponent'
-import Body from './BodyComponent'
-import windowStore from './windowStore'
-import dispatcher from './Dispatcher'
 import classnames from 'classnames'
+import Nav from './nav'
+import Search from './search'
+import Body from './body'
+import windowStore from '../stores/window'
+import appAction from '../actions/app'
 
 export default class RootComponent extends React.Component {
   constructor(props) {
@@ -16,8 +16,6 @@ export default class RootComponent extends React.Component {
 
     windowStore.on('focus', this.onWindowFocus.bind(this));
     windowStore.on('blur', this.onWindowBlur.bind(this));
-
-    this.action = new ActionCreator();
   }
 
   onWindowFocus() {
@@ -41,12 +39,6 @@ export default class RootComponent extends React.Component {
   }
 
   componentDidMount() {
-    this.action.ready();
-  }
-}
-
-class ActionCreator {
-  ready() {
-    dispatcher.emit('ready');
+    appAction.ready();
   }
 }

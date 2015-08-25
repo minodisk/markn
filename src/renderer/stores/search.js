@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
+import dispatcher from '../dispatcher'
 import ipc from 'ipc'
-import dispatcher from './Dispatcher'
 
 export default new class SearchStore extends EventEmitter {
   constructor() {
@@ -11,6 +11,7 @@ export default new class SearchStore extends EventEmitter {
 
     ipc.on('openFind', this.onOpenFind.bind(this));
     dispatcher.on('closeFind', this.onCloseFind.bind(this));
+    dispatcher.on('searching', this.onSearching.bind(this));
     dispatcher.on('searched', this.onSearched.bind(this));
     dispatcher.on('forwarding', this.onForwarding.bind(this));
     dispatcher.on('backwarding', this.onBackwarding.bind(this));
@@ -22,6 +23,10 @@ export default new class SearchStore extends EventEmitter {
 
   onCloseFind() {
     this.emit('closeFind');
+  }
+
+  onSearching(word) {
+    this.emit('searching', word);
   }
 
   onSearched(marks) {

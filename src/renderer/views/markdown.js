@@ -1,49 +1,77 @@
 import React from 'react'
-// import Compiler from 'imports?React=react!md2react'
-import Compiler from 'imports?React=react!../../node_modules/md2react/src/index'
-import path from 'path'
 import classnames from 'classnames'
+import remote from 'remote'
+import fileStore from '../stores/file'
+import searchStore from '../stores/search'
+import markdownAction from '../actions/markdown'
+import searchAction from '../actions/search'
+
+// import MyCompiler from '../MyCompiler'
+import Compiler from 'imports?React=react!../../../node_modules/md2react/src/index'
+import em from '../../../node_modules/emojione/emoji.json'
 import Highlight from 'react-highlight'
-import em from '../../node_modules/emojione/emoji.json'
-import emojione from 'emojione'
 
-let emo = {};
-for (let key in em) {
-  let val = em[key];
-  emo[val.shortname] = val;
-  val.aliases.forEach((alias) => {
-    emo[alias] = val;
-  });
-}
-
+let path = remote.require('path');
 let $ = React.createElement;
 
-function emoji() {
-  if( (typeof shortname === 'undefined') || (shortname === '') || (!(shortname in ns.emojioneList)) ) {
-    // if the shortname doesnt exist just return the entire match
-    return shortname;
-  } else {
-    unicode = ns.emojioneList[shortname][ns.emojioneList[shortname].length-1].toUpperCase();
+export default class MarkdownComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      md: '',
+      dirname: '',
+      search: '',
+      indication: -1
+    };
 
-    // depending on the settings, we'll either add the native unicode as the alt tag, otherwise the shortname
-    // alt = (ns.unicodeAlt) ? ns.convert(unicode) : shortname;
+    this.compiler = new MyCompiler({
+      gfm: true,
+      breaks: true,
+      tables: true,
+      commonmark: true,
+      footnotes: true
+    });
 
-    // if(ns.imageType === 'png') {
-    //   if(ns.sprites) {
-    //     replaceWith = '<span class="emojione-'+unicode+'" title="'+shortname+'">'+alt+'</span>';
-    //   } else {
-    //     replaceWith = '<img class="emojione" alt="'+alt+'" src="'+ns.imagePathPNG+unicode+'.png'+ns.cacheBustParam+'"/>';
-    //   }
-    // } else {
-      // svg
-      // if(ns.sprites) {
-      //   replaceWith = '<svg class="emojione"><description>'+alt+'</description><use xlink:href="'+ns.imagePathSVGSprites+'#emoji-'+unicode+'"></use></svg>';
-      // } else {
-      //   replaceWith = '<object class="emojione" data="'+ns.imagePathSVG+unicode+'.svg'+ns.cacheBustParam+'" type="image/svg+xml" standby="'+alt+'">'+alt+'</object>';
-      // }
-    // }
+    fileStore.on('change', this.onChange.bind(this));
+    searchStore.on('searching', this.onSearching.bind(this));
+    searchStore.on('indicating', this.onIndicating.bind(this));
+  }
 
-    // return replaceWith;
+  onChange(file) {
+    this.isUpdating = true;
+    this.setState({
+      md: file.content,
+      dirname: path.dirname(file.path),
+    });
+  }
+
+  onSearching(search) {
+    this.isSearching = true;
+    this.setState({search});
+  }
+
+  onIndicating(indication) {
+    this.setState({indication});
+  }
+
+  render() {
+    return this.compiler.compile(this.state);
+  }
+
+  componentDidUpdate() {
+    if (this.isUpdating) {
+      this.isUpdating = false;
+      markdownAction.updated();
+    }
+    if (this.isSearching) {
+      this.isSearching = false;
+      let marks = [];
+      for (let i = 0; i < this.compiler.marksCount; i++) {
+        let mark = React.findDOMNode(this.refs[`mark${i}`]);
+        marks.push(mark);
+      }
+      searchAction.searched(marks);
+    }
   }
 }
 
@@ -51,7 +79,7 @@ function highlight(code, lang, key) {
   return <Highlight className={lang}>{code}</Highlight>;
 }
 
-export default class MyCompiler extends Compiler {
+class MyCompiler extends Compiler {
   constructor(opts) {
     opts.highlight = highlight;
     super(opts);
