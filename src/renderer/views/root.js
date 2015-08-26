@@ -1,7 +1,6 @@
 import React from 'react'
 import classnames from 'classnames'
-import Nav from './nav'
-import Search from './search'
+import Head from './head'
 import Body from './body'
 import windowStore from '../stores/window'
 import appAction from '../actions/app'
@@ -32,8 +31,7 @@ export default class RootComponent extends React.Component {
 
   render() {
     return <div ref='root' className={classnames('root', {'is-focused': this.state.isFocused})}>
-      <Nav/>
-      <Search/>
+      <Head/>
       <Body/>
     </div>;
   }
