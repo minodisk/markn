@@ -217,6 +217,9 @@ gulp.task('webpack', (cb) => {
           test: /\.js$/,
           loader: 'babel',
           exclude: /(node_modules|bower_components)/,
+          query: {
+            stage: 0,
+          },
         }, {
           test: /\.coffee$/,
           loader: 'coffee'

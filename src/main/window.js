@@ -12,6 +12,7 @@ import {bindTarget} from './util'
 import ipc from 'ipc'
 import polyfill from 'babel/polyfill'
 import File from '../common/file'
+import Menu from './menu'
 
 const URL = 'file://' + join(__dirname, '..', 'index.html');
 const EXTENSIONS = [
