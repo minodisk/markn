@@ -24,7 +24,6 @@ export default new class HistoryStore extends EventEmitter {
 
     this.pathes.push(file.path);
     this.index = this.pathes.length - 1;
-    console.log(this.pathes);
     this.emitState();
   }
 
