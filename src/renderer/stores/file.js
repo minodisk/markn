@@ -5,10 +5,15 @@ import dispatcher from '../dispatcher'
 export default new class FileStore extends EventEmitter {
   constructor() {
     super();
-    ipc.on('file-changed', this.onChanged.bind(this));
+    ipc.on('file-changed', this.onFileChanged.bind(this));
+    ipc.on('file-updated', this.onFileUpdated.bind(this));
   }
 
-  onChanged(file) {
-    this.emit('change', file);
+  onFileChanged(file) {
+    this.emit('changed', file);
+  }
+
+  onFileUpdated(file) {
+    this.emit('updated', file);
   }
 }

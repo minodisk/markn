@@ -33,14 +33,34 @@ export default class MarkdownComponent extends React.Component {
       footnotes: true
     });
 
-    fileStore.on('change', this.onChange.bind(this));
-    historyStore.on('forwarded', this.onChange.bind(this));
-    historyStore.on('backwarded', this.onChange.bind(this));
+    fileStore.on('changed', this.onFileChanged.bind(this));
+    fileStore.on('updated', this.onFileUpdated.bind(this));
+    historyStore.on('forwarded', this.onHistoryChanged.bind(this));
+    historyStore.on('backwarded', this.onHistoryChanged.bind(this));
     searchStore.on('searching', this.onSearching.bind(this));
     searchStore.on('indicating', this.onIndicating.bind(this));
   }
 
-  onChange(file) {
+  onFileChanged(file) {
+    console.log('onFileChanged:', file.path);
+    this.isUpdating = true;
+    this.setState({
+      md: file.content,
+      dirname: path.dirname(file.path),
+    });
+  }
+
+  onFileUpdated(file) {
+    console.log('onFileUpdated:', file.path);
+    this.isUpdating = true;
+    this.setState({
+      md: file.content,
+      dirname: path.dirname(file.path),
+    });
+  }
+
+  onHistoryChanged(file) {
+    console.log('onHistoryChanged:', file.path);
     this.isUpdating = true;
     this.setState({
       md: file.content,

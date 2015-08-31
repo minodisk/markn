@@ -219,7 +219,7 @@ export default class Window extends EventEmitter {
 
   async onFileChanged(path) {
     await this.file.read();
-    this.render();
+    this.updateFile();
   }
 
   async start(path) {
@@ -238,12 +238,15 @@ export default class Window extends EventEmitter {
 
     this.file = new File(path);
     await this.file.read();
-    // this.render();
 
     mediator.emit(events.START_FILE, path);
   }
 
   render() {
     this.browserWindow.webContents.send('file-changed', this.file);
+  }
+
+  updateFile() {
+    this.browserWindow.webContents.send('file-updated', this.file);
   }
 }

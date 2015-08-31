@@ -3,6 +3,8 @@ import Markdown from './markdown'
 import Rail from './rail'
 import windowStore from '../stores/window'
 import searchStore from '../stores/search'
+import fileStore from '../stores/file'
+import historyStore from '../stores/history'
 import scrollAction from '../actions/scroll'
 
 export default class BodyComponent extends React.Component {
@@ -14,6 +16,9 @@ export default class BodyComponent extends React.Component {
 
     windowStore.on('resize', this.onWindowResized.bind(this));
     searchStore.on('indicating', this.onIndicating.bind(this));
+    fileStore.on('changed', this.onFileChanged.bind(this));
+    historyStore.on('forwarded', this.onFileChanged.bind(this));
+    historyStore.on('backwarded', this.onFileChanged.bind(this));
   }
 
   onWindowResized(size) {
@@ -24,13 +29,13 @@ export default class BodyComponent extends React.Component {
   onIndicating({}, {}, mark) {
     if (!mark) return;
     let rect = mark.getBoundingClientRect();
-    let root = React.findDOMNode(this.refs.root);
-    root.scrollTop += rect.top - window.innerHeight / 2;
+    let body = React.findDOMNode(this.refs.body);
+    body.scrollTop += rect.top - window.innerHeight / 2;
   }
 
-  onScroll(e) {
+  onFileChanged() {
     let body = React.findDOMNode(this.refs.body);
-    scrollAction.scrolled(body.scrollTop);
+    body.scrollTop = 0;
   }
 
   render() {
@@ -40,5 +45,10 @@ export default class BodyComponent extends React.Component {
         <Rail/>
       </div>
     </div>;
+  }
+
+  onScroll(e) {
+    let body = React.findDOMNode(this.refs.body);
+    scrollAction.scrolled(body.scrollTop);
   }
 }

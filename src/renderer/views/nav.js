@@ -14,7 +14,7 @@ export default class NavComponent extends React.Component {
       path: '',
     };
 
-    fileStore.on('change', this.onFileChanged.bind(this));
+    fileStore.on('changed', this.onFileChanged.bind(this));
     historyStore.on('state-change', this.onHistoryStateChanged.bind(this));
     historyStore.on('forwarded', this.onHistoryUpdated.bind(this));
     historyStore.on('backwarded', this.onHistoryUpdated.bind(this));
