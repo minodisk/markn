@@ -1,5 +1,6 @@
 {
   "name": "markn",
+  "appName": "Markn",
   "version": "0.1.4",
   "description": "Lightweight markdown viewer",
   "main": "scripts/main.js",

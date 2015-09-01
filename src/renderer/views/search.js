@@ -1,7 +1,7 @@
 import React from 'react'
-import searchStore from './SearchStore'
-import dispatcher from './Dispatcher'
-import classNames from 'classnames'
+import classnames from 'classnames'
+import searchStore from '../stores/search'
+import searchAction from '../actions/search'
 
 export default class SearchComponent extends React.Component {
   constructor(props) {
@@ -13,7 +13,6 @@ export default class SearchComponent extends React.Component {
       disabled: false
     };
 
-    this.action = new ActionCreator();
     this.store = searchStore;
     this.store.on('openFind', this.show.bind(this));
     this.store.on('closeFind', this.hide.bind(this));
@@ -47,48 +46,15 @@ export default class SearchComponent extends React.Component {
 
   render() {
     return (
-      <div className={classNames('search-box', {'is-shown': this.state.isShown})}>
+      <div className={classnames('search-box', {'is-shown': this.state.isShown})}>
         <div className='search'>
-          <input type='text' ref='search' onInput={this.action.input} onKeyDown={this.action.keydown}/>
+          <input type='text' ref='search' onInput={searchAction.input} onKeyDown={searchAction.keydown}/>
           <span className='indication'>{this.state.total === 0 ? '' : `${this.state.current + 1} / ${this.state.total}`}</span>
         </div>
-        <button className='fa fa-chevron-up button-up' disabled={this.state.disabled} onClick={this.action.backward}/>
-        <button className='fa fa-chevron-down button-down' disabled={this.state.disabled} onClick={this.action.forward}/>
-        <button className='fa fa-times button-close' onClick={this.action.close}/>
+        <button className='fa fa-chevron-up button-up' disabled={this.state.disabled} onClick={searchAction.backward}/>
+        <button className='fa fa-chevron-down button-down' disabled={this.state.disabled} onClick={searchAction.forward}/>
+        <button className='fa fa-times button-close' onClick={searchAction.close}/>
       </div>
     );
-  }
-
-  onPrevClick() {
-  }
-
-  onNextClick() {
-  }
-
-  onCloseClick() {
-    this.action.close();
-  }
-}
-
-class ActionCreator {
-  close() {
-    dispatcher.emit('closeFind');
-  }
-
-  input(e) {
-    dispatcher.emit('searching', e.currentTarget.value);
-  }
-
-  keydown(e) {
-    if (e.key != 'Enter') return;
-    dispatcher.emit('forwarding');
-  }
-
-  forward() {
-    dispatcher.emit('forwarding');
-  }
-
-  backward() {
-    dispatcher.emit('backwarding');
   }
 }

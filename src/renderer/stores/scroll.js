@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
-import dispatcher from './Dispatcher'
+import dispatcher from '../dispatcher'
 
-export default new class RailStore extends EventEmitter {
+export default new class ScrollStore extends EventEmitter {
   constructor() {
     super();
 

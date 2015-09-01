@@ -17,4 +17,4 @@
 
 ## Others
 
-- [Huge file](huge.md)
+- [Huge](huge.md)

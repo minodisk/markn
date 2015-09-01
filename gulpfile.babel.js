@@ -215,7 +215,11 @@ gulp.task('webpack', (cb) => {
       loaders: [
         {
           test: /\.js$/,
-          loader: 'babel'
+          loader: 'babel',
+          exclude: /(node_modules|bower_components)/,
+          query: {
+            stage: 0,
+          },
         }, {
           test: /\.coffee$/,
           loader: 'coffee'
@@ -253,6 +257,7 @@ gulp.task('webpack', (cb) => {
           'dialog',
           'shell',
           'ipc',
+          'remote',
           // NPM
           'chokidar',
           'emojione',
@@ -281,7 +286,9 @@ gulp.task('webpack', (cb) => {
     if (err) {
       throw new gutil.PluginError('webpack', err);
     }
-    gutil.log('[webpack]', stats.toString());
+    gutil.log('[webpack]', stats.toString({
+      chunkModules: false,
+    }));
     if (isWatch) {
       livereload.reload(`${APP_DIR}/renderer.js`);
     }

@@ -1,5 +1,5 @@
 import React from 'react'
-import railStore from './RailStore'
+import scrollStore from '../stores/scroll'
 
 export default class RailComponent extends React.Component {
   constructor(props) {
@@ -10,10 +10,8 @@ export default class RailComponent extends React.Component {
     };
 
     window.addEventListener('resize', this.onResized.bind(this), false);
-    railStore.on('searched', this.onSearched.bind(this));
-    railStore.on('scrolled', this.onScrolled.bind(this));
-
-    this.action = new ActionCreator();
+    scrollStore.on('searched', this.onSearched.bind(this));
+    scrollStore.on('scrolled', this.onScrolled.bind(this));
   }
 
   onResized() {
@@ -37,7 +35,4 @@ export default class RailComponent extends React.Component {
       })
     }</div>;
   }
-}
-
-class ActionCreator {
 }
