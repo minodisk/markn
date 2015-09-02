@@ -9,6 +9,7 @@ import {join, dirname, basename, extname, relative, resolve} from 'path'
 import {readFileSync, writeFileSync} from 'fs'
 import mkdirp from 'mkdirp'
 import packager from 'electron-packager'
+import asar from 'asar'
 import GitHub from 'github'
 import cp from 'child_process'
 import yargs from 'yargs'
@@ -90,7 +91,8 @@ async function pack(platform = 'all', arch = 'all') {
       name: 'Markn',
       version: '0.30.4',
       icon: `${ICON_DIR}/markn`,
-      overwrite: true
+      overwrite: true,
+      asar: true
     }, (err, dirs) => {
       if (err) return reject(err);
       resolve(dirs);

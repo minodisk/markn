@@ -74,6 +74,7 @@
     "yargs": "^3.17.1"
   },
   "devDependencies": {
+    "asar": "^0.8.0",
     "electron-prebuilt": "^0.30.4"
   }
 }
