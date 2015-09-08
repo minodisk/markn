@@ -1,5 +1,4 @@
 import Menu from 'menu'
-import Item from 'menu-item'
 import mediator from './mediator'
 import events from './events'
 
@@ -10,8 +9,8 @@ export default class MyMenu {
       submenu: [
         {
           label: 'About Markn',
-          click: function() {
-            mediator.emit(events.OPEN_ABOUT_DIALOG);
+          click: function () {
+            mediator.emit(events.OPEN_ABOUT_DIALOG)
           }
         }, {
           type: 'separator'
@@ -40,14 +39,14 @@ export default class MyMenu {
         {
           label: 'New Window',
           accelerator: 'CommandOrControl+N',
-          click: function() {
-            mediator.emit(events.OPEN_NEW_WINDOW);
+          click: function () {
+            mediator.emit(events.OPEN_NEW_WINDOW)
           }
         }, {
           label: 'Open File',
           accelerator: 'CommandOrControl+O',
-          click: function() {
-            mediator.emit(events.OPEN_FILE);
+          click: function () {
+            mediator.emit(events.OPEN_FILE)
           }
         }, {
           type: 'separator'
@@ -80,8 +79,8 @@ export default class MyMenu {
         }, {
           label: 'Find',
           accelerator: 'CommandOrControl+F',
-          click: function() {
-            mediator.emit(events.FIND);
+          click: function () {
+            mediator.emit(events.FIND)
           }
         }
       ]
@@ -91,14 +90,14 @@ export default class MyMenu {
         {
           label: 'Reload',
           accelerator: 'CommandOrControl+R',
-          click: function() {
-            mediator.emit(events.RELOAD);
+          click: function () {
+            mediator.emit(events.RELOAD)
           }
         }, {
           label: 'Toggle DevTools',
           accelerator: 'Alt+CommandOrControl+I',
-          click: function() {
-            mediator.emit(events.TOGGLE_DEVTOOLS);
+          click: function () {
+            mediator.emit(events.TOGGLE_DEVTOOLS)
           }
         }
       ]
@@ -125,8 +124,8 @@ export default class MyMenu {
       submenu: [
         {
           label: 'Markn Help',
-          click: function() {
-            mediator.emit(events.OPEN_HELP);
+          click: function () {
+            mediator.emit(events.OPEN_HELP)
           }
         }
       ]
@@ -138,14 +137,14 @@ export default class MyMenu {
         {
           label: 'New Window',
           accelerator: 'CommandOrControl+N',
-          click: function() {
-            mediator.emit(events.OPEN_NEW_WINDOW);
+          click: function () {
+            mediator.emit(events.OPEN_NEW_WINDOW)
           }
         }, {
           label: 'Open File',
           accelerator: 'CommandOrControl+O',
-          click: function() {
-            mediator.emit(events.OPEN_FILE);
+          click: function () {
+            mediator.emit(events.OPEN_FILE)
           }
         }, {
           type: 'separator'
@@ -157,8 +156,8 @@ export default class MyMenu {
         }, {
           label: 'Exit',
           accelerator: 'CommandOrControl+Q',
-          click: function() {
-            mediator.emit(events.QUIT);
+          click: function () {
+            mediator.emit(events.QUIT)
           }
         }
       ]
@@ -168,8 +167,8 @@ export default class MyMenu {
         {
           label: 'Find',
           accelerator: 'CommandOrControl+F',
-          click: function() {
-            mediator.emit(events.FIND);
+          click: function () {
+            mediator.emit(events.FIND)
           }
         }
       ]
@@ -179,14 +178,14 @@ export default class MyMenu {
         {
           label: 'Reload',
           accelerator: 'CommandOrControl+R',
-          click: function() {
-            mediator.emit(events.RELOAD);
+          click: function () {
+            mediator.emit(events.RELOAD)
           }
         }, {
           label: 'Toggle DevTools',
           accelerator: 'Alt+CommandOrControl+I',
-          click: function() {
-            mediator.emit(events.TOGGLE_DEVTOOLS);
+          click: function () {
+            mediator.emit(events.TOGGLE_DEVTOOLS)
           }
         }
       ]
@@ -195,15 +194,15 @@ export default class MyMenu {
       submenu: [
         {
           label: 'About Markn',
-          click: function() {
-            mediator.emit(events.OPEN_ABOUT_DIALOG);
+          click: function () {
+            mediator.emit(events.OPEN_ABOUT_DIALOG)
           }
         }
       ]
     }
-  ]);
+  ])
 
-  constructor() {
-    Menu.setApplicationMenu(MyMenu.menu);
+  constructor () {
+    Menu.setApplicationMenu(MyMenu.menu)
   }
 }

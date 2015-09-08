@@ -1,12 +1,12 @@
 import React from 'react'
 import RootComponent from './views/root'
 
-var $ = React.createElement;
+var $ = React.createElement
 
 export default class App {
-  constructor() {
-    React.render($(RootComponent, {}), document.body);
+  constructor () {
+    React.render($(RootComponent, {}), document.body)
   }
 }
 
-new App();
+window.app = new App()

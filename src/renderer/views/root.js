@@ -6,37 +6,41 @@ import windowStore from '../stores/window'
 import appAction from '../actions/app'
 
 export default class RootComponent extends React.Component {
-  constructor(props) {
-    super(props);
+  displayName = 'RootComponent'
+
+  constructor (props) {
+    super(props)
 
     this.state = {
-      isFocused: false,
-    };
+      isFocused: false
+    }
 
-    windowStore.on('focus', this.onWindowFocus.bind(this));
-    windowStore.on('blur', this.onWindowBlur.bind(this));
+    windowStore.on('focus', this.onWindowFocus.bind(this))
+    windowStore.on('blur', this.onWindowBlur.bind(this))
   }
 
-  onWindowFocus() {
+  onWindowFocus () {
     this.setState({
-      isFocused: true,
-    });
+      isFocused: true
+    })
   }
 
-  onWindowBlur() {
+  onWindowBlur () {
     this.setState({
-      isFocused: false,
-    });
+      isFocused: false
+    })
   }
 
-  render() {
-    return <div ref='root' className={classnames('root', {'is-focused': this.state.isFocused})}>
-      <Head/>
-      <Body/>
-    </div>;
+  render () {
+    return (
+      <div ref='root' className={classnames('root', {'is-focused': this.state.isFocused})}>
+        <Head/>
+        <Body/>
+      </div>
+    )
   }
 
-  componentDidMount() {
-    appAction.ready();
+  componentDidMount () {
+    appAction.ready()
   }
 }

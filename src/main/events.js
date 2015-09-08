@@ -8,4 +8,4 @@ export default {
   RELOAD: 'reload',
   FIND: 'find',
   START_FILE: 'start-file'
-};
+}

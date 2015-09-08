@@ -1,3 +1,3 @@
 import EventEmitter from 'events'
 
-export default new EventEmitter
+export default new EventEmitter()

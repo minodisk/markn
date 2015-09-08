@@ -4,47 +4,49 @@ import searchStore from '../stores/search'
 import searchAction from '../actions/search'
 
 export default class SearchComponent extends React.Component {
-  constructor(props) {
-    super(props);
+  displayName = 'SearchComponent'
+
+  constructor (props) {
+    super(props)
     this.state = {
       current: 0,
       total: 0,
       isShown: false,
       disabled: false
-    };
+    }
 
-    this.store = searchStore;
-    this.store.on('openFind', this.show.bind(this));
-    this.store.on('closeFind', this.hide.bind(this));
-    this.store.on('disabling', this.onDisabling.bind(this));
-    this.store.on('enabling', this.onEnabling.bind(this));
-    this.store.on('indicating', this.onIndicating.bind(this));
+    this.store = searchStore
+    this.store.on('openFind', this.show.bind(this))
+    this.store.on('closeFind', this.hide.bind(this))
+    this.store.on('disabling', this.onDisabling.bind(this))
+    this.store.on('enabling', this.onEnabling.bind(this))
+    this.store.on('indicating', this.onIndicating.bind(this))
   }
 
-  show() {
-    this.setState({isShown: true});
-    let input = React.findDOMNode(this.refs.search);
-    input.focus();
-    input.select();
+  show () {
+    this.setState({isShown: true})
+    let input = React.findDOMNode(this.refs.search)
+    input.focus()
+    input.select()
   }
 
-  hide() {
-    this.setState({isShown: false});
+  hide () {
+    this.setState({isShown: false})
   }
 
-  onDisabling() {
-    this.setState({disabled: true});
+  onDisabling () {
+    this.setState({disabled: true})
   }
 
-  onEnabling() {
-    this.setState({disabled: false});
+  onEnabling () {
+    this.setState({disabled: false})
   }
 
-  onIndicating(current, total) {
-    this.setState({current, total});
+  onIndicating (current, total) {
+    this.setState({current, total})
   }
 
-  render() {
+  render () {
     return (
       <div className={classnames('search-box', {'is-shown': this.state.isShown})}>
         <div className='search'>
@@ -55,6 +57,6 @@ export default class SearchComponent extends React.Component {
         <button className='fa fa-chevron-down button-down' disabled={this.state.disabled} onClick={searchAction.forward}/>
         <button className='fa fa-times button-close' onClick={searchAction.close}/>
       </div>
-    );
+    )
   }
 }

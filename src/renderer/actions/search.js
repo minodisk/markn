@@ -1,28 +1,28 @@
 import dispatcher from '../dispatcher'
 
 export default new class SearchAction {
-  close() {
-    dispatcher.emit('closeFind');
+  close () {
+    dispatcher.emit('closeFind')
   }
 
-  input(e) {
-    dispatcher.emit('searching', e.currentTarget.value);
+  input (e) {
+    dispatcher.emit('searching', e.currentTarget.value)
   }
 
-  keydown(e) {
-    if (e.key != 'Enter') return;
-    dispatcher.emit('forwarding');
+  keydown (e) {
+    if (e.key !== 'Enter') return
+    dispatcher.emit('forwarding')
   }
 
-  forward() {
-    dispatcher.emit('forwarding');
+  forward () {
+    dispatcher.emit('forwarding')
   }
 
-  backward() {
-    dispatcher.emit('backwarding');
+  backward () {
+    dispatcher.emit('backwarding')
   }
 
-  searched(marks) {
-    dispatcher.emit('searched', marks);
+  searched (marks) {
+    dispatcher.emit('searched', marks)
   }
 }
