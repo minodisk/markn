@@ -10,10 +10,16 @@
   "scripts": {
     "test": "exit 0;",
     "debug": "./node_modules/gulp/bin/gulp.js",
-    "package": "./node_modules/gulp/bin/gulp.js package",
     "release": "./node_modules/gulp/bin/gulp.js release",
-    "install": "./node_modules/gulp/bin/gulp.js install"
+    "prepublish": "./node_modules/gulp/bin/gulp.js package"
   },
+  "files": [
+    "bin",
+    "build",
+    "LICENSE",
+    "README.md",
+    "package.json"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/minodisk/markn.git"
