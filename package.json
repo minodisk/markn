@@ -73,6 +73,7 @@
     "raw-loader": "^0.5.1",
     "react": "^0.13.3",
     "react-highlight": "^0.5.0",
+    "redux-devtools": "^2.1.0",
     "request": "^2.60.0",
     "semver": "^4.3.6",
     "style-loader": "^0.12.3",
@@ -80,5 +81,9 @@
     "url-loader": "^0.5.6",
     "webpack": "^1.10.1",
     "yargs": "^3.17.1"
+  },
+  "dependencies": {
+    "react-redux": "^2.1.1",
+    "redux": "^2.0.0"
   }
 }

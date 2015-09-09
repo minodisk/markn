@@ -1,12 +1,29 @@
+// import 'babel-core/polyfill'
 import React from 'react'
-import RootComponent from './views/root'
+import { Provider } from 'react-redux'
+import App from './containers/App'
+import configureStore from './store/configureStore'
 
-var $ = React.createElement
+const store = configureStore()
 
-export default class App {
-  constructor () {
-    React.render($(RootComponent, {}), document.body)
-  }
-}
+React.render(
+  <Provider store={store}>
+    {() => <App />}
+  </Provider>,
+  document.body
+)
 
-window.app = new App()
+
+
+// import React from 'react'
+// import RootComponent from './views/root'
+//
+// var $ = React.createElement
+//
+// export default class App {
+//   constructor () {
+//     React.render($(RootComponent, {}), document.body)
+//   }
+// }
+//
+// window.app = new App()
