@@ -1,11 +1,42 @@
 import React from 'react'
 import Markdown from './markdown'
-import Rail from './rail'
-import windowStore from '../stores/window'
-import searchStore from '../stores/search'
-import fileStore from '../stores/file'
-import historyStore from '../stores/history'
-import scrollAction from '../actions/scroll'
+// import Rail from './rail'
+// import windowStore from '../stores/window'
+// import searchStore from '../stores/search'
+// import fileStore from '../stores/file'
+// import historyStore from '../stores/history'
+// import scrollAction from '../actions/scroll'
+
+import React, { Component, PropTypes } from 'react';
+
+class Counter extends Component {
+  render() {
+    const { increment, incrementIfOdd, incrementAsync, decrement, counter } = this.props;
+    return (
+      <p>
+        Clicked: {counter} times
+        {' '}
+        <button onClick={increment}>+</button>
+        {' '}
+        <button onClick={decrement}>-</button>
+        {' '}
+        <button onClick={incrementIfOdd}>Increment if odd</button>
+        {' '}
+        <button onClick={() => incrementAsync()}>Increment async</button>
+      </p>
+    );
+  }
+}
+
+Counter.propTypes = {
+  increment: PropTypes.func.isRequired,
+  incrementIfOdd: PropTypes.func.isRequired,
+  incrementAsync: PropTypes.func.isRequired,
+  decrement: PropTypes.func.isRequired,
+  counter: PropTypes.number.isRequired
+};
+
+export default Counter;
 
 export default class BodyComponent extends React.Component {
   displayName = 'BodyComponent'

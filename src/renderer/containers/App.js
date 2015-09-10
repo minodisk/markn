@@ -1,34 +1,32 @@
 import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-// import Header from '../components/Header'
-// import MainSection from '../components/MainSection'
 import Head from '../components/Head'
 import Body from '../components/Body'
 import * as MarknActions from '../actions/markn'
 
 class App extends Component {
   render () {
-    const { todos, dispatch } = this.props
-    const actions = bindActionCreators(TodoActions, dispatch)
+    const { markdown, dispatch } = this.props
+    const actions = bindActionCreators(MarknActions, dispatch)
 
     return (
       <div>
-        <Header addTodo={actions.addTodo} />
-        <Body todos={todos} actions={actions} />
+        <Header />
+        <Body markdown={markdown} />
       </div>
     )
   }
 }
 
 App.propTypes = {
-  todos: PropTypes.array.isRequired,
+  markdown: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired
 }
 
 function mapStateToProps (state) {
   return {
-    todos: state.todos
+    markdown: state.markdown
   }
 }
 
