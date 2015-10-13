@@ -6,8 +6,8 @@ import historyStore from '../stores/history'
 import searchStore from '../stores/search'
 import markdownAction from '../actions/markdown'
 import searchAction from '../actions/search'
-// import MyCompiler from '../MyCompiler'
 import Compiler from 'imports?React=react!../../../node_modules/md2react/src/index'
+// import Compiler from 'imports?React=react!md2react'
 import Highlight from 'react-highlight'
 
 let path = remote.require('path')

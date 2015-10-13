@@ -218,6 +218,7 @@ gulp.task('webpack', (cb) => {
           loader: 'babel',
           exclude: /(node_modules|bower_components)/,
           query: {
+            optional: ['runtime'],
             stage: 0
           }
         }, {
