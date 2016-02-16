@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import classnames from 'classnames'
 import remote from 'remote'
 import fileStore from '../stores/file'
@@ -82,7 +83,7 @@ export default class MarkdownComponent extends React.Component {
       this.isSearching = false
       let marks = []
       for (let i = 0; i < this.compiler.marksCount; i++) {
-        let mark = React.findDOMNode(this.refs[`mark${i}`])
+        let mark = ReactDOM.findDOMNode(this.refs[`mark${i}`])
         marks.push(mark)
       }
       searchAction.searched(marks)

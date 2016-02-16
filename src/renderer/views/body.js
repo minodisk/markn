@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import Markdown from './markdown'
 import Rail from './rail'
 import windowStore from '../stores/window'
@@ -24,19 +25,19 @@ export default class BodyComponent extends React.Component {
   }
 
   onWindowResized (size) {
-    let body = React.findDOMNode(this.refs.body)
+    let body = ReactDOM.findDOMNode(this.refs.body)
     body.style.height = `${size.y - 30}px`
   }
 
   onIndicating ({}, {}, mark) {
     if (!mark) return
     let rect = mark.getBoundingClientRect()
-    let body = React.findDOMNode(this.refs.body)
+    let body = ReactDOM.findDOMNode(this.refs.body)
     body.scrollTop += rect.top - window.innerHeight / 2
   }
 
   onFileChanged () {
-    let body = React.findDOMNode(this.refs.body)
+    let body = ReactDOM.findDOMNode(this.refs.body)
     body.scrollTop = 0
   }
 
@@ -52,7 +53,7 @@ export default class BodyComponent extends React.Component {
   }
 
   onScroll (e) {
-    let body = React.findDOMNode(this.refs.body)
+    let body = ReactDOM.findDOMNode(this.refs.body)
     scrollAction.scrolled(body.scrollTop)
   }
 }
