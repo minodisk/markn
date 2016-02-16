@@ -8,9 +8,6 @@ import markdownAction from '../actions/markdown'
 import searchAction from '../actions/search'
 import remark from 'remark'
 import reactRenderer from 'remark-react'
-// import reactRenderer from 'imports?React=react!../../../node_modules/remark-react/index'
-// import Compiler from 'imports?React=react!../../../node_modules/md2react/src/index'
-// import Compiler from 'imports?React=react!md2react'
 import Highlight from 'react-highlight'
 
 let path = remote.require('path')
@@ -27,14 +24,6 @@ export default class MarkdownComponent extends React.Component {
       search: '',
       indication: -1
     }
-
-    // this.compiler = new MyCompiler({
-    //   gfm: true,
-    //   breaks: true,
-    //   tables: true,
-    //   commonmark: true,
-    //   footnotes: true
-    // })
 
     fileStore.on('changed', this.onFileChanged.bind(this))
     fileStore.on('updated', this.onFileUpdated.bind(this))
@@ -81,7 +70,7 @@ export default class MarkdownComponent extends React.Component {
   }
 
   render () {
-    return process(this.state.md, {});
+    return <div className="markdown-body markdownContent">{process(this.state.md, {})}</div>;
   }
 
   componentDidUpdate () {
@@ -101,9 +90,9 @@ export default class MarkdownComponent extends React.Component {
   }
 }
 
-function highlight (code, lang, key) {
-  return <Highlight className={lang}>{code}</Highlight>
-}
+// function highlight (code, lang, key) {
+//   return <Highlight className={lang}>{code}</Highlight>
+// }
 
 // class MyCompiler extends Compiler {
 //   constructor (opts) {

@@ -1,5 +1,8 @@
 import reporter from 'crash-reporter'
-reporter.start()
+reporter.start({
+  productName: "Markn",
+  companyName: "minodisk"
+})
 import {resolve, join} from 'path'
 import {statSync} from 'fs'
 import app from 'app'

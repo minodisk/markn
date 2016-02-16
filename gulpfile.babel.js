@@ -241,6 +241,7 @@ gulp.task('webpack', (cb) => {
           'fs',
           'path',
           // Electron
+          'electron',
           'crash-reporter',
           'app',
           'menu',

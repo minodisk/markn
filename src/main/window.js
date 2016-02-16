@@ -7,7 +7,7 @@ import shell from 'shell'
 import mediator from './mediator'
 import events from './events'
 import Storage from './storage'
-import ipc from 'ipc'
+import {ipcMain} from 'electron'
 import File from '../common/file'
 
 const URL = 'file://' + join(__dirname, '..', 'index.html')
@@ -72,17 +72,17 @@ export default class Window extends EventEmitter {
       this.browserWindow.on('move', this.onMoved)
       this.browserWindow.on('resize', this.onResized)
       this.browserWindow.on('close', this.onClose)
-      this.browserWindow.loadUrl(URL)
+      this.browserWindow.loadURL(URL)
       this.setTitle()
 
       mediator.on(events.OPEN_FILE, this.onOpenFileRequested)
       mediator.on(events.TOGGLE_DEVTOOLS, this.onToggleDevToolsRequested)
       mediator.on(events.FIND, this.onFindRequested)
       mediator.on(events.RELOAD, this.onFileReloading)
-      ipc.on('file-reloading', this.onFileReloading)
-      ipc.on('file-changing', this.onFileChanging.bind(this))
-      ipc.on('history-backwarding', this.onHistoryBackwarding.bind(this))
-      ipc.on('history-forwarding', this.onHistoryForwarding.bind(this))
+      ipcMain.on('file-reloading', this.onFileReloading)
+      ipcMain.on('file-changing', this.onFileChanging.bind(this))
+      ipcMain.on('history-backwarding', this.onHistoryBackwarding.bind(this))
+      ipcMain.on('history-forwarding', this.onHistoryForwarding.bind(this))
     })
   }
 

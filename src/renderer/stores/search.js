@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import dispatcher from '../dispatcher'
-import ipc from 'ipc'
+import {ipcRenderer} from 'electron'
 
 export default new class SearchStore extends EventEmitter {
   constructor () {
@@ -9,7 +9,7 @@ export default new class SearchStore extends EventEmitter {
     this.focusedIndex = 0
     this.marks = []
 
-    ipc.on('openFind', this.onOpenFind.bind(this))
+    ipcRenderer.on('openFind', this.onOpenFind.bind(this))
     dispatcher.on('closeFind', this.onCloseFind.bind(this))
     dispatcher.on('searching', this.onSearching.bind(this))
     dispatcher.on('searched', this.onSearched.bind(this))
@@ -17,7 +17,7 @@ export default new class SearchStore extends EventEmitter {
     dispatcher.on('backwarding', this.onBackwarding.bind(this))
   }
 
-  onOpenFind () {
+  onOpenFind (e) {
     this.emit('openFind')
   }
 

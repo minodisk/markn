@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import dispatcher from '../dispatcher'
-import ipc from 'ipc'
+import {ipcRenderer} from 'electron'
 
 export default new class WindowStore extends EventEmitter {
   constructor () {
@@ -8,18 +8,18 @@ export default new class WindowStore extends EventEmitter {
 
     window.addEventListener('resize', this.onResized.bind(this))
 
-    ipc.on('focus', this.onFocus.bind(this))
-    ipc.on('blur', this.onBlur.bind(this))
-    ipc.on('resize', this.onResize.bind(this))
+    ipcRenderer.on('focus', this.onFocus.bind(this))
+    ipcRenderer.on('blur', this.onBlur.bind(this))
+    ipcRenderer.on('resize', this.onResize.bind(this))
 
     dispatcher.on('ready', this.onReady.bind(this))
   }
 
-  onFocus () {
+  onFocus (e) {
     this.emit('focus')
   }
 
-  onBlur () {
+  onBlur (e) {
     this.emit('blur')
   }
 
@@ -28,7 +28,7 @@ export default new class WindowStore extends EventEmitter {
     this.resize()
   }
 
-  onResize (size) {
+  onResize (e, size) {
     this.resize()
   }
 

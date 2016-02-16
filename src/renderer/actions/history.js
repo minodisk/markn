@@ -1,4 +1,4 @@
-import ipc from 'ipc'
+import {ipcRenderer} from 'electron'
 import dispatcher from '../dispatcher'
 
 export default new class HistoryAction {
@@ -11,10 +11,10 @@ export default new class HistoryAction {
   }
 
   reload () {
-    ipc.send('file-reloading')
+    ipcRenderer.send('file-reloading')
   }
 
   change (path) {
-    ipc.send('file-changing', path)
+    ipcRenderer.send('file-changing', path)
   }
 }
