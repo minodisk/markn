@@ -109,7 +109,7 @@ gulp.task('default', () => {
   return gulp.start('debug')
 })
 
-gulp.task('debug', ['compile'], (cb) => {
+gulp.task('debug', ['build'], (cb) => {
   (async () => {
     try {
       await spawn('./node_modules/electron-prebuilt/cli.js', [APP_DIR])
@@ -120,7 +120,7 @@ gulp.task('debug', ['compile'], (cb) => {
   })()
 })
 
-gulp.task('package', ['compile'], (cb) => {
+gulp.task('package', ['build'], (cb) => {
   (async () => {
     try {
       await icon()
@@ -132,7 +132,7 @@ gulp.task('package', ['compile'], (cb) => {
   })()
 })
 
-gulp.task('install', ['compile'], (cb) => {
+gulp.task('install', ['build'], (cb) => {
   (async () => {
     try {
       let {platform, arch} = process
@@ -155,7 +155,7 @@ gulp.task('icon', (cb) => {
   })()
 })
 
-gulp.task('compile', ['copy', 'jade', 'stylus', 'webpack'])
+gulp.task('build', ['copy', 'jade', 'stylus', 'webpack'])
 
 gulp.task('copy', () => {
   return gulp.src([
@@ -292,7 +292,7 @@ gulp.task('webpack', (cb) => {
   })
 })
 
-gulp.task('release', ['compile'], (cb) => {
+gulp.task('release', ['build'], (cb) => {
   (async () => {
     try {
       let github = new GitHub({
