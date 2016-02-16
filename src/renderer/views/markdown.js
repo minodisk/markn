@@ -9,12 +9,20 @@ import markdownAction from '../actions/markdown'
 import searchAction from '../actions/search'
 import remark from 'remark'
 import reactRenderer from 'remark-react'
-import Highlight from 'react-highlight'
+// import hljs from 'remark-highlight.js'
+// import Highlight from 'react-highlight'
 
 let path = remote.require('path')
 let $ = React.createElement
 let processor = remark.use(reactRenderer, {createElement: $})
 let process = processor.process.bind(processor)
+let options = {
+  gfm: true,
+  yaml: true,
+  commonmark: true,
+  footnotes: true,
+  breaks: true
+}
 
 export default class MarkdownComponent extends React.Component {
   constructor (props) {
@@ -71,7 +79,7 @@ export default class MarkdownComponent extends React.Component {
   }
 
   render () {
-    return <div className="markdown-body markdownContent">{process(this.state.md, {})}</div>;
+    return <div className="markdown-body markdownContent">{process(this.state.md, options)}</div>;
   }
 
   componentDidUpdate () {

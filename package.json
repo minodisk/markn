@@ -81,6 +81,7 @@
     "react-dom": "^0.14.7",
     "react-highlight": "^0.6.1",
     "remark": "4.0.0",
+    "remark-highlight.js": "^2.0.0",
     "remark-react": "git://github.com/minodisk/remark-react.git#update-remark-4",
     "request": "^2.69.0",
     "semver": "^4.3.6",

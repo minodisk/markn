@@ -74,14 +74,14 @@ export default class MyMenu {
           label: 'Select All',
           accelerator: 'CommandOrControl+A',
           selector: 'selectAll:'
-        }, {
-          type: 'separator'
-        }, {
-          label: 'Find',
-          accelerator: 'CommandOrControl+F',
-          click: function () {
-            mediator.emit(events.FIND)
-          }
+        // }, {
+        //   type: 'separator'
+        // }, {
+        //   label: 'Find',
+        //   accelerator: 'CommandOrControl+F',
+        //   click: function () {
+        //     mediator.emit(events.FIND)
+        //   }
         }
       ]
     }, {
