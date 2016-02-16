@@ -1,0 +1,739 @@
+.markdownContent {
+    font-family: "Helvetica Neue", Helvetica, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif;
+    /* font-size: 14px; */
+    line-height: 1.42857143;
+    color: #4a4a4a;
+    background-color: #fff
+
+    font-size: 16px;
+    word-wrap: break-word
+}
+
+.markdownContent a {
+    color: #337ab7;
+    text-decoration: none
+}
+
+.markdownContent a:hover,.markdownContent a:focus {
+    color: #23527c;
+    text-decoration: underline
+}
+
+.markdownContent a:focus {
+    outline: thin dotted;
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px
+}
+
+
+.markdownContent.markdownContent-diff a {
+    text-decoration: none
+}
+
+.markdownContent.markdownContent-diff a[data-before-href] {
+    border-bottom: dotted 1px #999;
+    text-decoration: none
+}
+
+.markdownContent.markdownContent-diff .del {
+    background-color: #ffeaea;
+    color: #cb4000
+}
+
+.markdownContent.markdownContent-diff .del:first-child>* {
+    margin-top: 0 !important
+}
+
+.markdownContent.markdownContent-diff ins {
+    background-color: #e9ffe9;
+    text-decoration: none
+}
+
+.markdownContent.markdownContent-diff ins:first-child>* {
+    margin-top: 0 !important
+}
+
+.markdownContent.markdownContent-diff li.removed {
+    color: #cb4000
+}
+
+.markdownContent.markdownContent-diff>* {
+    margin-left: 16px !important
+}
+
+.markdownContent.markdownContent-diff>.del {
+    background-color: inherit;
+    border-left: solid 4px #cb4000;
+    color: inherit;
+    display: block;
+    margin-left: 0 !important;
+    padding-left: 16px;
+    text-decoration: none
+}
+
+.markdownContent.markdownContent-diff>ins {
+    background-color: inherit;
+    border-left: solid 4px #7dcd55;
+    color: inherit;
+    display: block;
+    margin-left: 0 !important;
+    padding-left: 16px
+}
+
+.markdownContent.markdownContent-diff>.changed {
+    border-left: solid 4px #ffc134;
+    margin-left: 0 !important;
+    padding-left: 16px
+}
+
+.markdownContent>*:first-child {
+    margin-top: 0 !important
+}
+
+.markdownContent-headingEnabled h1,.markdownContent-headingEnabled h2,.markdownContent-headingEnabled h3,.markdownContent-headingEnabled h4,.markdownContent-headingEnabled h5,.markdownContent-headingEnabled h6 {
+    position: relative
+}
+
+@media (min-width: 768px) {
+    .markdownContent-headingEnabled h1:hover .fa.fa-link,.markdownContent-headingEnabled h1:hover .icon-link,.markdownContent-headingEnabled h2:hover .fa.fa-link,.markdownContent-headingEnabled h2:hover .icon-link,.markdownContent-headingEnabled h3:hover .fa.fa-link,.markdownContent-headingEnabled h3:hover .icon-link,.markdownContent-headingEnabled h4:hover .fa.fa-link,.markdownContent-headingEnabled h4:hover .icon-link,.markdownContent-headingEnabled h5:hover .fa.fa-link,.markdownContent-headingEnabled h5:hover .icon-link,.markdownContent-headingEnabled h6:hover .fa.fa-link,.markdownContent-headingEnabled h6:hover .icon-link {
+        display:inline-block
+    }
+
+    .markdownContent-headingEnabled h1 .fa.fa-link:hover,.markdownContent-headingEnabled h1 .icon-link:hover,.markdownContent-headingEnabled h2 .fa.fa-link:hover,.markdownContent-headingEnabled h2 .icon-link:hover,.markdownContent-headingEnabled h3 .fa.fa-link:hover,.markdownContent-headingEnabled h3 .icon-link:hover,.markdownContent-headingEnabled h4 .fa.fa-link:hover,.markdownContent-headingEnabled h4 .icon-link:hover,.markdownContent-headingEnabled h5 .fa.fa-link:hover,.markdownContent-headingEnabled h5 .icon-link:hover,.markdownContent-headingEnabled h6 .fa.fa-link:hover,.markdownContent-headingEnabled h6 .icon-link:hover {
+        color: #337ab7;
+        text-decoration: none
+    }
+}
+
+.markdownContent blockquote {
+    color: #555;
+    font-size: 1em;
+    border-left: solid 4px #ddd;
+    padding: .8em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: .8em
+}
+
+.markdownContent blockquote>*:first-child {
+    margin-top: 0
+}
+
+.markdownContent blockquote h1,.markdownContent blockquote h2,.markdownContent blockquote h3,.markdownContent blockquote h4,.markdownContent blockquote h5,.markdownContent blockquote h6 {
+    color: #555
+}
+
+.markdownContent a {
+    word-wrap: break-word;
+    word-break: break-all
+}
+
+.markdownContent a code {
+    color: #337ab7
+}
+
+.markdownContent hr {
+    margin: 1em 0;
+    border: 0;
+    height: 2px;
+    background-color: #ccc
+}
+
+.markdownContent em {
+    font-family: "Helvetica Neue", Helvetica, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "游ゴシック", YuGothic, sans-serif;
+    font-style: italic
+}
+
+.markdownContent strong {
+    font-weight: 900
+}
+
+.markdownContent b {
+    font-weight: 900
+}
+
+.markdownContent del {
+    text-decoration: line-through
+}
+
+.markdownContent p {
+    margin-bottom: 0;
+    margin-top: 1.6em;
+    font-size: 1em;
+    line-height: 1.875;
+    word-wrap: break-word
+}
+
+@media (max-width: 767px) {
+    .markdownContent p {
+        line-height:1.6
+    }
+}
+
+.markdownContent img {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    vertical-align: middle;
+    margin: 0;
+    max-width: 100%
+}
+
+.markdownContent dl {
+    margin: 1em 0
+}
+
+.markdownContent dl dd {
+    margin-left: 2em
+}
+
+.markdownContent table {
+    display: block;
+    overflow: auto;
+    margin: 1em 0;
+    border-left: solid 1px #d9d9d9
+}
+
+.markdownContent td,.markdownContent th {
+    border-bottom: solid 1px #ccc;
+    border-right: solid 1px #ccc;
+    padding: 8px 10px;
+    word-wrap: break-word
+}
+
+.markdownContent thead td,.markdownContent th {
+    font-weight: 900;
+    background-color: #fff;
+    border-top: solid 1px #d9d9d9
+}
+
+.markdownContent tbody tr:nth-child(odd) {
+    background-color: rgba(0,0,0,0.03)
+}
+
+.markdownContent li p:first-child {
+    margin: 0
+}
+
+.markdownContent ol,.markdownContent ul {
+    line-height: 1.7;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    padding-left: 1.5em
+}
+
+@media (max-width: 767px) {
+    .markdownContent ol,.markdownContent ul {
+        line-height:1.6
+    }
+}
+
+.markdownContent ol>li {
+    list-style-type: decimal
+}
+
+.markdownContent li>ol,.markdownContent li>ul {
+    margin-bottom: 0;
+    margin-top: 0
+}
+
+.markdownContent h1,.markdownContent h2,.markdownContent h3,.markdownContent h4,.markdownContent h5,.markdownContent h6 {
+    font-family: 'Helvetica Neue', Helvetica, 'ヒラギノ角ゴ ProN W3', 'Hiragino Kaku Gothic ProN', メイリオ, Meiryo, sans-serif;
+    font-weight: normal;
+    line-height: 1.4;
+    margin: 1.35em 0 .7em
+}
+
+.markdownContent h1+ol,.markdownContent h1+p,.markdownContent h1+ul,.markdownContent h2+ol,.markdownContent h2+p,.markdownContent h2+ul,.markdownContent h3+ol,.markdownContent h3+p,.markdownContent h3+ul,.markdownContent h4+ol,.markdownContent h4+p,.markdownContent h4+ul,.markdownContent h5+ol,.markdownContent h5+p,.markdownContent h5+ul,.markdownContent h6+ol,.markdownContent h6+p,.markdownContent h6+ul {
+    margin-top: 0
+}
+
+.markdownContent h1 {
+    border-bottom: solid 3px #eee;
+    font-size: 24px;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    margin-top: 64px;
+    padding-bottom: 8px
+}
+
+.markdownContent h1 .emoji {
+    width: 24px;
+    height: 24px;
+    vertical-align: top
+}
+
+.markdownContent h1+h2 {
+    margin-top: 24px
+}
+
+.markdownContent h2 {
+    border-bottom: solid 1px #eee;
+    font-size: 22px;
+    line-height: 1.225;
+    margin-bottom: 12px;
+    margin-top: 64px;
+    padding-bottom: 8px
+}
+
+.markdownContent h2 .emoji {
+    width: 22px;
+    height: 22px;
+    vertical-align: top
+}
+
+.markdownContent h2+h3 {
+    margin-top: 24px
+}
+
+.markdownContent h3 {
+    font-size: 20px;
+    line-height: 1.43;
+    margin-top: 64px
+}
+
+.markdownContent h4 {
+    font-size: 18px;
+    margin-top: 1.3em
+}
+
+.markdownContent h5 {
+    margin-top: 1.5em;
+    font-size: 17px
+}
+
+.markdownContent h6 {
+    margin-top: 1.5em;
+    font-size: 16px;
+    color: #777
+}
+
+.markdownContent .code-frame {
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    margin: 1em 0;
+    background-color: #f7f7f7;
+    line-height: 0
+}
+
+.markdownContent .code-frame pre {
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border: 0;
+    margin: 0;
+    padding: 8px 15px;
+    line-height: 18px;
+    background-color: #f7f7f7;
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    overflow-x: scroll;
+    word-wrap: normal;
+    white-space: pre
+}
+
+.markdownContent .code-lang {
+    color: #555;
+    display: inline-block;
+    padding: 3px 6px;
+    margin: 0;
+    line-height: 1;
+    background-color: rgba(0,0,0,0.07);
+    font-size: 12px;
+    font-weight: 400
+}
+
+.markdownContent .emoji {
+    width: 20px;
+    height: 20px;
+    vertical-align: text-bottom
+}
+
+.markdownContent .fa.fa-link,.markdownContent .icon-link {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: -28px;
+    margin-top: -18px;
+    padding: 10px 5px 10px 10px;
+    color: #555;
+    font-size: 16px;
+    font-weight: 400
+}
+
+.markdownContent .footnotes {
+    font-size: .9em;
+    margin-top: 2em
+}
+
+.markdownContent .footnotes hr {
+    display: none
+}
+
+.markdownContent .fragment {
+    position: relative;
+    top: -10px;
+    display: block
+}
+
+.markdownContent .highlight {
+    background: #fff
+}
+
+.markdownContent .highlight .c {
+    color: #998;
+    font-style: italic
+}
+
+.markdownContent .highlight .err {
+    color: #a61717;
+    background-color: #e3d2d2
+}
+
+.markdownContent .highlight .k {
+    font-weight: bold
+}
+
+.markdownContent .highlight .o {
+    font-weight: bold
+}
+
+.markdownContent .highlight .cm {
+    color: #998;
+    font-style: italic
+}
+
+.markdownContent .highlight .cp {
+    color: #999;
+    font-weight: bold
+}
+
+.markdownContent .highlight .c1 {
+    color: #998;
+    font-style: italic
+}
+
+.markdownContent .highlight .cs {
+    color: #999;
+    font-weight: bold;
+    font-style: italic
+}
+
+.markdownContent .highlight .gd {
+    color: #000;
+    background-color: #fdd
+}
+
+.markdownContent .highlight .gd .x {
+    color: #000;
+    background-color: #faa
+}
+
+.markdownContent .highlight .ge {
+    font-style: italic
+}
+
+.markdownContent .highlight .gr {
+    color: #a00
+}
+
+.markdownContent .highlight .gh {
+    color: #999
+}
+
+.markdownContent .highlight .gi {
+    color: #000;
+    background-color: #dfd
+}
+
+.markdownContent .highlight .gi .x {
+    color: #000;
+    background-color: #afa
+}
+
+.markdownContent .highlight .go {
+    color: #888
+}
+
+.markdownContent .highlight .gp {
+    color: #555
+}
+
+.markdownContent .highlight .gs {
+    font-weight: bold
+}
+
+.markdownContent .highlight .gu {
+    color: #800080;
+    font-weight: bold
+}
+
+.markdownContent .highlight .gt {
+    color: #a00
+}
+
+.markdownContent .highlight .kc {
+    font-weight: bold
+}
+
+.markdownContent .highlight .kd {
+    font-weight: bold
+}
+
+.markdownContent .highlight .kn {
+    font-weight: bold
+}
+
+.markdownContent .highlight .kp {
+    font-weight: bold
+}
+
+.markdownContent .highlight .kr {
+    font-weight: bold
+}
+
+.markdownContent .highlight .kt {
+    color: #458;
+    font-weight: bold
+}
+
+.markdownContent .highlight .m {
+    color: #099
+}
+
+.markdownContent .highlight .s {
+    color: #d14
+}
+
+.markdownContent .highlight .n {
+    color: #333
+}
+
+.markdownContent .highlight .na {
+    color: #008080
+}
+
+.markdownContent .highlight .nb {
+    color: #0086b3
+}
+
+.markdownContent .highlight .nc {
+    color: #458;
+    font-weight: bold
+}
+
+.markdownContent .highlight .no {
+    color: #008080
+}
+
+.markdownContent .highlight .ni {
+    color: #800080
+}
+
+.markdownContent .highlight .ne {
+    color: #900;
+    font-weight: bold
+}
+
+.markdownContent .highlight .nf {
+    color: #900;
+    font-weight: bold
+}
+
+.markdownContent .highlight .nn {
+    color: #555
+}
+
+.markdownContent .highlight .nt {
+    color: #000080
+}
+
+.markdownContent .highlight .nv {
+    color: #008080
+}
+
+.markdownContent .highlight .ow {
+    font-weight: bold
+}
+
+.markdownContent .highlight .w {
+    color: #bbb
+}
+
+.markdownContent .highlight .mf {
+    color: #099
+}
+
+.markdownContent .highlight .mh {
+    color: #099
+}
+
+.markdownContent .highlight .mi {
+    color: #099
+}
+
+.markdownContent .highlight .mo {
+    color: #099
+}
+
+.markdownContent .highlight .sb {
+    color: #d14
+}
+
+.markdownContent .highlight .sc {
+    color: #d14
+}
+
+.markdownContent .highlight .sd {
+    color: #d14
+}
+
+.markdownContent .highlight .s2 {
+    color: #d14
+}
+
+.markdownContent .highlight .se {
+    color: #d14
+}
+
+.markdownContent .highlight .sh {
+    color: #d14
+}
+
+.markdownContent .highlight .si {
+    color: #d14
+}
+
+.markdownContent .highlight .sx {
+    color: #d14
+}
+
+.markdownContent .highlight .sr {
+    color: #009926
+}
+
+.markdownContent .highlight .s1 {
+    color: #d14
+}
+
+.markdownContent .highlight .ss {
+    color: #990073
+}
+
+.markdownContent .highlight .bp {
+    color: #999
+}
+
+.markdownContent .highlight .vc {
+    color: #008080
+}
+
+.markdownContent .highlight .vg {
+    color: #008080
+}
+
+.markdownContent .highlight .vi {
+    color: #008080
+}
+
+.markdownContent .highlight .il {
+    color: #099
+}
+
+.markdownContent .highlight .gc {
+    color: #999;
+    background-color: #eaf2f5
+}
+
+.markdownContent .MathJax img,.markdownContent .MathJax_Display img {
+    border: 0 !important
+}
+
+.markdownContent .parenthesis li {
+    list-style-type: none
+}
+
+.markdownContent .parenthesis li span {
+    margin-left: -1.5em;
+    margin-right: .5em
+}
+
+.markdownContent .task-list-item {
+    list-style-type: none
+}
+
+.markdownContent .task-list-item-checkbox {
+    margin: .4em .5em 0 -1.3em
+}
+
+.markdownContent .task-list-item-checkbox[disabled] {
+    cursor: default
+}
+
+.markdownContent .user-icon,.markdownContent .coeditors-icon,.markdownContent .project-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 2px;
+    margin-right: .3em;
+    text-align: center;
+    vertical-align: text-bottom
+}
+
+.markdownContent .coeditors-icon {
+    display: inline-block;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    border-top-right-radius: 50%;
+    border-top-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+    width: 18px;
+    height: 18px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline-block;
+    background-color: #e8f9ee !important;
+    border: 0 solid #35c669 !important;
+    overflow: hidden;
+    text-align: center;
+    font-size: 13.5px;
+    line-height: 13.5px;
+    color: #35c669 !important
+}
+
+.markdownContent .coeditors-icon:before {
+    content: ""
+}
+
+.markdownContent .coeditors-icon:before {
+    display: inline-block;
+    margin-top: 5.4px
+}
+
+.markdownContent .project-icon {
+    display: inline-block;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #999;
+    font-size: 15px
+}
+
+.markdownContent .project-icon:before {
+    content: ""
+}
+
+.markdownContent .anchor-target {
+    background-color: #fff3b8;
+    border-radius: .1em
+}
