@@ -1,3 +1,4 @@
+require('babel-polyfill')
 import gulp from 'gulp'
 import gutil from 'gulp-util'
 import plumber from 'gulp-plumber'
@@ -216,11 +217,7 @@ gulp.task('webpack', (cb) => {
         {
           test: /\.js$/,
           loader: 'babel',
-          exclude: /(node_modules|bower_components)/,
-          query: {
-            optional: ['runtime'],
-            stage: 0
-          }
+          exclude: /(node_modules|bower_components)/
         }, {
           test: /\.coffee$/,
           loader: 'coffee'
