@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 import classnames from 'classnames'
 import searchStore from '../stores/search'
 import searchAction from '../actions/search'
@@ -25,7 +26,7 @@ export default class SearchComponent extends React.Component {
 
   show () {
     this.setState({isShown: true})
-    let input = React.findDOMNode(this.refs.search)
+    let input = ReactDOM.findDOMNode(this.refs.search)
     input.focus()
     input.select()
   }
