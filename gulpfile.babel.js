@@ -219,12 +219,6 @@ gulp.task('webpack', (cb) => {
           loader: 'babel',
           exclude: /(node_modules|bower_components)/
         }, {
-          test: /\.coffee$/,
-          loader: 'coffee'
-        }, {
-        //   test: /\.jade$/,
-        //   loader: 'jade'
-        // }, {
           test: /\.css$/,
           loaders: ['style', 'raw']
         }, {
@@ -237,7 +231,7 @@ gulp.task('webpack', (cb) => {
       ]
     },
     resolve: {
-      extensions: ['', '.js', '.coffee']
+      extensions: ['', '.js']
     },
     externals: [
       (() => {

@@ -11,7 +11,7 @@
     "test": "exit 0;",
     "debug": "./node_modules/gulp/bin/gulp.js",
     "release": "./node_modules/gulp/bin/gulp.js release",
-    "prepublish": "./node_modules/gulp/bin/gulp.js package"
+    "package": "./node_modules/gulp/bin/gulp.js package"
   },
   "files": [
     "bin",
@@ -56,8 +56,6 @@
     "babel-runtime": "^6.5.0",
     "chokidar": "^1.4.2",
     "classnames": "^2.2.3",
-    "coffee-loader": "^0.7.2",
-    "coffee-script": "^1.9.3",
     "css-loader": "^0.15.1",
     "electron-packager": "^5.2.1",
     "electron-prebuilt": "^0.36.7",
@@ -82,8 +80,8 @@
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-highlight": "^0.6.1",
-    "remark": "^4.0.0",
-    "remark-react": "^1.1.0",
+    "remark": "4.0.0",
+    "remark-react": "git://github.com/minodisk/remark-react.git#update-remark-4",
     "request": "^2.69.0",
     "semver": "^4.3.6",
     "style-loader": "^0.12.3",
@@ -91,5 +89,9 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.12.13",
     "yargs": "^3.32.0"
+  },
+  "dependencies": {
+    "remark": "^4.0.0",
+    "unist-util-visit": "^1.0.1"
   }
 }

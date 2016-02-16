@@ -213,21 +213,25 @@ export default class Window extends EventEmitter {
     })
   }
 
-  async onFileChanged (path) {
+  async onFileChanged () {
+    console.log('file changed:', Object.keys(this.watcher._watched))
     await this.file.read()
     this.updateFile()
   }
 
   async start (path) {
+    console.log('satrt:', path)
     path = normalize(path)
 
     if (this.watcher != null) {
+      console.log('stop watching:', Object.keys(this.watcher._watched))
       this.watcher.removeAllListeners()
       this.watcher.close()
     }
 
     // Watch only local file.
     if (!(/^https?:\/\//.test(path))) {
+      console.log('start watching:', path)
       this.watcher = watch(path)
       this.watcher.on('change', this.onFileChanged)
     }
