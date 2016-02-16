@@ -87,7 +87,7 @@ async function pack (platform = 'all', arch = 'all') {
       dir: APP_DIR,
       out: BUILD_DIR,
       name: 'Markn',
-      version: '0.30.4',
+      version: '0.36.7',
       icon: `${ICON_DIR}/markn`,
       overwrite: true,
       asar: true
